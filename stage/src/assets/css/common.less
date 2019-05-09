@@ -1,0 +1,9 @@
+// liner 渐变
+.gradientHappenBg(@color1,@color2){
+  @type: top;
+  @type2: bottom;
+  background: -webkit-linear-gradient(@type2, @color1 , @color2); /* Safari 5.1 - 6.0 */
+  background: -o-linear-gradient(@type, @color1, @color2); /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(@type, @color1, @color2); /* Firefox 3.6 - 15 */
+  background: linear-gradient(to @type, @color1 , @color2);
+}
