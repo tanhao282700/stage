@@ -89,118 +89,117 @@
 </template>
 
 <script>
-  import BScroll from 'better-scroll'
-  import { Rater, Previewer, TransferDom, Tab, TabItem, Swiper, SwiperItem } from 'vux'
-  let count = 1
-  export default {
-    name: 'houseDetail',
-    directives: {
-      TransferDom
-    },
-    components: {
-      Tab,
-      TabItem,
-      Swiper,
-      SwiperItem,
-      Rater,
-      Previewer,
-      TransferDom
-    },
-    data () {
-      return {
-        data3: 4.5,
-        index: 0,
-        list2: ['详情', '评价'],
-        data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26],
-        list: [{
-          msrc: 'http://ww1.sinaimg.cn/thumbnail/663d3650gy1fplwu9ze86j20m80b40t2.jpg',
-          src: 'http://ww1.sinaimg.cn/large/663d3650gy1fplwu9ze86j20m80b40t2.jpg',
-          w: 800,
-          h: 400
-        },
-          {
-            msrc: 'http://ww1.sinaimg.cn/thumbnail/663d3650gy1fplwvqwuoaj20xc0p0t9s.jpg',
-            src: 'http://ww1.sinaimg.cn/large/663d3650gy1fplwvqwuoaj20xc0p0t9s.jpg',
-            w: 1200,
-            h: 900
-          }, {
-            msrc: 'http://ww1.sinaimg.cn/thumbnail/663d3650gy1fplwwcynw2j20p00b4js9.jpg',
-            src: 'http://ww1.sinaimg.cn/large/663d3650gy1fplwwcynw2j20p00b4js9.jpg'
-          }, {
-            msrc: 'http://ww1.sinaimg.cn/thumbnail/663d3650gy1fplwu9ze86j20m80b40t2.jpg',
-            src: 'http://ww1.sinaimg.cn/large/663d3650gy1fplwu9ze86j20m80b40t2.jpg',
-            w: 800,
-            h: 400
-          },
-          {
-            msrc: 'http://ww1.sinaimg.cn/thumbnail/663d3650gy1fplwvqwuoaj20xc0p0t9s.jpg',
-            src: 'http://ww1.sinaimg.cn/large/663d3650gy1fplwvqwuoaj20xc0p0t9s.jpg',
-            w: 1200,
-            h: 900
-          }],
-        options: {
-          getThumbBoundsFn (index) {
-            // find thumbnail element
-            let thumbnail = document.querySelectorAll('.previewer-demo-img')[index]
-            // get window scroll Y
-            let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
-            // optionally get horizontal scroll
-            // get position of element relative to viewport
-            let rect = thumbnail.getBoundingClientRect()
-            // w = width
-            return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
-            // Good guide on how to get element coordinates:
-            // http://javascript.info/tutorial/coordinates
-          }
+import BScroll from 'better-scroll'
+import { Rater, Previewer, TransferDom, Tab, TabItem, Swiper, SwiperItem } from 'vux'
+let count = 1
+export default {
+  name: 'houseDetail',
+  directives: {
+    TransferDom
+  },
+  components: {
+    Tab,
+    TabItem,
+    Swiper,
+    SwiperItem,
+    Rater,
+    Previewer,
+    TransferDom
+  },
+  data () {
+    return {
+      data3: 4.5,
+      index: 0,
+      list2: ['详情', '评价'],
+      data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26],
+      list: [{
+        msrc: 'http://ww1.sinaimg.cn/thumbnail/663d3650gy1fplwu9ze86j20m80b40t2.jpg',
+        src: 'http://ww1.sinaimg.cn/large/663d3650gy1fplwu9ze86j20m80b40t2.jpg',
+        w: 800,
+        h: 400
+      },
+      {
+        msrc: 'http://ww1.sinaimg.cn/thumbnail/663d3650gy1fplwvqwuoaj20xc0p0t9s.jpg',
+        src: 'http://ww1.sinaimg.cn/large/663d3650gy1fplwvqwuoaj20xc0p0t9s.jpg',
+        w: 1200,
+        h: 900
+      }, {
+        msrc: 'http://ww1.sinaimg.cn/thumbnail/663d3650gy1fplwwcynw2j20p00b4js9.jpg',
+        src: 'http://ww1.sinaimg.cn/large/663d3650gy1fplwwcynw2j20p00b4js9.jpg'
+      }, {
+        msrc: 'http://ww1.sinaimg.cn/thumbnail/663d3650gy1fplwu9ze86j20m80b40t2.jpg',
+        src: 'http://ww1.sinaimg.cn/large/663d3650gy1fplwu9ze86j20m80b40t2.jpg',
+        w: 800,
+        h: 400
+      },
+      {
+        msrc: 'http://ww1.sinaimg.cn/thumbnail/663d3650gy1fplwvqwuoaj20xc0p0t9s.jpg',
+        src: 'http://ww1.sinaimg.cn/large/663d3650gy1fplwvqwuoaj20xc0p0t9s.jpg',
+        w: 1200,
+        h: 900
+      }],
+      options: {
+        getThumbBoundsFn (index) {
+          // find thumbnail element
+          let thumbnail = document.querySelectorAll('.previewer-demo-img')[index]
+          // get window scroll Y
+          let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
+          // optionally get horizontal scroll
+          // get position of element relative to viewport
+          let rect = thumbnail.getBoundingClientRect()
+          // w = width
+          return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
+          // Good guide on how to get element coordinates:
+          // http://javascript.info/tutorial/coordinates
         }
       }
+    }
+  },
+  methods: {
+    getBack () {
+      this.$router.go(-1)
     },
-    methods: {
-      getBack() {
-        this.$router.go(-1)
-      },
-      show (index) {
-        this.$refs.previewer.show(index)
-      },
-      getData() {
-        let that = this
-        return new Promise(resolve => {  //模拟数据请求
-          setTimeout(() => {
-            that.isMoreData = false
-            console.log(that.isMoreData)
-            const arr = [];
-            for (let i = 0; i < 26; i++) {
-              arr.push(count++)
-            }
-            resolve(arr)
-          }, 1000)
-        })
-      },
+    show (index) {
+      this.$refs.previewer.show(index)
     },
-    created() {
-      const that = this;
-      this.$nextTick(() => {
-        this.scroll = new BScroll(this.$refs.wrapper,{       //初始化better-scroll
-          probeType: 1,   //1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
-          click: true   //是否派发click事件
-        })
-        //滑动结束松开事件
-        this.scroll.on('touchEnd',(pos) =>{  //上拉刷新
-          if(pos.y<(this.scroll.maxScrollY) || pos.y===(this.scroll.maxScrollY)){   //下拉加载
-            console.log(333)
-            setTimeout(()=>{
-              that.getData().then((res)=>{
-                //恢复文本值
-                that.data = this.data.concat(res);
-                that.scroll.refresh();
-              })
-            },2000)
-
+    getData () {
+      let that = this
+      return new Promise(resolve => { // 模拟数据请求
+        setTimeout(() => {
+          that.isMoreData = false
+          console.log(that.isMoreData)
+          const arr = []
+          for (let i = 0; i < 26; i++) {
+            arr.push(count++)
           }
-        })
+          resolve(arr)
+        }, 1000)
       })
     }
+  },
+  created () {
+    const that = this
+    this.$nextTick(() => {
+      this.scroll = new BScroll(this.$refs.wrapper, { // 初始化better-scroll
+        probeType: 1, // 1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
+        click: true // 是否派发click事件
+      })
+      // 滑动结束松开事件
+      this.scroll.on('touchEnd', (pos) => { // 上拉刷新
+        if (pos.y < (this.scroll.maxScrollY) || pos.y === (this.scroll.maxScrollY)) { // 下拉加载
+          console.log(333)
+          setTimeout(() => {
+            that.getData().then((res) => {
+              // 恢复文本值
+              that.data = this.data.concat(res)
+              that.scroll.refresh()
+            })
+          }, 2000)
+        }
+      })
+    })
   }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

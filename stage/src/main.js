@@ -6,14 +6,14 @@ import router from './router'
 import './assets/iconfont/iconfont.css'
 
 /*  引入axios */
-import axios from './http/axios';
-Vue.prototype.$http = axios;
+import axios from './http/axios'
 
-import  { ToastPlugin } from 'vux'
+import { ToastPlugin } from 'vux'
+
+// 引入Vuex
+import store from './store'
+Vue.prototype.$http = axios
 Vue.use(ToastPlugin)
-
-//引入Vuex
-import store from './store';
 
 Vue.config.productionTip = false
 const FastClick = require('fastclick')

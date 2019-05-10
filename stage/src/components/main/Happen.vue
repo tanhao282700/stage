@@ -70,18 +70,18 @@ export default {
     Badge,
     Cell
   },
-  props:["orderData"],
+  props: ['orderData'],
   data () {
     return {
 
     }
   },
   methods: {
-    goManagePage(routerPath) {
+    goManagePage (routerPath) {
       this.$router.push(routerPath)
     }
   },
-  created() {
+  created () {
     console.log(this.orderData)
   }
 }

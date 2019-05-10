@@ -2,7 +2,7 @@
   <div class="mine">
     <div class="iosHeader vux-1px-b">
       <span>个人中心</span>
-      <span class="headericon icon iconfont">&#xe61d;</span>
+      <span class="headericon icon iconfont" @click="goSetting">&#xe61d;</span>
     </div>
     <div class="pictrue">
       <img src="../../assets/images/hotelset.png" alt="">
@@ -37,6 +37,13 @@ export default {
   data () {
     return {
 
+    }
+  },
+  methods: {
+    goSetting () {
+      this.$router.push({
+        name: 'Setting'
+      })
     }
   }
 }

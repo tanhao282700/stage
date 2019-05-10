@@ -1,3 +1,4 @@
+ /* eslint-disable */
 <template>
   <div class="goodsManage">
     <div class="iosHeader vux-1px-b">
@@ -60,159 +61,158 @@
 </template>
 
 <script>
-  import BScroll from 'better-scroll'
-  import {LoadMore} from 'vux'
-  let count = 1
-  export default {
-    name: 'goodsManage',
-    components: {
-      LoadMore
+import BScroll from 'better-scroll'
+import {LoadMore} from 'vux'
+export default {
+  name: 'goodsManage',
+  components: {
+    LoadMore
+  },
+  data () {
+    return {
+      params: {
+        merchantId: '',
+        status: 1, // 商品状态【1-已上架 2-未上架】
+        page: 1,
+        pageSize: 10
+      },
+      isMoreData: true,
+      data: [],
+      baseInfo: {
+        goodsDownNum: 0,
+        goodsOnNum: 0
+      },
+      pulldownMsg: '下拉刷新',
+      pullupMsg: '加载更多',
+      alertHook: 'none'
+    }
+  },
+  methods: {
+    addGoods () {
+      this.$router.push({
+        name: 'goodsAdd'
+      })
     },
-    data () {
-      return {
-        params: {
-          merchantId: '',
-          status: 1, //商品状态【1-已上架 2-未上架】
-          page: 1,
-          pageSize: 10
-        },
-        isMoreData: true,
-        data: [],
-        baseInfo: {
-          goodsDownNum: 0,
-          goodsOnNum: 0
-        },
-        pulldownMsg: '下拉刷新',
-        pullupMsg: '加载更多',
-        alertHook: 'none'
-      }
-    },
-    methods: {
-      addGoods() {
-        this.$router.push({
-            name: 'goodsAdd'
-        })
-      },
-      goDetail(id) {
-        this.$router.push({
-          name: 'goodsDetail',
-          query: {
-            tabIndex: this.params.status,
-            id: id
-          }
-        })
-      },
-      getBack() {
-        this.$router.go(-1)
-      },
-      getData() {
-        this.$http.fetchGet('/merchant/good/get/list', this.params).then((res)=> {
-          this.baseInfo.goodsDownNum = res.data.data.goodsDownNum
-          this.baseInfo.goodsOnNum = res.data.data.goodsOnNum
-          this.data = res.data.data.goodsList
-          if(this.data.length === this.params.pageSize) {
-              this.isMoreData = true
-          } else {
-            this.isMoreData = false
-            this.$nextTick(()=>{
-              if(this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
-                this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
-              }
-            })
-          }
-          this.initScroll()
-        })
-      },
-      refreshData() {
-        this.$refs.content.style.height = 'auto'
-        this.pullupMsg = '加载中。。。';
-        this.params.page = 1
-        this.$http.fetchGet('/merchant/good/get/list', this.params).then((res) => {
-          this.baseInfo.goodsDownNum = res.data.data.goodsDownNum
-          this.baseInfo.goodsOnNum = res.data.data.goodsOnNum
-          this.data = res.data.data.goodsList
-          if(this.data.length === this.params.pageSize) {
-            this.isMoreData = true
-          } else {
-            this.isMoreData = false
-            this.$nextTick(()=>{
-              if(this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
-                this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
-              }
-            })
-          }
-          //恢复文本值
-          this.pullupMsg = '加载更多';
-          //刷新列表后，重新计算滚动区域高度
-          this.scroll.refresh();
-        })
-      },
-      loadMoreData() {
-        if(this.data.length < this.params.pageSize) {
-          return
+    goDetail (id) {
+      this.$router.push({
+        name: 'goodsDetail',
+        query: {
+          tabIndex: this.params.status,
+          id: id
         }
-        this.params.page++
-        this.$http.fetchGet('/merchant/good/get/list', this.params).then((res)=> {
-          this.baseInfo.goodsDownNum = res.data.data.goodsDownNum
-          this.baseInfo.goodsOnNum = res.data.data.goodsOnNum
-          if(this.data.length === this.params.pageSize) {
-            this.isMoreData = true
-          } else {
-            this.isMoreData = false
-          }
-          if(res.data.data.goodsList.length > 0) {
-            res.data.data.goodsList.map((item)=>{
-              this.data.push(item)
-            })
-          } else {
-            this.isMoreData = false
-          }
-          //恢复刷新提示文本值
-          this.pulldownMsg = '下拉刷新'
-          //刷新列表后，重新计算滚动区域高度
-          this.scroll.refresh();
-        })
-      },
-      initScroll() {
-        this.$nextTick(()=> {
-          this.scroll = new BScroll(this.$refs.wrapper, {       //初始化better-scroll
-          probeType: 1,   //1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
-          click: true   //是否派发click事件
+      })
+    },
+    getBack () {
+      this.$router.go(-1)
+    },
+    getData () {
+      this.$http.fetchGet('/merchant/good/get/list', this.params).then((res) => {
+        this.baseInfo.goodsDownNum = res.data.data.goodsDownNum
+        this.baseInfo.goodsOnNum = res.data.data.goodsOnNum
+        this.data = res.data.data.goodsList
+        if (this.data.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+          this.$nextTick(() => {
+            if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
+              this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
+            }
+          })
+        }
+        this.initScroll()
+      })
+    },
+    refreshData () {
+      this.$refs.content.style.height = 'auto'
+      this.pullupMsg = '加载中。。。'
+      this.params.page = 1
+      this.$http.fetchGet('/merchant/good/get/list', this.params).then((res) => {
+        this.baseInfo.goodsDownNum = res.data.data.goodsDownNum
+        this.baseInfo.goodsOnNum = res.data.data.goodsOnNum
+        this.data = res.data.data.goodsList
+        if (this.data.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+          this.$nextTick(() => {
+            if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
+              this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
+            }
+          })
+        }
+        // 恢复文本值
+        this.pullupMsg = '加载更多'
+        // 刷新列表后，重新计算滚动区域高度
+        this.scroll.refresh()
+      })
+    },
+    loadMoreData () {
+      if (this.data.length < this.params.pageSize) {
+        return
+      }
+      this.params.page++
+      this.$http.fetchGet('/merchant/good/get/list', this.params).then((res) => {
+        this.baseInfo.goodsDownNum = res.data.data.goodsDownNum
+        this.baseInfo.goodsOnNum = res.data.data.goodsOnNum
+        if (this.data.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+        }
+        if (res.data.data.goodsList.length > 0) {
+          res.data.data.goodsList.map((item) => {
+            this.data.push(item)
+          })
+        } else {
+          this.isMoreData = false
+        }
+        // 恢复刷新提示文本值
+        this.pulldownMsg = '下拉刷新'
+        // 刷新列表后，重新计算滚动区域高度
+        this.scroll.refresh()
+      })
+    },
+    initScroll () {
+      this.$nextTick(() => {
+        this.scroll = new BScroll(this.$refs.wrapper, { // 初始化better-scroll
+          probeType: 1, // 1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
+          click: true // 是否派发click事件
         })
         // 滑动过程中事件
-        this.scroll.on('scroll', (pos)=> {
-          if(pos.y > 30){
+        this.scroll.on('scroll', (pos) => {
+          if (pos.y > 30) {
             this.pulldownMsg = '释放立即刷新'
           }
-        });
-        //滑动结束松开事件
-        this.scroll.on('touchEnd', (pos)=> {  //上拉刷新
+        })
+        // 滑动结束松开事件
+        this.scroll.on('touchEnd', (pos) => { // 上拉刷新
           if (pos.y > 30) {
             this.refreshData()
-        } else if (pos.y < (this.scroll.maxScrollY - 30)) {   //下拉加载
+          } else if (pos.y < (this.scroll.maxScrollY - 30)) { // 下拉加载
             this.loadMoreData()
-        }
+          }
+        })
       })
-      })
-      },
-      changeTab(tabIndex) {
-        this.$refs.content.style.height = 'auto'
-        this.params.page = 1
-        this.params.status = tabIndex
-        this.refreshData()
-      },
-      refreshalert() {   //刷新成功提示
-        this.alertHook = 'block';
-        setTimeout(()=> {
-          this.alertHook = 'none'
-        }, 1000)
-      }
     },
-    created() {
-      this.params.merchantId = this.$store.state.merchantId
-      this.getData()
+    changeTab (tabIndex) {
+      this.$refs.content.style.height = 'auto'
+      this.params.page = 1
+      this.params.status = tabIndex
+      this.refreshData()
+    },
+    refreshalert () { // 刷新成功提示
+      this.alertHook = 'block'
+      setTimeout(() => {
+        this.alertHook = 'none'
+      }, 1000)
     }
+  },
+  created () {
+    this.params.merchantId = this.$store.state.merchantId
+    this.getData()
   }
+}
 </script>
 
 <style lang="less" rel="stylesheet/less" scoped>
@@ -395,7 +395,6 @@
     bottom: -35px;
     left: 0;
   }
-
 
   /* 全局提示信息 */
   .alert-hook {

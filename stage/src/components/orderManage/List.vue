@@ -111,112 +111,110 @@
 </template>
 
 <script>
-  import BScroll from 'better-scroll'
-  import { LoadMore, XInput, Badge } from 'vux'
-  let count = 1
-  export default {
-    name: 'orderManage',
-    components: {
-      LoadMore,
-      XInput,
-      Badge
-    },
-    data () {
-      return {
-        isStateOpen: false,
-        value: '',
-        isMoreData: false,
-        data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26],
-        pulldownMsg: '下拉刷新',
-        pullupMsg: '加载更多',
-        alertHook: 'none'
-      }
-    },
-    methods: {
-      goDetails(data) {
-          console.log(data)
-        this.$router.push({
-          name: data.path,
-          params: {
-
-          }
-        })
-      },
-      openState() {
-          this.isStateOpen = !this.isStateOpen
-      },
-      getBack() {
-        this.$router.go(-1)
-      },
-      getData() {
-        let that = this
-        return new Promise(resolve => {  //模拟数据请求
-          setTimeout(() => {
-            that.isMoreData = false
-            console.log(that.isMoreData)
-            const arr = [];
-            for (let i = 0; i < 26; i++) {
-              arr.push(count++)
-            }
-            resolve(arr)
-          }, 1000)
-        })
-      },
-      refreshalert() {   //刷新成功提示
-        this.alertHook = 'block';
-        setTimeout(()=>{
-          this.alertHook = 'none'
-        },1000)
-      }
-    },
-    created() {
-      const that = this;
-      this.$nextTick(() => {
-        this.scroll = new BScroll(this.$refs.wrapper,{       //初始化better-scroll
-          probeType: 1,   //1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
-          click: true   //是否派发click事件
-        })
-        // 滑动过程中事件
-        this.scroll.on('scroll',(pos)=>{
-          if(pos.y > 30){
-            this.pulldownMsg = '释放立即刷新'
-          }
-        });
-        //滑动结束松开事件
-        this.scroll.on('touchEnd',(pos) =>{  //上拉刷新
-          console.log(pos)
-          if(pos.y > 30){
-            console.log(222)
-            setTimeout(()=>{
-              that.getData().then((res) =>{
-                //刷新数据
-                that.data = res;
-                //恢复刷新提示文本值
-                that.pulldownMsg = '下拉刷新'
-                //刷新成功后提示
-                that.refreshalert();
-                //刷新列表后，重新计算滚动区域高度
-                that.scroll.refresh();
-              })
-            },2000)
-          }
-          else if(pos.y<(this.scroll.maxScrollY - 30)){   //下拉加载
-            console.log(333)
-            this.pullupMsg = '加载中。。。';
-            setTimeout(()=>{
-              that.getData().then((res)=>{
-                //恢复文本值
-                that.pullupMsg = '加载更多';
-                that.data = this.data.concat(res);
-                that.scroll.refresh();
-              })
-            },2000)
-
-          }
-        })
-      })
+import BScroll from 'better-scroll'
+import { LoadMore, XInput, Badge } from 'vux'
+let count = 1
+export default {
+  name: 'orderManage',
+  components: {
+    LoadMore,
+    XInput,
+    Badge
+  },
+  data () {
+    return {
+      isStateOpen: false,
+      value: '',
+      isMoreData: false,
+      data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26],
+      pulldownMsg: '下拉刷新',
+      pullupMsg: '加载更多',
+      alertHook: 'none'
     }
+  },
+  methods: {
+    goDetails (data) {
+      console.log(data)
+      this.$router.push({
+        name: data.path,
+        params: {
+
+        }
+      })
+    },
+    openState () {
+      this.isStateOpen = !this.isStateOpen
+    },
+    getBack () {
+      this.$router.go(-1)
+    },
+    getData () {
+      let that = this
+      return new Promise(resolve => { // 模拟数据请求
+        setTimeout(() => {
+          that.isMoreData = false
+          console.log(that.isMoreData)
+          const arr = []
+          for (let i = 0; i < 26; i++) {
+            arr.push(count++)
+          }
+          resolve(arr)
+        }, 1000)
+      })
+    },
+    refreshalert () { // 刷新成功提示
+      this.alertHook = 'block'
+      setTimeout(() => {
+        this.alertHook = 'none'
+      }, 1000)
+    }
+  },
+  created () {
+    const that = this
+    this.$nextTick(() => {
+      this.scroll = new BScroll(this.$refs.wrapper, { // 初始化better-scroll
+        probeType: 1, // 1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
+        click: true // 是否派发click事件
+      })
+      // 滑动过程中事件
+      this.scroll.on('scroll', (pos) => {
+        if (pos.y > 30) {
+          this.pulldownMsg = '释放立即刷新'
+        }
+      })
+      // 滑动结束松开事件
+      this.scroll.on('touchEnd', (pos) => { // 上拉刷新
+        console.log(pos)
+        if (pos.y > 30) {
+          console.log(222)
+          setTimeout(() => {
+            that.getData().then((res) => {
+              // 刷新数据
+              that.data = res
+              // 恢复刷新提示文本值
+              that.pulldownMsg = '下拉刷新'
+              // 刷新成功后提示
+              that.refreshalert()
+              // 刷新列表后，重新计算滚动区域高度
+              that.scroll.refresh()
+            })
+          }, 2000)
+        } else if (pos.y < (this.scroll.maxScrollY - 30)) { // 下拉加载
+          console.log(333)
+          this.pullupMsg = '加载中。。。'
+          setTimeout(() => {
+            that.getData().then((res) => {
+              // 恢复文本值
+              that.pullupMsg = '加载更多'
+              that.data = this.data.concat(res)
+              that.scroll.refresh()
+            })
+          }, 2000)
+        }
+      })
+    })
   }
+}
 </script>
 
 <style lang="less" rel="stylesheet/less" scoped>
@@ -446,7 +444,6 @@
     bottom: -35px;
     left: 0;
   }
-
 
   /* 全局提示信息 */
   .alert-hook{

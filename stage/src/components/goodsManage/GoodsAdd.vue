@@ -99,259 +99,257 @@
 </template>
 
 <script>
-  import VueCoreImageUpload  from 'vue-core-image-upload'
-  import { Previewer, TransferDom, XInput, Group, Selector, XSwitch } from 'vux'
-  export default {
-    name: 'goodsAdd',
-    directives: {
-      TransferDom
-    },
-    components: {
-      Previewer,
-      VueCoreImageUpload,
-      XInput,
-      Group,
-      Selector,
-      XSwitch
-    },
-    data () {
-      return {
-        params: {
-          imageList: [],
-          goodsAttrItemDto: [],
-          goodsAttrInfo: [], //商品规格
-          goodsClassInfo: [], //商品类型
-          id: '', //记录id
-          merchantId: '', //商户id
-          title: '', //标题
-          typeId: '', //类型id
-          refundFlagValue: true, //是否支持退款
-          price: '', //成本价
-          stock: '', //库存
-        },
-        goodsType: '', //商品类型
-        specsList: [],
-        specsDataList: [{
-          specsName: '',
-          specsValue: '',
-          value: [{
-            attrValue: ''
-          }]
-        }],
-        goodsTypeList: [],
-        list: [{key: 'gd', value: '广东'}, {key: 'gx', value: '广西'}],
-        defaultValue: '',
-        value: '',
-        images: [],
-        previewList: [],
-        uploadUrl: 'http://zayzsh.zbtdvip.com/api/merchant/good/add/goods/baseInfo',
-        options: {
-          getThumbBoundsFn (index) {
-            // find thumbnail element
-            let thumbnail = document.querySelectorAll('.previewer-demo-img')[index]
-            // get window scroll Y
-            let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
-            // optionally get horizontal scroll
-            // get position of element relative to viewport
-            let rect = thumbnail.getBoundingClientRect()
-            // w = width
-            return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
-            // Good guide on how to get element coordinates:
-            // http://javascript.info/tutorial/coordinates
-          }
+import VueCoreImageUpload from 'vue-core-image-upload'
+import { Previewer, TransferDom, XInput, Group, Selector, XSwitch } from 'vux'
+export default {
+  name: 'goodsAdd',
+  directives: {
+    TransferDom
+  },
+  components: {
+    Previewer,
+    VueCoreImageUpload,
+    XInput,
+    Group,
+    Selector,
+    XSwitch
+  },
+  data () {
+    return {
+      params: {
+        imageList: [],
+        goodsAttrItemDto: [],
+        goodsAttrInfo: [], // 商品规格
+        goodsClassInfo: [], // 商品类型
+        id: '', // 记录id
+        merchantId: '', // 商户id
+        title: '', // 标题
+        typeId: '', // 类型id
+        refundFlagValue: true, // 是否支持退款
+        price: '', // 成本价
+        stock: '' // 库存
+      },
+      goodsType: '', // 商品类型
+      specsList: [],
+      specsDataList: [{
+        specsName: '',
+        specsValue: '',
+        value: [{
+          attrValue: ''
+        }]
+      }],
+      goodsTypeList: [],
+      list: [{key: 'gd', value: '广东'}, {key: 'gx', value: '广西'}],
+      defaultValue: '',
+      value: '',
+      images: [],
+      previewList: [],
+      uploadUrl: 'http://zayzsh.zbtdvip.com/api/merchant/good/add/goods/baseInfo',
+      options: {
+        getThumbBoundsFn (index) {
+          // find thumbnail element
+          let thumbnail = document.querySelectorAll('.previewer-demo-img')[index]
+          // get window scroll Y
+          let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
+          // optionally get horizontal scroll
+          // get position of element relative to viewport
+          let rect = thumbnail.getBoundingClientRect()
+          // w = width
+          return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
+          // Good guide on how to get element coordinates:
+          // http://javascript.info/tutorial/coordinates
         }
       }
-    },
-    methods: {
-      getNextStep() {
-          if(!this.params.title) {
-            this.$vux.toast.show({
-              text: '请输入商品标题',
-              position: 'middle',
-              type: 'warn'
-            })
-            return
+    }
+  },
+  methods: {
+    getNextStep () {
+      if (!this.params.title) {
+        this.$vux.toast.show({
+          text: '请输入商品标题',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if (!this.params.price) {
+        this.$vux.toast.show({
+          text: '请输入商品成本价',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if (!this.params.stock) {
+        this.$vux.toast.show({
+          text: '请输入商品库存',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if (!this.goodsType) {
+        this.$vux.toast.show({
+          text: '请选择商品类型',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      let flag = true
+      this.specsDataList.map((item) => {
+        if (!item.specsValue) {
+          flag = false
+          return
+        }
+        item.value.map((child) => {
+          if (!child.attrValue) {
+            flag = false
           }
-        if(!this.params.price) {
-          this.$vux.toast.show({
-            text: '请输入商品成本价',
-            position: 'middle',
-            type: 'warn'
-          })
-          return
+        })
+      })
+      if (!flag) {
+        this.$vux.toast.show({
+          text: '请完善商品规格信息',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      // 图片
+      this.images.map((item) => {
+        this.params.imageList.push({
+          type: 0,
+          url: item
+        })
+      })
+      // 是否支持退款
+      this.params.refundFlag = this.params.refundFlagValue ? 0 : 1
+      // 商品类型数据
+      this.goodsTypeList.map((item) => {
+        if (item.id === this.goodsType) {
+          item.isSelected = 1
+          this.params.goodsClassInfo.push(item)
+          this.params.typeId = item.id
         }
-        if(!this.params.stock) {
-          this.$vux.toast.show({
-            text: '请输入商品库存',
-            position: 'middle',
-            type: 'warn'
-          })
-          return
-        }
-        if(!this.goodsType) {
-          this.$vux.toast.show({
-            text: '请选择商品类型',
-            position: 'middle',
-            type: 'warn'
-          })
-          return
-        }
-        let flag = true
-        this.specsDataList.map((item)=>{
-              if(!item.specsValue) {
-                flag = false
-                return
-              }
-              item.value.map((child)=>{
-                  if(!child.attrValue) {
-                    flag = false
-                    return
-                  }
+      })
+      // 商品规格
+      this.specsDataList.map((item) => {
+        this.specsList.findIndex((obj, objIndex, child) => {
+          if (item.specsValue === obj.attrId) {
+            this.params.goodsAttrInfo.push({
+              attrId: obj.attrId,
+              attrName: obj.attrName,
+              attrValueInfo: item.value
+            })
+          }
+        })
+      })
+      this.$http.fetchPost('/merchant/good/add/goods/baseInfo', this.params).then((res) => {
+        this.$http.fetchGet('/merchant/good/get/goods/sku', {goodsId: res.data.data.id}).then((request) => {
+          let param = request.data.data
+          param.goodsSkuInfo[0].memberPrice = this.params.price
+          param.goodsSkuInfo[0].stock = this.params.stock
+          this.$http.fetchPost('/merchant/good/add/goods/sku', param).then((req) => {
+            if (req.data.code === 200) {
+              this.$router.push({
+                name: 'goodsAddNextStep',
+                query: {
+                  id: req.data.data.id
+                }
               })
-        })
-        if(!flag) {
-          this.$vux.toast.show({
-            text: '请完善商品规格信息',
-            position: 'middle',
-            type: 'warn'
-          })
-          return
-        }
-        //图片
-        this.images.map((item)=>{
-              this.params.imageList.push({
-                type: 0,
-                url: item
-              })
-        })
-        //是否支持退款
-        this.params.refundFlag = this.params.refundFlagValue ? 0 : 1
-        //商品类型数据
-        this.goodsTypeList.map((item)=>{
-          if(item.id === this.goodsType) {
-              item.isSelected = 1
-                  this.params.goodsClassInfo.push(item)
-            this.params.typeId = item.id
-              }
-        })
-        //商品规格
-        this.specsDataList.map((item)=>{
-          this.specsList.findIndex((obj, objIndex, child)=>{
-            if(item.specsValue === obj.attrId) {
-              this.params.goodsAttrInfo.push({
-                attrId: obj.attrId,
-                attrName: obj.attrName,
-                attrValueInfo: item.value
+            } else {
+              this.$vux.toast.show({
+                text: req.data.message,
+                position: 'middle',
+                type: 'warn'
               })
             }
           })
         })
-        this.$http.fetchPost('/merchant/good/add/goods/baseInfo',this.params).then((res)=>{
-          this.$http.fetchGet('/merchant/good/get/goods/sku',{goodsId: res.data.data.id}).then((request)=>{
-            let param = request.data.data
-            param.goodsSkuInfo[0].memberPrice = this.params.price
-            param.goodsSkuInfo[0].stock = this.params.stock
-            this.$http.fetchPost('/merchant/good/add/goods/sku',param).then((req)=>{
-              if(req.data.code === 200) {
-                  this.$router.push({
-                      name: 'goodsAddNextStep',
-                    query: {
-                          id: req.data.data.id
-                    }
-                  })
-              } else {
-                this.$vux.toast.show({
-                  text: req.data.message,
-                  position: 'middle',
-                  type: 'warn'
-                })
-              }
-            })
-          })
-        })
-      },
-      getPriceInfo(id) {
-          this.$http.fetchGet('/merchant/good/get/goods/sku',{goodsId: id}).then((res)=>{
-
-          })
-      },
-      addChildValue(index) {
-          this.specsDataList[index].value.push({val: ''})
-      },
-      deleteChildValue(parentIndex,childIndex) {
-        this.specsDataList[parentIndex].value.splice(childIndex,1)
-      },
-      addSpecial() {
-        if(this.specsDataList.length < this.specsList.length) {
-          this.specsDataList.push({
-            specsName: '',
-            specsValue: '',
-            value: [{
-              val: ''
-            }]
-          })
-        }
-      },
-      deleteSpecs(index) {
-        this.specsDataList.splice(index,1)
-        this.specsChange()
-      },
-      specsChange() {
-        this.specsList.map((item)=>{
-              let flag = false
-              this.specsDataList.map((child)=>{
-                  if(item.attrId === child.specsValue) {
-                      flag = true
-                    return
-                  }
-              })
-          item.isReadonly = flag
-        })
-      },
-      getBaseInfo() {
-        this.$http.fetchGet('/merchant/good/get/goods/baseInfo').then((res)=>{
-          this.specsList = res.data.data.goodsAttrItemDto
-          this.specsList.map((item,index)=>{
-              item.isReadonly = false
-          })
-          this.goodsTypeList = res.data.data.goodsClassInfo
-          this.params.goodsAttrItemDto = res.data.data.goodsAttrItemDto
-        })
-      },
-      deletePic(index) {
-        this.images.splice(index,1)
-        this.previewList.splice(index,1)
-      },
-      show (index) {
-        this.$refs.previewer.show(index)
-      },
-      imageuploaded(res) {
-          console.log(res)
-      },
-      imagechanged(data) {
-        let param = new FormData(); //创建form对象
-        param.append('files',data);//通过append向form对象添加数据
-        this.$http.fetchPost('/merchant/common/image/upload',param,{
-          headers: {
-            "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU"
-          }
-        }).then((res)=>{
-          this.images.push(res.data.data.path)
-          this.previewList.push({
-            src: res.data.data.path,
-            msrc: res.data.data.path
-          })
-        })
-      },
-      getBack() {
-        this.$router.go(-1)
-      },
+      })
     },
-    created() {
-        this.params.merchantId = this.$store.state.merchantId
-      this.getBaseInfo()
+    getPriceInfo (id) {
+      this.$http.fetchGet('/merchant/good/get/goods/sku', {goodsId: id}).then((res) => {
+
+      })
+    },
+    addChildValue (index) {
+      this.specsDataList[index].value.push({val: ''})
+    },
+    deleteChildValue (parentIndex, childIndex) {
+      this.specsDataList[parentIndex].value.splice(childIndex, 1)
+    },
+    addSpecial () {
+      if (this.specsDataList.length < this.specsList.length) {
+        this.specsDataList.push({
+          specsName: '',
+          specsValue: '',
+          value: [{
+            val: ''
+          }]
+        })
+      }
+    },
+    deleteSpecs (index) {
+      this.specsDataList.splice(index, 1)
+      this.specsChange()
+    },
+    specsChange () {
+      this.specsList.map((item) => {
+        let flag = false
+        this.specsDataList.map((child) => {
+          if (item.attrId === child.specsValue) {
+            flag = true
+          }
+        })
+        item.isReadonly = flag
+      })
+    },
+    getBaseInfo () {
+      this.$http.fetchGet('/merchant/good/get/goods/baseInfo').then((res) => {
+        this.specsList = res.data.data.goodsAttrItemDto
+        this.specsList.map((item, index) => {
+          item.isReadonly = false
+        })
+        this.goodsTypeList = res.data.data.goodsClassInfo
+        this.params.goodsAttrItemDto = res.data.data.goodsAttrItemDto
+      })
+    },
+    deletePic (index) {
+      this.images.splice(index, 1)
+      this.previewList.splice(index, 1)
+    },
+    show (index) {
+      this.$refs.previewer.show(index)
+    },
+    imageuploaded (res) {
+      console.log(res)
+    },
+    imagechanged (data) {
+      let param = new FormData() // 创建form对象
+      param.append('files', data)// 通过append向form对象添加数据
+      this.$http.fetchPost('/merchant/common/image/upload', param, {
+        headers: {
+          'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
+        }
+      }).then((res) => {
+        this.images.push(res.data.data.path)
+        this.previewList.push({
+          src: res.data.data.path,
+          msrc: res.data.data.path
+        })
+      })
+    },
+    getBack () {
+      this.$router.go(-1)
     }
+  },
+  created () {
+    this.params.merchantId = this.$store.state.merchantId
+    this.getBaseInfo()
   }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

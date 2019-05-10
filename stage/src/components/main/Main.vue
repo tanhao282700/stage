@@ -46,28 +46,28 @@ export default {
     }
   },
   methods: {
-      getData() {
-        this.$http.fetchPost('/merchant/login',{account: '18140081852 ',password: md5('123456')}).then((res)=>{
-            axios.defaults.headers.common['token'] = res.data.data.token;
-            this.waitDoOrders(res.data.data.merchantId)
-          this.getundoMessage(res.data.data.merchantId)
-          this.$store.state.merchantId = res.data.data.merchantId
-        })
-      },
-    waitDoOrders(merchantId) {
-          this.$http.fetchGet('/merchant/order/get/statistic',{merchantId: merchantId}).then((res)=>{
-              this.orderData = res.data.data
-          })
+    getData () {
+      this.$http.fetchPost('/merchant/login', {account: '18140081852 ', password: md5('123456')}).then((res) => {
+        axios.defaults.headers.common['token'] = res.data.data.token
+        this.waitDoOrders(res.data.data.merchantId)
+        this.getundoMessage(res.data.data.merchantId)
+        this.$store.state.merchantId = res.data.data.merchantId
+      })
     },
-    getundoMessage(merchantId) {
-          this.$http.fetchGet('/merchant/center/statistic/message',{merchantId: merchantId}).then((res)=>{
-            this.undoMessage = res.data.data.newMessageNum
-          })
+    waitDoOrders (merchantId) {
+      this.$http.fetchGet('/merchant/order/get/statistic', {merchantId: merchantId}).then((res) => {
+        this.orderData = res.data.data
+      })
+    },
+    getundoMessage (merchantId) {
+      this.$http.fetchGet('/merchant/center/statistic/message', {merchantId: merchantId}).then((res) => {
+        this.undoMessage = res.data.data.newMessageNum
+      })
     }
   },
-  created() {
-      this.getData()
-  },
+  created () {
+    this.getData()
+  }
 }
 </script>
 

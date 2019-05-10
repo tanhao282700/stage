@@ -24,6 +24,11 @@ export default new Router({
           path: 'mine',
           name: 'Mine',
           component: resolve => { import('@/components/main/Mine').then(module => resolve(module)) }
+        },
+        {
+          path: 'setting',
+          name: 'Setting',
+          component: resolve => { import('@/components/main/Setting').then(module => resolve(module)) }
         }
       ],
       redirect: to => {
@@ -44,6 +49,11 @@ export default new Router({
       path: '/hotelManage',
       name: 'hotelManage',
       component: resolve => { import('@/components/hotelManage/HotelManage').then(module => resolve(module)) }
+    },
+    {
+      path: '/editHotel',
+      name: 'editHotel',
+      component: resolve => { import('@/components/hotelManage/editHotel').then(module => resolve(module)) }
     },
     {
       path: '/goodsManage',

@@ -44,80 +44,80 @@
 </template>
 
 <script>
-  import VueCoreImageUpload  from 'vue-core-image-upload'
-  export default {
-    name: 'goodsAddNextStep',
-    components: {
-      VueCoreImageUpload,
+import VueCoreImageUpload from 'vue-core-image-upload'
+export default {
+  name: 'goodsAddNextStep',
+  components: {
+    VueCoreImageUpload
+  },
+  data () {
+    return {
+      uploadUrl: 'http://zayzsh.zbtdvip.com/api/merchant/good/add/goods/baseInfo',
+      images: '',
+      dataList: [{
+        text: '',
+        type: 0
+      }, {
+        url: '',
+        type: 1
+      }]
+    }
+  },
+  methods: {
+    getBack () {
+      this.$router.go(-1)
     },
-    data () {
-      return {
-        uploadUrl: 'http://zayzsh.zbtdvip.com/api/merchant/good/add/goods/baseInfo',
-        images: '',
-        dataList: [{
-          text: '',
-          type: 0
-        },{
-            url: '',
-          type: 1
-        }]
-      }
+    imagechanged (index) {
+      let data = event.target.files[0]
+      let param = new FormData() // 创建form对象
+      param.append('files', data)// 通过append向form对象添加数据
+      this.$http.fetchPost('/merchant/common/image/upload', param, {
+        headers: {
+          'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
+        }
+      }).then((res) => {
+        this.images = res.data.data.path
+        this.dataList[index].url = res.data.data.path
+      })
     },
-    methods: {
-      getBack() {
-        this.$router.go(-1)
-      },
-      imagechanged(index) {
-        let data = event.target.files[0]
-        let param = new FormData(); //创建form对象
-        param.append('files',data);//通过append向form对象添加数据
-        this.$http.fetchPost('/merchant/common/image/upload',param,{
-          headers: {
-            "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU"
+    addLines () {
+      this.dataList.push({
+        text: '',
+        type: 0
+      })
+      this.dataList.push({
+        url: '',
+        type: 1
+      })
+    },
+    deleteInfo (index) {
+      this.dataList.splice(index, 1)
+    },
+    sendData (type) {
+      this.$http.fetchPost('/merchant/good/add/goods/detailInfo', {id: this.$route.query.id, operate: type, detailsList: this.dataList}).then((res) => {
+        if (res.data.code === 200) {
+          let txt = ''
+          if (type === 0) {
+            txt = '商品保存成功'
+          } else {
+            txt = '商品发布成功'
           }
-        }).then((res)=>{
-          this.images = res.data.data.path
-          this.dataList[index].url = res.data.data.path
-        })
-      },
-      addLines() {
-          this.dataList.push({
-            text: '',
-            type: 0
+          this.$vux.toast.show({
+            text: txt,
+            position: 'middle'
           })
-        this.dataList.push({
-          url: '',
-          type: 1
-        })
-      },
-      deleteInfo(index) {
-        this.dataList.splice(index,1)
-      },
-      sendData(type) {
-          this.$http.fetchPost('/merchant/good/add/goods/detailInfo',{id: this.$route.query.id,operate: type,detailsList: this.dataList}).then((res)=>{
-            if(res.data.code === 200) {
-                let txt = ''
-              if(type === 0){
-                    txt = '商品保存成功'
-              } else {
-                  txt = '商品发布成功'
-              }
-              this.$vux.toast.show({
-                text: txt,
-                position: 'middle'
-              })
-              this.$router.go(-2)
-            }else {
-              this.$vux.toast.show({
-                text: res.data.message,
-                position: 'middle',
-                type: 'warn'
-              })
-            }
+          this.$router.go(-2)
+        } else {
+          this.$vux.toast.show({
+            text: res.data.message,
+            position: 'middle',
+            type: 'warn'
           })
-      }
+        }
+      })
     }
   }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

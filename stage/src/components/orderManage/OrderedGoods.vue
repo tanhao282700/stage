@@ -119,22 +119,22 @@
 </template>
 
 <script>
-  export default {
-    name: 'orderedGoods',
-    components: {
+export default {
+  name: 'orderedGoods',
+  components: {
 
-    },
-    data () {
-      return {
+  },
+  data () {
+    return {
 
-      }
-    },
-    methods: {
-      getBack() {
-        this.$router.go(-1)
-      },
+    }
+  },
+  methods: {
+    getBack () {
+      this.$router.go(-1)
     }
   }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
