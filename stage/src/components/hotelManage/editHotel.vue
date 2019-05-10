@@ -83,7 +83,7 @@
 </style>
 <script>
 import VueCoreImageUpload from 'vue-core-image-upload'
-import { XSwitch, Group, XButton, XInput, XTextarea, Previewer, TransferDom} from 'vux'
+import { XSwitch, Group, XButton, XInput, XTextarea, Previewer, TransferDom } from 'vux'
 export default {
   name: 'Mine',
   directives: {
@@ -147,7 +147,7 @@ export default {
     },
     show (index) {
       this.$refs.previewer.show(index)
-    },
+    }
   }
 }
 </script>

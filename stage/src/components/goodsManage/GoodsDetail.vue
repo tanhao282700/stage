@@ -29,10 +29,10 @@
                 </div>
               </div>
             </div>
-            <div v-if="status === 2" class="bottom">
-              <span @click="checkGoods(2)" v-if="status === 1">下架</span>
-              <span @click="checkGoods(1)" v-if="status === 2">上架</span>
-              <span>修改</span>
+            <div v-if="status == 2" class="bottom">
+              <span @click="checkGoods(2)" v-if="status == 1">下架</span>
+              <span @click="checkGoods(1)" v-if="status == 2">上架</span>
+              <span @click="getEdit">修改</span>
             </div>
           </div>
         </swiper-item>
@@ -198,11 +198,20 @@ export default {
           })
         }
       })
+    },
+    getEdit () {
+      this.$router.push({
+        name: 'goodsAdd',
+        query: {
+          id: this.$route.query.id
+        }
+      })
     }
   },
   created () {
     this.params.goodId = this.$route.query.id
     this.status = this.$route.query.tabIndex
+    console.log(this.$route.query.tabIndex)
     this.getData()
     this.getList()
   }

@@ -13,7 +13,7 @@
           </group>
       </div>
     </div>
-    <div class="rest">
+    <div class="rest" @click="accountBind">
       <span>绑定账号</span>
       <div class="info">
         <x-icon type="ios-arrow-right" size="40"></x-icon>
@@ -21,11 +21,11 @@
     </div>
     <div class="rest">
       <span>设置登录密码</span>
-      <div class="info">
+      <div class="info" @click="setPassword">
         <x-icon type="ios-arrow-right" size="40"></x-icon>
       </div>
     </div>
-    <div class="rest">
+    <div class="rest" @click="setPayPassword">
       <span>设置支付密码</span>
       <div class="info">
         <x-icon type="ios-arrow-right" size="40"></x-icon>
@@ -53,7 +53,7 @@
 <script>
 import { XSwitch, Group, XButton } from 'vux'
 export default {
-  name: 'Mine',
+  name: 'Setting',
   components: {
     XSwitch,
     Group,
@@ -67,6 +67,21 @@ export default {
   methods: {
     getBack () {
       this.$router.go(-1)
+    },
+    accountBind () {
+      this.$router.push({
+        name: 'accountBind'
+      })
+    },
+    setPayPassword () {
+      this.$router.push({
+        name: 'setPayPassword'
+      })
+    },
+    setPassword () {
+      this.$router.push({
+        name: 'setPassword'
+      })
     }
   }
 }

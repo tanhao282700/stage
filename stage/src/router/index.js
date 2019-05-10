@@ -29,6 +29,26 @@ export default new Router({
           path: 'setting',
           name: 'Setting',
           component: resolve => { import('@/components/main/Setting').then(module => resolve(module)) }
+        },
+        {
+          path: 'certification',
+          name: 'certification',
+          component: resolve => { import('@/components/main/certification').then(module => resolve(module)) }
+        },
+        {
+          path: 'accountBind',
+          name: 'accountBind',
+          component: resolve => { import('@/components/main/accountBind').then(module => resolve(module)) }
+        },
+        {
+          path: 'setPassword',
+          name: 'setPassword',
+          component: resolve => { import('@/components/main/setPassword').then(module => resolve(module)) }
+        },
+        {
+          path: 'setPayPassword',
+          name: 'setPayPassword',
+          component: resolve => { import('@/components/main/setPayPassword').then(module => resolve(module)) }
         }
       ],
       redirect: to => {

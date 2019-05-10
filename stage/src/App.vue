@@ -89,4 +89,59 @@ export default {
       margin-top: 0.1rem;
     }
   }
+
+// comfirm样式
+.weui-dialog{
+  max-width: 80%!important;
+  border-radius: 0.15rem!important;
+  .weui-dialog__title{
+    font-size: 0.28rem;
+  }
+
+  .vux-prompt{
+    .vux-prompt-msgbox{
+      padding: 0.15rem 0.2rem;
+      font-size: 0.28rem;
+    }
+  }
+  .weui-dialog__ft{
+    a{
+      font-size: 0.28rem;
+      line-height: 0.8rem;
+    }
+  }
+}
+
+// 设置-表单样式
+.setting_item .weui-cell {
+  padding: 0 0rem!important;
+  width: 100%;
+  box-sizing: border-box;
+}
+.setting_item  .weui-label {
+  width: auto!important;
+  height: 1rem;
+  line-height: 1rem;
+  font-size: 0.28rem;
+  padding-right: 0.4rem;
+}
+.setting_item  .weui-input {
+  height: 1rem!important;
+  line-height: 1rem!important;
+  text-align: right;
+  font-size: 0.28rem;
+}
+.setting_item .password{
+  .weui-cells{
+    padding-top: 0px!important;
+    margin-top: 0px!important;
+  }
+  .weui-cells:before{
+    border:none!important;
+  }
+}
+
+.setting_item .password .weui-input {
+    text-align: left;
+  }
 </style>

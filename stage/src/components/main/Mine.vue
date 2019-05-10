@@ -5,20 +5,20 @@
       <span class="headericon icon iconfont" @click="goSetting">&#xe61d;</span>
     </div>
     <div class="pictrue">
-      <img src="../../assets/images/hotelset.png" alt="">
-      <span>用户昵称</span>
+      <img :src="userInfo.headImage" alt="">
+      <span>{{userInfo.nickName}}</span>
     </div>
     <div class="rest vux-1px-b" style="margin-top: 0.2rem;">
       <span>我的余额</span>
       <div class="info">
-        <span>3998.00</span>
+        <span>{{userInfo.balance}}</span>
         <x-icon type="ios-arrow-right" size="40"></x-icon>
       </div>
     </div>
     <div class="rest">
       <span>认证信息</span>
-      <div class="info">
-        <span>已认证</span>
+      <div class="info" @click="certification">
+        <span>{{userInfo.certificationInfo && userInfo.certificationInfo.certificationNo ? '已':'未' }}认证</span>
         <x-icon type="ios-arrow-right" size="40"></x-icon>
       </div>
     </div>
@@ -36,10 +36,28 @@ export default {
   },
   data () {
     return {
-
+      userInfo: {
+        nickName: '',
+        headImage: '',
+        balance: 0,
+        withDrawCash: 0
+      }
     }
   },
+  created () {
+    this.getData()
+  },
   methods: {
+    getData () {
+      this.$http.fetchGet('/merchant/center/get/main', {merchantId: this.$store.state.merchantId}).then((res) => {
+        this.userInfo = res.data.data
+      })
+    },
+    certification () {
+      this.$router.push({
+        name: 'certification'
+      })
+    },
     goSetting () {
       this.$router.push({
         name: 'Setting'
@@ -87,6 +105,7 @@ export default {
       height: 1.08rem;
       border-radius: 1.08rem;
       margin-left: 0.36rem;
+      background: #ddd;
     }
     span {
       margin-left: 0.2rem;

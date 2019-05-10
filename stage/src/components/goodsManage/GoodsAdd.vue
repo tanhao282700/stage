@@ -131,13 +131,7 @@ export default {
       },
       goodsType: '', // 商品类型
       specsList: [],
-      specsDataList: [{
-        specsName: '',
-        specsValue: '',
-        value: [{
-          attrValue: ''
-        }]
-      }],
+      specsDataList: [], // 商品规格操作数据
       goodsTypeList: [],
       list: [{key: 'gd', value: '广东'}, {key: 'gx', value: '广西'}],
       defaultValue: '',
@@ -270,8 +264,9 @@ export default {
       })
     },
     getPriceInfo (id) {
-      this.$http.fetchGet('/merchant/good/get/goods/sku', {goodsId: id}).then((res) => {
-
+      this.$http.fetchGet('/merchant/good/get/goods/sku', {goodsId: this.$route.query.id}).then((res) => {
+        this.params.stock = res.data.data.goodsSkuInfo[0].stock || ''
+        this.params.price = res.data.data.goodsSkuInfo[0].memberPrice || ''
       })
     },
     addChildValue (index) {
@@ -307,13 +302,50 @@ export default {
       })
     },
     getBaseInfo () {
-      this.$http.fetchGet('/merchant/good/get/goods/baseInfo').then((res) => {
+      this.$http.fetchGet('/merchant/good/get/goods/baseInfo', {goodsId: this.$route.query.id}).then((res) => {
         this.specsList = res.data.data.goodsAttrItemDto
         this.specsList.map((item, index) => {
           item.isReadonly = false
         })
         this.goodsTypeList = res.data.data.goodsClassInfo
         this.params.goodsAttrItemDto = res.data.data.goodsAttrItemDto
+
+        this.params.title = res.data.data.title
+        res.data.data.refundFlag === 0 ? this.params.refundFlagValue = true : this.params.refundFlagValue = false
+        res.data.data.imageList.map((item) => {
+          this.images.push(item.url)
+        })
+        res.data.data.goodsClassInfo.map((item) => {
+          if (item.isSelected === 1) {
+            this.goodsType = item.id
+            this.params.goodsClassInfo.push(item)
+          }
+        })
+        if (res.data.data.goodsAttrInfo.length > 0) {
+          res.data.data.goodsAttrInfo.map((item) => {
+            let childList = []
+            item.attrValueInfo.map((child) => {
+              childList.push({
+                attrValue: child.attrValue
+              })
+            })
+            console.log(item.attrId)
+            this.specsDataList.push({
+              specsName: item.attrName,
+              specsValue: item.attrId,
+              value: childList
+            })
+          })
+          this.specsChange()
+        } else {
+          this.specsDataList.push({
+            specsName: '',
+            specsValue: '',
+            value: [{
+              attrValue: ''
+            }]
+          })
+        }
       })
     },
     deletePic (index) {
@@ -346,8 +378,12 @@ export default {
     }
   },
   created () {
+    this.params.id = this.$route.query.id
     this.params.merchantId = this.$store.state.merchantId
     this.getBaseInfo()
+    if (this.$route.query.id) {
+      this.getPriceInfo()
+    }
   }
 }
 </script>

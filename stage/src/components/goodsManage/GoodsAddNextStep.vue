@@ -115,6 +115,16 @@ export default {
           })
         }
       })
+    },
+    getData () {
+      this.$http.fetchGet('/merchant/good/get/detail', {goodId: this.$route.query.id}).then((res) => {
+        this.dataList = res.data.data.detailsList
+      })
+    }
+  },
+  created () {
+    if (this.$route.query.id) {
+      this.getData()
     }
   }
 }

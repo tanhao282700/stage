@@ -14,7 +14,7 @@
           <div class="details">
             <div class="container">
               <div class="pic_swiper">
-                <swiper auto>
+                <!-- <swiper auto>
                   <swiper-item>
                     1
                   </swiper-item>
@@ -27,7 +27,7 @@
                   <swiper-item>
                     4
                   </swiper-item>
-                </swiper>
+                </swiper> -->
               </div>
             </div>
           </div>

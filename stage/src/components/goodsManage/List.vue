@@ -148,7 +148,8 @@ export default {
       })
     },
     loadMoreData () {
-      if (this.data.length < this.params.pageSize) {
+      if (this.data.length < this.params.pageSize || this.data.length < this.params.pageSize * this.params.page) {
+        this.isMoreData = false
         return
       }
       this.params.page++
