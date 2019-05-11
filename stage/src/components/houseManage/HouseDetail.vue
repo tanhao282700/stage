@@ -53,7 +53,18 @@
               </div>
             </div>
           </div>
-          <div class="timer"></div>
+          <div class="timer">
+              <div class="equipmentTitle">当前预定时间表</div>
+            <inline-calendar
+              ref="calendar"
+              class="inline-calendar-demo"
+              :show.sync="show"
+              v-model="value"
+              start-date="2016-04-01"
+              end-date="2018-05-30"
+              :render-function="buildSlotFn">
+            </inline-calendar>
+          </div>
           <div class="description">
             <p>房屋描述</p>
             <p>打我打王大伟打我大武当爱我打我打王大伟打我大武当爱我的爱我的爱的爱我的爱的爱我的爱我的爱我的爱我的打我打王大伟打我大武当爱我的爱我的爱的爱我的爱的爱我的爱我的爱我的爱我的打我打王大伟打我大武当爱我的爱我的爱的爱我的爱的爱我的爱我的爱我的爱我的打我打王大伟打我大武当爱我的爱我的爱的爱我的爱的爱我的爱我的爱我的爱我的打我打王大伟打我大武当爱我的爱我的爱的爱我的爱的爱我的爱我的爱我的爱我的的爱我的爱的爱我的爱的爱我的爱我的爱我的爱我的</p>
@@ -62,7 +73,19 @@
           <div class="equipment">
             <div class="equip_con">
                 <span class="equipName">基础设施</span>
-                <div class="equip">
+                <div class="equip icSelected">
+                  <span class="iconfont">&#xe60e;</span>
+                  <span>无线网络</span>
+                </div>
+                <div class="equip icSelected">
+                  <span class="iconfont">&#xe60e;</span>
+                  <span>无线网络</span>
+                </div>
+                <div class="equip icSelected">
+                  <span class="iconfont">&#xe60e;</span>
+                  <span>无线网络</span>
+                </div>
+                <div class="equip icSelected">
                   <span class="iconfont">&#xe60e;</span>
                   <span>无线网络</span>
                 </div>
@@ -87,6 +110,71 @@
                             <span>无线网络</span>
                           </div>
             </div>
+          </div>
+          <div class="equipment">
+            <div class="equip_con">
+                <span class="equipName">卫浴设施</span>
+                <div class="equip icSelected">
+                  <span class="iconfont">&#xe60e;</span>
+                  <span>无线网络</span>
+                </div>
+                <div class="equip">
+                    <span class="iconfont">&#xe60e;</span>
+                    <span>无线网络</span>
+                  </div>
+                  <div class="equip">
+                      <span class="iconfont">&#xe60e;</span>
+                      <span>无线网络</span>
+                    </div>
+                    <div class="equip">
+                        <span class="iconfont">&#xe60e;</span>
+                        <span>无线网络</span>
+                      </div>
+            </div>
+          </div>
+          <div class="equipment">
+            <div class="equip_con">
+                <span class="equipName">厨房设施</span>
+                <div class="equip icSelected">
+                  <span class="iconfont">&#xe60e;</span>
+                  <span>无线网络</span>
+                </div>
+                <div class="equip">
+                    <span class="iconfont">&#xe60e;</span>
+                    <span>无线网络</span>
+                  </div>
+                  <div class="equip">
+                      <span class="iconfont">&#xe60e;</span>
+                      <span>无线网络</span>
+                    </div>
+                    <div class="equip">
+                        <span class="iconfont">&#xe60e;</span>
+                        <span>无线网络</span>
+                      </div>
+            </div>
+          </div>
+          <div class="getMore">查看更多</div>
+          <div class="equipmentTitle">预定须知</div>
+          <div class="tips">
+            <span></span>
+            <span>大武当爱我的爱我的爱我大武当爱我的爱我的爱我的阿达瓦大的阿达瓦大</span>
+          </div>
+          <div class="tips">
+            <span></span>
+            <span>大武当爱我的爱我的爱我大武当爱我的爱我的爱我的阿达瓦大的阿达瓦大</span>
+          </div>
+          <div class="tips">
+            <span></span>
+            <span>大武当爱我的爱我的爱我大武当爱我的爱我的爱我的阿达瓦大的阿达瓦大</span>
+          </div>
+          <div class="tips">
+            <span></span>
+            <span>大武当爱我的爱我的爱我大武当爱我的爱我的爱我的阿达瓦大的阿达瓦大</span>
+          </div>
+          <div class="equipmentTitle">退改说明</div>
+          <div class="tips">
+            <span></span>
+            <span>大武当爱我的爱我的爱我大武当爱我的爱我的爱我的阿达瓦大的阿达瓦大</span>
           </div>
         </div>
         <div class="bottom">
@@ -141,32 +229,6 @@
             </div>
           </div>
       </div>
-      <!-- <swiper v-model="index" height="100px" :show-dots="false">
-        <swiper-item>
-          <div class="details">
-            <div class="container">
-              <div class="pic_swiper">
-                <swiper auto>
-                  <swiper-item>
-                    1
-                  </swiper-item>
-                  <swiper-item>
-                    2
-                  </swiper-item>
-                  <swiper-item>
-                    3
-                  </swiper-item>
-                  <swiper-item>
-                    4
-                  </swiper-item>
-                </swiper>
-              </div>
-            </div>
-          </div>
-        </swiper-item>
-        <swiper-item>
-        </swiper-item>
-      </swiper> -->
     </div>
     <div v-transfer-dom>
       <previewer :list="list" ref="previewer" :options="options"></previewer>
@@ -183,7 +245,8 @@ import {
   Tab,
   TabItem,
   Swiper,
-  SwiperItem
+  SwiperItem,
+  InlineCalendar
 } from 'vux'
 let count = 1
 export default {
@@ -192,6 +255,7 @@ export default {
     TransferDom
   },
   components: {
+    InlineCalendar,
     Tab,
     TabItem,
     Swiper,
@@ -202,6 +266,7 @@ export default {
   },
   data () {
     return {
+      value: ['2019-05-12', '2019-05-13'],
       data3: 4.5,
       index: 0,
       list2: ['详情', '评价'],
@@ -295,6 +360,9 @@ export default {
     }
   },
   methods: {
+    buildSlotFn () {
+      return '已定'
+    },
     getBack () {
       this.$router.go(-1)
     },
@@ -583,7 +651,7 @@ export default {
       }
     }
     .timer {
-      height: 7.12rem;
+      /* height: 7.12rem; */
       background: #fff;
       margin-top: 0.2rem;
     }
@@ -617,9 +685,10 @@ export default {
     }
     .equipment {
       background: #fff;
-      padding:0.24rem 0.2rem;
+      padding:0.24rem 0.2rem 0 0.2rem;
       .equip_con {
         padding-top: 0.2rem;
+        padding-bottom: 0.24rem;
         display: flex;
         flex-wrap: wrap;
         min-height: 1.4rem;
@@ -637,7 +706,7 @@ export default {
           flex-basis: 25%;
           /* height: 1rem; */
           height: 0.3rem;
-          margin-top: 0.1rem;
+          margin-top: 0.3rem;
           color: #9b9b9b;
           span:first-child {
             font-size: 0.24rem;
@@ -646,6 +715,35 @@ export default {
             font-size: 0.24rem;
           }
         }
+        .icSelected span{
+            color: #1aad19;
+        }
+      }
+    }
+    .getMore {
+      font-size: 0.28rem;
+      color: #1aad19;
+      height: 1rem;
+      background: #fff;
+      line-height: 1rem;
+    }
+    .tips {
+      display: flex;
+      align-items: flex-start;
+      padding: 0 0.1rem 0.2rem 0.1rem;
+      background: #fff;
+      span:first-child {
+        width: 0.12rem;
+        height: 0.12rem;
+        border-radius: 0.12rem;
+        background: #bdbdbd;
+        margin-top: 0.12rem;
+      }
+      span:last-child {
+        margin-left: 0.1rem;
+        font-size: 0.24rem;
+        color: #6c6c6c;
+        text-align: left;
       }
     }
   }
@@ -690,5 +788,38 @@ export default {
 }
 .houseDetail .vux-swiper {
   height: 100% !important;
+}
+.inline-calendar th {
+  font-size: 0.28rem;
+}
+.inline-calendar td.is-disabled {
+  font-size: 0.24rem;
+  color: #353535!important;
+}
+.inline-calendar td > span.vux-calendar-each-date {
+  font-size: 0.28rem!important;
+  width: 0.52rem!important;
+    height: 0.52rem!important;
+    line-height: 0.5rem!important;
+}
+/* .inline-calendar td.is-today {
+  color: white!important;
+  background: #04BE02;
+  border-radius: 0.1rem;
+} */
+.inline-calendar td.is-today {
+  color: #353535!important;
+}
+.current {
+  background: #04BE02!important;
+  border-radius: 0.1rem;
+  color: white;
+}
+.inline-calendar td.is-disabled div {
+  display: none;
+}
+.current div{
+  display: block!important;
+  color:white;
 }
 </style>
