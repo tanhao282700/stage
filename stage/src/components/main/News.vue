@@ -82,6 +82,10 @@ export default {
   },
   methods: {
     getData () {
+
+//      this.$http.fetchGet('/merchant/center/statistic/message', {merchantId: this.$store.state.merchantId}).then((res) => {
+//        this.userInfo = res.data.data
+//      })
       let that = this
       return new Promise(resolve => { // 模拟数据请求
         setTimeout(() => {

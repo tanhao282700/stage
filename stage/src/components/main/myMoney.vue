@@ -6,17 +6,22 @@
         <x-icon @click="getBack" class="headericon" type="ios-arrow-left" size="60"></x-icon>
         <span>我的余额</span>
       </div>
+      <div class="money_con">我的余额(元)</div>
+      <div class="money_con money_con2">100.00</div>
+      <div class="money_con money_con3">提现中： 200.00</div>
     </div>
 
     <div>
       <div class="item_title">
-        账号绑定
-        <!-- <a>修改</a> -->
+        余额明细
       </div>
-      <div class="setting_item setting_item_40"
+      <div class="setting_item_two_line"
            v-for="(item,index) in moneyInfo.items" :key="index">
-        <span>{{item.amtDes}}</span>
-        <div class="info">
+        <div class="left">
+          <div class="content">{{item.amtDes}}</div>
+          <div class="time">{{item.txDate}}</div>
+        </div>
+        <div class="info orange">
           <span>{{item.amt}}</span>
         </div>
       </div>
@@ -32,10 +37,6 @@
         <!--<x-icon type="ios-arrow-right" size="40"></x-icon>-->
       <!--</div>-->
     <!--</div>-->
-
-    <div class="iphone">
-      平台客服：010-123456789
-    </div>
   </div>
 </template>
 
@@ -52,9 +53,9 @@
           withDrawCash: '', //提现中金额
           items: [
             {
-              amt: '', // 发生金额 ,
-              amtDes: '', // 金额发生描述 ,
-              txDate: '', // 发生时间
+              amt: '500', // 发生金额 ,
+              amtDes: '[房源订单]房源名称房源名称…', // 金额发生描述 ,
+              txDate: '2019-05-05 12:00', // 发生时间
             }
           ]
         }
@@ -105,6 +106,24 @@
     .myMoney_top{
       height: 4.3rem;
       width:100%;
+      position: relative;
+      z-index: 2;
+      .money_con{
+        position: relative;
+        z-index: 2;
+        font-size:0.28rem;
+        line-height: 0.4rem;
+        font-weight: 100;
+        color: #fff;
+        &.money_con2{
+          font-size:0.48rem;
+          line-height:0.8rem;
+        }
+        &.money_con3{
+          font-size:0.24rem;
+          line-height:0.6rem;
+        }
+      }
     }
     .happen_bg {
       position: absolute;
@@ -141,7 +160,7 @@
 </style>
 <style>
   .myMoney .vux-x-icon{
-    fill: #fff;
+    fill: #fff!important;
   }
 
   .setting_item .weui-cell {

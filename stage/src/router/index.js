@@ -24,36 +24,6 @@ export default new Router({
           path: 'mine',
           name: 'Mine',
           component: resolve => { import('@/components/main/Mine').then(module => resolve(module)) }
-        },
-        {
-          path: 'setting',
-          name: 'Setting',
-          component: resolve => { import('@/components/main/Setting').then(module => resolve(module)) }
-        },
-        {
-          path: 'myMoney',
-          name: 'myMoney',
-          component: resolve => { import('@/components/main/myMoney').then(module => resolve(module)) }
-        },
-        {
-          path: 'certification',
-          name: 'certification',
-          component: resolve => { import('@/components/main/certification').then(module => resolve(module)) }
-        },
-        {
-          path: 'accountBind',
-          name: 'accountBind',
-          component: resolve => { import('@/components/main/accountBind').then(module => resolve(module)) }
-        },
-        {
-          path: 'setPassword',
-          name: 'setPassword',
-          component: resolve => { import('@/components/main/setPassword').then(module => resolve(module)) }
-        },
-        {
-          path: 'setPayPassword',
-          name: 'setPayPassword',
-          component: resolve => { import('@/components/main/setPayPassword').then(module => resolve(module)) }
         }
       ],
       redirect: to => {
@@ -129,6 +99,46 @@ export default new Router({
       path: '/orderSend',
       name: 'orderSend',
       component: resolve => { import('@/components/orderManage/orderSend').then(module => resolve(module)) }
+    },
+    {
+      path: '/setting',
+      name: 'Setting',
+      component: resolve => { import('@/components/main/Setting').then(module => resolve(module)) }
+    },
+    {
+      path: '/myMoney',
+      name: 'myMoney',
+      component: resolve => { import('@/components/main/myMoney').then(module => resolve(module)) }
+    },
+    {
+      path: '/certification',
+      name: 'certification',
+      component: resolve => { import('@/components/main/certification').then(module => resolve(module)) }
+    },
+    {
+      path: '/accountBind',
+      name: 'accountBind',
+      component: resolve => { import('@/components/main/accountBind').then(module => resolve(module)) }
+    },
+    {
+      path: '/setPassword',
+      name: 'setPassword',
+      component: resolve => { import('@/components/main/setPassword').then(module => resolve(module)) }
+    },
+    {
+      path: '/setPayPassword',
+      name: 'setPayPassword',
+      component: resolve => { import('@/components/main/setPayPassword').then(module => resolve(module)) }
+    },
+    {
+      path: '/addCoupons',
+      name: 'addCoupons',
+      component: resolve => { import('@/components/hotelManage/addCoupons').then(module => resolve(module)) }
+    },
+    {
+      path: '/coupons',
+      name: 'coupons',
+      component: resolve => { import('@/components/hotelManage/coupons').then(module => resolve(module)) }
     }
   ]
 })

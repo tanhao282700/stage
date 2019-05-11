@@ -59,7 +59,7 @@ export default {
   }
   .weui-toast {
     width: auto!important;
-    min-width: 10em;
+    min-width: em;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -184,6 +184,34 @@ export default {
         }
 
       }
+    }
+  }
+
+  .my_picker{
+    .vux-cell-primary{
+      height: 1rem!important;
+      line-height: 1rem!important;
+      text-align: right;
+      font-size: 0.28rem;
+    }
+  }
+
+  .vux-popup-dialog{
+    .vux-popup-header{
+      height:0.7rem;
+      font-size:0.28rem;
+      line-height:0.7rem;
+    }
+    /*.scroller-component{*/
+      /*height: 3rem;*/
+    /*}*/
+    /*.scroller-indicator{*/
+      /*height:0.6rem;*/
+    /*}*/
+    .scroller-item{
+      /*height:0.6rem;*/
+      font-size:0.28rem;
+      /*line-height:0.6rem;*/
     }
   }
 

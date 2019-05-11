@@ -66,6 +66,9 @@ export default {
   methods: {
     getBack () {
       this.$router.go(-1)
+//      this.$router.replace({
+//          name: 'Setting'
+//      })
     },
 
     postData () {
