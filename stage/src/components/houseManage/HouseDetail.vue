@@ -11,45 +11,36 @@
       </tab>
       <div v-show="index == 0" class="con">
         <div class="con_main">
-          <div class="pic_swiper">
+          <div v-if="baseData.imageInfo.length > 0" class="pic_swiper">
             <swiper dots-position="center" auto>
-                  <swiper-item>
-                    <img src="https://zayzapp01.oss-cn-shenzhen.aliyuncs.com/file/6c836029f5074df48c88c8bddbdb27f9.10dfa9ec8a136327474f0e529c8fa0ec08fac735.jpg" alt="">
-                  </swiper-item>
-                  <swiper-item>
-                    <img src="https://zayzapp01.oss-cn-shenzhen.aliyuncs.com/file/6c836029f5074df48c88c8bddbdb27f9.10dfa9ec8a136327474f0e529c8fa0ec08fac735.jpg" alt="">
-                  </swiper-item>
-                  <swiper-item>
-                    <img src="https://zayzapp01.oss-cn-shenzhen.aliyuncs.com/file/6c836029f5074df48c88c8bddbdb27f9.10dfa9ec8a136327474f0e529c8fa0ec08fac735.jpg" alt="">
-                  </swiper-item>
-                  <swiper-item>
-                    <img src="https://zayzapp01.oss-cn-shenzhen.aliyuncs.com/file/6c836029f5074df48c88c8bddbdb27f9.10dfa9ec8a136327474f0e529c8fa0ec08fac735.jpg" alt="">
+                  <swiper-item v-if="item.type == 0" v-for="item in baseData.imageInfo">
+                    <img :src="item.url" alt="">
                   </swiper-item>
                 </swiper>
           </div>
           <div class="baseInfo">
-            <span>宽窄巷子宽窄巷子大武当爱我的爱我的爱的宽窄巷子大武当爱我的爱我的爱的大武当爱我的爱我的爱的</span>
-            <span>¥12.00</span>
+            <span v-text="baseData.title"></span>
+            <span v-text="'¥'+baseData.workPrice"></span>
           </div>
           <div class="houseBaseInfo">
             <div class="houseBaseInfo_box">
               <div class="items">
                 <span></span>
-                <span>整套一居室</span>
+                <span v-text="'整套'+baseData.apartmentInfo.roomQuantity+'居室'"></span>
               </div>
               <div class="items">
                 <span></span>
-                <span>可住两人</span>
+                <span v-text="'可住'+baseData.housePersonNumber+'人'"></span>
               </div>
             </div>
             <div class="houseBaseInfo_box">
               <div class="items">
                 <span></span>
-                <span>一厨一独卫</span>
+                <span v-text="baseData.apartmentInfo.kitchenQuantity+'厨'+baseData.apartmentInfo.toiletQuantity+'独卫'"></span>
               </div>
               <div class="items">
                 <span></span>
-                <span>共一张床</span>
+                <span v-text="baseData.bedModelName"></span>
               </div>
             </div>
           </div>
@@ -67,118 +58,33 @@
           </div>
           <div class="description">
             <p>房屋描述</p>
-            <p>打我打王大伟打我大武当爱我打我打王大伟打我大武当爱我的爱我的爱的爱我的爱的爱我的爱我的爱我的爱我的打我打王大伟打我大武当爱我的爱我的爱的爱我的爱的爱我的爱我的爱我的爱我的打我打王大伟打我大武当爱我的爱我的爱的爱我的爱的爱我的爱我的爱我的爱我的打我打王大伟打我大武当爱我的爱我的爱的爱我的爱的爱我的爱我的爱我的爱我的打我打王大伟打我大武当爱我的爱我的爱的爱我的爱的爱我的爱我的爱我的爱我的的爱我的爱的爱我的爱的爱我的爱我的爱我的爱我的</p>
+            <p v-text="baseData.text"></p>
           </div>
           <div class="equipmentTitle">服务设施</div>
-          <div class="equipment">
+          <div v-if="index < 3 || (index > 2 && isShowMore)" v-for="(item,index) in baseData.facilitiesInfo" class="equipment">
             <div class="equip_con">
-                <span class="equipName">基础设施</span>
-                <div class="equip icSelected">
+                <span class="equipName" v-text="item.className"></span>
+                <div v-for="child in item.facilities" :class="{'icSelected':child.isSelected == 1}" class="equip">
                   <span class="iconfont">&#xe60e;</span>
-                  <span>无线网络</span>
+                  <span v-text="child.name"></span>
                 </div>
-                <div class="equip icSelected">
-                  <span class="iconfont">&#xe60e;</span>
-                  <span>无线网络</span>
-                </div>
-                <div class="equip icSelected">
-                  <span class="iconfont">&#xe60e;</span>
-                  <span>无线网络</span>
-                </div>
-                <div class="equip icSelected">
-                  <span class="iconfont">&#xe60e;</span>
-                  <span>无线网络</span>
-                </div>
-                <div class="equip">
-                    <span class="iconfont">&#xe60e;</span>
-                    <span>无线网络</span>
-                  </div>
-                  <div class="equip">
-                      <span class="iconfont">&#xe60e;</span>
-                      <span>无线网络</span>
-                    </div>
-                    <div class="equip">
-                        <span class="iconfont">&#xe60e;</span>
-                        <span>无线网络</span>
-                      </div>
-                      <div class="equip">
-                          <span class="iconfont">&#xe60e;</span>
-                          <span>无线网络</span>
-                        </div>
-                        <div class="equip">
-                            <span class="iconfont">&#xe60e;</span>
-                            <span>无线网络</span>
-                          </div>
             </div>
           </div>
-          <div class="equipment">
-            <div class="equip_con">
-                <span class="equipName">卫浴设施</span>
-                <div class="equip icSelected">
-                  <span class="iconfont">&#xe60e;</span>
-                  <span>无线网络</span>
-                </div>
-                <div class="equip">
-                    <span class="iconfont">&#xe60e;</span>
-                    <span>无线网络</span>
-                  </div>
-                  <div class="equip">
-                      <span class="iconfont">&#xe60e;</span>
-                      <span>无线网络</span>
-                    </div>
-                    <div class="equip">
-                        <span class="iconfont">&#xe60e;</span>
-                        <span>无线网络</span>
-                      </div>
-            </div>
-          </div>
-          <div class="equipment">
-            <div class="equip_con">
-                <span class="equipName">厨房设施</span>
-                <div class="equip icSelected">
-                  <span class="iconfont">&#xe60e;</span>
-                  <span>无线网络</span>
-                </div>
-                <div class="equip">
-                    <span class="iconfont">&#xe60e;</span>
-                    <span>无线网络</span>
-                  </div>
-                  <div class="equip">
-                      <span class="iconfont">&#xe60e;</span>
-                      <span>无线网络</span>
-                    </div>
-                    <div class="equip">
-                        <span class="iconfont">&#xe60e;</span>
-                        <span>无线网络</span>
-                      </div>
-            </div>
-          </div>
-          <div class="getMore">查看更多</div>
+          <div @click="showMoreEquip" v-if="baseData.facilitiesInfo.length > 3 && !isShowMore" class="getMore">查看更多</div>
           <div class="equipmentTitle">预定须知</div>
-          <div class="tips">
+          <div class="tips" v-for="item in baseData.mattersInfo">
             <span></span>
-            <span>大武当爱我的爱我的爱我大武当爱我的爱我的爱我的阿达瓦大的阿达瓦大</span>
-          </div>
-          <div class="tips">
-            <span></span>
-            <span>大武当爱我的爱我的爱我大武当爱我的爱我的爱我的阿达瓦大的阿达瓦大</span>
-          </div>
-          <div class="tips">
-            <span></span>
-            <span>大武当爱我的爱我的爱我大武当爱我的爱我的爱我的阿达瓦大的阿达瓦大</span>
-          </div>
-          <div class="tips">
-            <span></span>
-            <span>大武当爱我的爱我的爱我大武当爱我的爱我的爱我的阿达瓦大的阿达瓦大</span>
+            <span v-text="item.checked_status == 1 ? item.text : '不'+item.text"></span>
           </div>
           <div class="equipmentTitle">退改说明</div>
           <div class="tips">
             <span></span>
-            <span>大武当爱我的爱我的爱我大武当爱我的爱我的爱我的阿达瓦大的阿达瓦大</span>
+            <span v-text="baseData.unsubscribeComment"></span>
           </div>
         </div>
         <div class="bottom">
-          <span>下架</span>
+          <span @click="checkStatus(2)" v-if="tabIndex == 1">下架</span>
+          <span @click="checkStatus(1)" v-if="tabIndex == 2">上架</span>
           <span>修改</span>
         </div>
       </div>
@@ -266,6 +172,8 @@ export default {
   },
   data () {
     return {
+      tabIndex: 0,
+      isShowMore: false,
       value: ['2019-05-12', '2019-05-13'],
       data3: 4.5,
       index: 0,
@@ -356,10 +264,37 @@ export default {
           // Good guide on how to get element coordinates:
           // http://javascript.info/tutorial/coordinates
         }
+      },
+      baseData: {
+        apartmentInfo: {},
+        facilitiesInfo: [],
+        imageInfo: []
       }
     }
   },
   methods: {
+    checkStatus (status) {
+      this.$http.fetchGet('/merchant/room/update/status', {roomId: this.$route.query.id, operate: status}).then((res) => {
+        if (res.data.code === 200) {
+          this.$vux.toast.show({
+            text: '操作成功',
+            position: 'middle'
+          })
+          if (status == 2) {
+            this.$router.go(-1)
+          }
+        } else {
+          this.$vux.toast.show({
+            text: res.data.message,
+            position: 'middle',
+            type: 'warn'
+          })
+        }
+      })
+    },
+    showMoreEquip () {
+      this.isShowMore = true
+    },
     buildSlotFn () {
       return '已定'
     },
@@ -369,49 +304,41 @@ export default {
     show (index) {
       this.$refs.previewer.show(index)
     },
-    getData () {
-      let that = this
-      return new Promise(resolve => {
-        // 模拟数据请求
-        setTimeout(() => {
-          that.isMoreData = false
-          console.log(that.isMoreData)
-          const arr = []
-          for (let i = 0; i < 26; i++) {
-            arr.push(count++)
-          }
-          resolve(arr)
-        }, 1000)
+    getBaseInfo () {
+      this.$http.fetchGet('/merchant/room/get/details', {roomId: this.$route.query.id}).then((res) => {
+        this.baseData = res.data.data
       })
     }
   },
   created () {
-    const that = this
-    this.$nextTick(() => {
-      this.scroll = new BScroll(this.$refs.wrapper, {
-        // 初始化better-scroll
-        probeType: 1, // 1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
-        click: true // 是否派发click事件
-      })
-      // 滑动结束松开事件
-      this.scroll.on('touchEnd', pos => {
-        // 上拉刷新
-        if (
-          pos.y < this.scroll.maxScrollY ||
-          pos.y === this.scroll.maxScrollY
-        ) {
-          // 下拉加载
-          console.log(333)
-          setTimeout(() => {
-            that.getData().then(res => {
-              // 恢复文本值
-              that.data = this.data.concat(res)
-              that.scroll.refresh()
-            })
-          }, 2000)
-        }
-      })
-    })
+    this.tabIndex = this.$route.query.tabIndex
+    this.getBaseInfo()
+    // const that = this
+    // this.$nextTick(() => {
+    //   this.scroll = new BScroll(this.$refs.wrapper, {
+    //     // 初始化better-scroll
+    //     probeType: 1, // 1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
+    //     click: true // 是否派发click事件
+    //   })
+    //   // 滑动结束松开事件
+    //   this.scroll.on('touchEnd', pos => {
+    //     // 上拉刷新
+    //     if (
+    //       pos.y < this.scroll.maxScrollY ||
+    //       pos.y === this.scroll.maxScrollY
+    //     ) {
+    //       // 下拉加载
+    //       console.log(333)
+    //       setTimeout(() => {
+    //         that.getData().then(res => {
+    //           // 恢复文本值
+    //           that.data = this.data.concat(res)
+    //           that.scroll.refresh()
+    //         })
+    //       }, 2000)
+    //     }
+    //   })
+    // })
   }
 }
 </script>
@@ -705,7 +632,7 @@ export default {
         .equip {
           flex-basis: 25%;
           /* height: 1rem; */
-          height: 0.3rem;
+          /* height: 0.3rem; */
           margin-top: 0.3rem;
           color: #9b9b9b;
           span:first-child {
@@ -730,7 +657,7 @@ export default {
     .tips {
       display: flex;
       align-items: flex-start;
-      padding: 0 0.1rem 0.2rem 0.1rem;
+      padding: 0 0.2rem 0.2rem 0.2rem;
       background: #fff;
       span:first-child {
         width: 0.12rem;

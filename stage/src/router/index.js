@@ -71,6 +71,11 @@ export default new Router({
       component: resolve => { import('@/components/houseManage/HouseDetail').then(module => resolve(module)) }
     },
     {
+      path: '/houseAdd',
+      name: 'houseAdd',
+      component: resolve => { import('@/components/houseManage/HouseAdd').then(module => resolve(module)) }
+    },
+    {
       path: '/hotelManage',
       name: 'hotelManage',
       component: resolve => { import('@/components/hotelManage/HotelManage').then(module => resolve(module)) }

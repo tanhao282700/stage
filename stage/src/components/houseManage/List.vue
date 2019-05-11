@@ -3,7 +3,7 @@
     <div class="iosHeader vux-1px-b">
       <x-icon @click="getBack" type="ios-arrow-left" size="60"></x-icon>
       <span>房态管理</span>
-      <x-icon type="ios-plus-empty" size="60"></x-icon>
+      <x-icon @click="addHouse" type="ios-plus-empty" size="60"></x-icon>
     </div>
     <div class="tabBar">
       <div class="bar" @click=tabChange(1) :class="{'active':tabIndex == 1}">
@@ -25,7 +25,7 @@
           </div>
           <!-- 内容列表 -->
           <ul class="content" ref="content">
-            <li v-for="item in data" @click="goDetails" class="item vux-1px-b">
+            <li v-for="item in data" @click="goDetails(item.id)" class="item vux-1px-b">
               <div class="pics">
                 <img :src="item.imagePath" alt="" />
                 <span class="grade" v-text="item.commentPoint + '分'"></span>
@@ -86,11 +86,15 @@ export default {
     }
   },
   methods: {
-    goDetails () {
+    addHouse () {
+      this.$router.push('houseAdd')
+    },
+    goDetails (id) {
       this.$router.push({
         name: 'houseDetail',
-        params: {
-
+        query: {
+          id: id,
+          tabIndex: this.tabIndex
         }
       })
     },
