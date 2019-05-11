@@ -58,7 +58,7 @@ export default {
     }
   }
   .weui-toast {
-    width: 1.8rem!important;
+    width: auto!important;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -66,7 +66,7 @@ export default {
     min-height: 1.8rem!important;
   }
   .weui-toast__content {
-    font-size: 0.24rem;
+    font-size: 0.24rem!important;
     margin-top: 0.2rem;
   }
   .pic_btn {
@@ -118,6 +118,9 @@ export default {
   width: 100%;
   box-sizing: border-box;
 }
+.setting_item .weui-cells:after{
+  border: none!important;
+}
 .setting_item  .weui-label {
   width: auto!important;
   height: 1rem;
@@ -126,7 +129,7 @@ export default {
   padding-right: 0.4rem;
 }
 .setting_item  .weui-input {
-  height: 1rem!important;
+  height: 0.9rem!important;
   line-height: 1rem!important;
   text-align: right;
   font-size: 0.28rem;

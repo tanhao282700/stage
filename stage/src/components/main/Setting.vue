@@ -19,9 +19,9 @@
         <x-icon type="ios-arrow-right" size="40"></x-icon>
       </div>
     </div>
-    <div class="rest">
+    <div class="rest" @click="setPassword">
       <span>设置登录密码</span>
-      <div class="info" @click="setPassword">
+      <div class="info">
         <x-icon type="ios-arrow-right" size="40"></x-icon>
       </div>
     </div>

@@ -76,6 +76,11 @@ export default new Router({
       component: resolve => { import('@/components/hotelManage/editHotel').then(module => resolve(module)) }
     },
     {
+      path: '/amap',
+      name: 'amap',
+      component: resolve => { import('@/components/hotelManage/amap').then(module => resolve(module)) }
+    },
+    {
       path: '/goodsManage',
       name: 'goodsManage',
       component: resolve => { import('@/components/goodsManage/List').then(module => resolve(module)) }

@@ -10,8 +10,16 @@
 .clearfix {
   zoom: 1;
 }
+ .text-ellipsis{
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
+ }
 
-.w_100{
+
+
+
+ .w_100{
   width: 100%;
 }
 
@@ -49,6 +57,31 @@
   display: flex;
   flex-direction: column;
 }
+
+//底部固定
+ .my_bottom{
+   height: 1rem;
+   width:100%;
+ }
+ .editHotel{
+   display: flex;
+   flex-direction: column;
+   width:100%;
+   height:100%;
+ }
+ .editHotel .bottom {
+   height: 0.96rem;
+   background: #19ad19;
+   font-size: 0.32rem;
+   color: white;
+   text-align: center;
+   line-height: 0.96rem;
+ }
+
+ .modal_main{
+   flex: 1;
+   overflow-y: auto;
+ }
 
 .border_none{
   border:none!important;
