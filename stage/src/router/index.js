@@ -109,6 +109,16 @@ export default new Router({
       path: '/orderedGoods',
       name: 'orderedGoods',
       component: resolve => { import('@/components/orderManage/OrderedGoods').then(module => resolve(module)) }
+    },
+    {
+      path: '/orderHotel',
+      name: 'orderHotel',
+      component: resolve => { import('@/components/orderManage/orderHotel').then(module => resolve(module)) }
+    },
+    {
+      path: '/orderSend',
+      name: 'orderSend',
+      component: resolve => { import('@/components/orderManage/orderSend').then(module => resolve(module)) }
     }
   ]
 })

@@ -15,24 +15,40 @@
           <span class="redText">{{dealStatus(detail.orderStatus)}}</span>
         </div>
 
-        <div class="clearfix">
+        <div v-if="detail.roomInfo">
           <div class="defaultTitle defaultText">
-            <!--<span>定制项目</span>-->
-            <span>商品信息</span>
+            <span>预定房源</span>
           </div>
-          <div class="custom orderedHouse"
-              v-for="(item, index) in detail.goodsInfo" :key="index">
+          <div class="orderedHouse"
+               v-for="(item, index) in detail.roomInfo" :key="index">
             <div class="img">
-              <img :src="item.imageUrl" alt="">
+              <img :src="item.url" alt="">
             </div>
             <div class="info">
               <p>{{item.title}}</p>
-              <span>x{{item.quantity}}</span>
+              <span>{{item.liveDay}}</span>
             </div>
-            <span class="price redText">¥{{item.price}}</span>
+            <span class="price redText">¥{{item.amount}}</span>
+          </div>
+        </div>
+
+        <div class="clearfix" v-if="detail.customProjectInfo">
+          <div class="defaultTitle defaultText">
+            <span>定制项目</span>
+          </div>
+          <div class="custom orderedHouse"
+               v-for="(item, index) in detail.customProjectInfo" :key="index">
+            <div class="img">
+              <img :src="item.url" alt="">
+            </div>
+            <div class="info">
+              <p>{{item.title}}</p>
+              <span>x{{item.number}}</span>
+            </div>
+            <span class="price redText">¥{{item.amount}}</span>
             <!--<div class="collect">-->
-              <!--<span class="collect-icon icon iconfont">&#xe696;</span>-->
-              <!--<span class="txt">联系买家</span>-->
+            <!--<span class="collect-icon icon iconfont">&#xe696;</span>-->
+            <!--<span class="txt">联系买家</span>-->
             <!--</div>-->
           </div>
         </div>
@@ -50,33 +66,44 @@
         </div>
 
         <div class="defaultTitle defaultText">
-          <span>收货信息</span>
+          <span>预定信息</span>
         </div>
         <div class="price defaultLine vux-1px-b p-lr">
-          <span class="defaultText">收货人姓名</span>
-          <span class="defaultText">{{detail.receiverName}}</span>
+          <span class="defaultText">预定人姓名</span>
+          <span class="defaultText">{{detail.userName}}</span>
         </div>
         <div class="price defaultLine vux-1px-b p-lr">
           <span class="defaultText">电话号码</span>
-          <span class="defaultText">{{detail.receiverPhone}}</span>
+          <span class="defaultText">{{detail.userPhone}}</span>
         </div>
         <div class="price defaultLine vux-1px-b p-lr">
-          <span class="defaultText">收货地址</span>
-          <span class="defaultText">{{detail.receiverAddress}}</span>
+          <span class="defaultText">入住时间</span>
+          <span class="defaultText">{{detail.checkInDate}}</span>
+        </div>
+        <div class="price defaultLine vux-1px-b p-lr">
+          <span class="defaultText">离店时间</span>
+          <span class="defaultText">{{detail.leaveDate}}</span>
         </div>
 
-        <!--待收货-->
-        <div v-if="detail.orderStatus >= 8">
+        <div v-if="detail.travellerInfo">
           <div class="defaultTitle defaultText">
-            <span>物流信息</span>
+            <span>入住人信息</span>
           </div>
-          <div class="price defaultLine vux-1px-b p-lr">
-            <span class="defaultText">物流公司</span>
-            <span class="defaultText">{{detail.company}}</span>
+          <div class="price infoLine vux-1px-b p-lr"
+               v-for="(item, index) in detail.travellerInfo" :key="index">
+            <span class="defaultText">{{item.name}}</span>
+            <span class="defaultText">{{item.idCard}}</span>
           </div>
-          <div class="price defaultLine vux-1px-b p-lr">
-            <span class="defaultText">物流单号</span>
-            <span class="defaultText">{{detail.trackingNo}}</span>
+        </div>
+
+
+
+        <div>
+          <div class="defaultTitle defaultText">
+            <span>留言</span>
+          </div>
+          <div class="words">
+            {{detail.leaveMessage}}
           </div>
         </div>
 
@@ -107,6 +134,8 @@
           </div>
         </div>
 
+
+
         <div class="bottomLine" style="padding-top: 0.2rem;">
           订单编号：{{detail.orderId}}
         </div>
@@ -118,17 +147,26 @@
         </div>
       </div>
     </div>
-    <div class="bottom" v-if="detail.orderStatus == 2">
-      <span @click="refused">拒绝退款</span>
-      <span @click="agree">同意退款</span>
+    <div class="bottom" v-if="detail.orderStatus == 0">
+      <span @click="postData(0)">取消订单</span>
+      <span @click="postData(5)">修改价格</span>
     </div>
 
-    <!--待发货-->
-    <div class="bottom"
-         v-if="detail.orderStatus == 1"
-          @click="oderSend">
-      <span>去发货</span>
+    <div class="bottom" v-if="detail.orderStatus == 1">
+      <span @click="postData(0)">取消订单</span>
+      <span @click="postData(1)">修改价格</span>
     </div>
+
+    <div class="bottom" v-if="detail.orderStatus == 7">
+      <span @click="postData(0)">取消订单</span>
+      <span @click="postData(2)">确认入住</span>
+    </div>
+    <div class="bottom" v-if="detail.orderStatus == 2">
+      <span @click="refused(0)">拒绝退款</span>
+      <span @click="postData(3)">同意退款</span>
+    </div>
+
+
   </div>
 </template>
 
@@ -143,21 +181,22 @@ export default {
     return {
       // 商品 0-待支付,1-待发货,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,8-待收货,9-已完成,99-所有状态
       // 驿站 0-待支付,1-待确认,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,7-待入住,8-入住中,9-已完成,99-所有状态
-      oderStatus: 1,
       detail: {
-        company: '中通快递', // 物流公司 ,
-        scheduleInfo: '', // 订单流程进度信息 ,
-        trackingNo: '656565+65656565', //  物流单号
-        goodsInfo: [], // 商品清单信息 ,
-        orderAmt: 6, // 订单金额 ,
-        orderId: '65464654165', // 订单号 ,
-        orderStatus: 4, // 订单状态【0-待支付,1-待发货,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,8-待收货,9-已完成,99-所有状态】
-        couponInfo: [], // 优惠信息 ,
-        receiverAddress: '成都市高新区天府三街', //  收货地址 ,
-        receiverName: '古天乐', // : 收货人姓名 ,
-        receiverPhone: '15700350000', // 收货人电话 ,
-        refundFailReason: '', // 退款失败理由 ,
-        refundReason: '' // 退款理由 ,
+        checkInDate: '2019-01-02', // 入住时间
+        couponInfo: [], // 优惠信息
+        customProjectInfo: [], // 定制项目订单信息 ,
+        leaveDate: '2019-01-03', // 离店时间 ,
+        leaveMessage: '我是留言', // 留言信息
+        orderAmt: 50, // 订单金额
+        orderId: '', // 订单号
+        orderStatus:1,
+        refundFailReason: '', // 退款失败理由
+        refundReason: '', // 退款理由
+        roomInfo: [], // 房源订单信息
+        scheduleInfo: [], // 订单流程进度信息
+        travellerInfo: [], // 入住人信息
+        userName: '小白', // 预定人姓名 ,
+        userPhone: '15700353375'// 预定人电话
       },
       //      测试数据
       couponInfo: [
@@ -177,26 +216,6 @@ export default {
           title: '满200减20'
         }
       ],
-      goodsInfo: [
-        {
-          price: 99.00,
-          quantity: 2,
-          title: '我是标题',
-          imageUrl: '/static/img/test.7f2f298.png'
-        },
-        {
-          price: 99.00,
-          quantity: 2,
-          title: '我是标题',
-          imageUrl: '/static/img/test.7f2f298.png'
-        },
-        {
-          price: 99.00,
-          quantity: 2,
-          title: '我是标题',
-          imageUrl: '/static/img/test.7f2f298.png'
-        }
-      ],
       scheduleInfo: [
         {
           completeTime: '2019-01-15 15:30',
@@ -210,13 +229,47 @@ export default {
           completeTime: '2019-01-15 15:30',
           tradeDes: '发货时间'
         }
+      ],
+      travellerInfo: [
+        {
+          idCard: '64165416541651461',
+          name: '张三'
+        },
+        {
+          idCard: '64165416541651461',
+          name: '张三'
+        }
+      ],
+      customProjectInfo: [
+        {
+          amount: 99.00,
+          number: 2,
+          title: '我是标题',
+          url: '/static/img/test.7f2f298.png'
+        },
+        {
+          amount: 99.00,
+          number: 2,
+          title: '我是标题',
+          url: '/static/img/test.7f2f298.png'
+        }
+      ],
+      roomInfo: [
+        {
+          amount: 99.00,
+          liveDay: 2,
+          title: '我是标题',
+          url: '/static/img/test.7f2f298.png'
+        }
       ]
     }
   },
   created () {
-    this.detail.goodsInfo = this.goodsInfo
+    this.detail.travellerInfo = this.travellerInfo
     this.detail.couponInfo = this.couponInfo
     this.detail.scheduleInfo = this.scheduleInfo
+    this.detail.customProjectInfo = this.customProjectInfo
+    this.detail.roomInfo = this.roomInfo
     this.getDetail()
   },
   methods: {
@@ -245,9 +298,6 @@ export default {
       }
       this.postData(4)
     },
-    agree () {
-      this.postData(3)
-    },
     postData (flag) {
       let params = {
         amount: 0, // 订单金额【修改价格时必输】 ,
@@ -255,7 +305,7 @@ export default {
         orderId: '000', // 订单编号 ,
         refuseReason: this.detail.refundReason // 拒绝理由【拒绝退款时必输】
       }
-      this.$http.fetchPost('/merchant/order/update/goods', params).then((res) => {
+      this.$http.fetchPost('/merchant/order/update/room', params).then((res) => {
         if (res.data.code === 200) {
           this.$vux.toast.show({
             text: '操作成功',
@@ -266,27 +316,30 @@ export default {
           this.$vux.toast.show({
             text: res.data.message,
             position: 'middle',
-            type: 'warn'
+            type: 'warn',
+            time:99999
           })
         }
       })
     },
     getDetail () {
-      this.$http.fetchGet('/merchant/order/get/goods/detail', {orderId: '00123'}).then((res) => {
-//        this.detail = res.data.data
+      this.$http.fetchGet('/merchant/order/get/room/detail', {orderId: '00123'}).then((res) => {
+        //          this.detail = res.data.data
       })
     },
     dealStatus (status) {
+//      驿站 0-待支付,1-待确认,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,7-待入住,8-入住中,9-已完成,99-所有状态
       let name = ''
       switch (status) {
         case 0: name = '待支付'; break
-        case 1: name = '待发货'; break
+        case 1: name = '待确认'; break
         case 2: name = '申请退款'; break
         case 3: name = '退款失败'; break
         case 4: name = '退款成功'; break
         case 5: name = '取消订单'; break
         case 6: name = '待点评'; break
-        case 8: name = '待收货'; break
+        case 7: name = '待入住'; break
+        case 8: name = '入住中'; break
         case 9: name = '已完成'; break
         case 99: name = '所有状态'; break
         default: name = '所有状态'; break

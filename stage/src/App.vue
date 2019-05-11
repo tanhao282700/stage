@@ -59,6 +59,7 @@ export default {
   }
   .weui-toast {
     width: auto!important;
+    min-width: 10em;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -113,10 +114,17 @@ export default {
 }
 
 // 设置-表单样式
-.setting_item .weui-cell {
+.setting_item .weui-cell{
   padding: 0 0rem!important;
+  margin-top:0rem!important;
   width: 100%;
   box-sizing: border-box;
+}
+  .setting_item .weui-cells{
+    padding: 0 0rem!important;
+    margin-top:0rem!important;
+    width: 100%;
+    box-sizing: border-box;
 }
 .setting_item .weui-cells:after{
   border: none!important;
@@ -147,4 +155,59 @@ export default {
 .setting_item .password .weui-input {
     text-align: left;
   }
+
+  /*底部弹窗样式*/
+  .myActionsheet{
+    .weui-actionsheet__cell{
+      height:0.7rem;
+      font-size:0.28rem;
+      line-height:0.7rem;
+    }
+  }
+  .my_popup{
+    .vux-popup-dialog{
+      font-size:0.28rem;
+      .vux-popup-header{
+        height:0.7rem;
+        font-size:0.28rem;
+        line-height:0.7rem;
+      }
+      .weui-cells{
+        label{
+          height:0.6rem;
+          font-size:0.28rem;
+          line-height:0.6rem;
+          border-bottom:1px solid #ddd;
+          .weui-icon-checked:before{
+            font-size:0.3rem;
+          }
+        }
+
+      }
+    }
+  }
+
+  // 设置-表单样式
+  .orderSend .setting_item .weui-cell {
+    padding: 0 0rem!important;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .orderSend .setting_item .weui-cells:after{
+    border: none!important;
+  }
+  .orderSend .setting_item  .weui-label {
+    width: auto!important;
+    height: 1rem;
+    line-height: 1rem;
+    font-size: 0.28rem;
+    padding-right: 0.4rem;
+  }
+  .orderSend .setting_item  .weui-input {
+    height: 0.9rem!important;
+    line-height: 1rem!important;
+    text-align: right;
+    font-size: 0.28rem;
+  }
+
 </style>

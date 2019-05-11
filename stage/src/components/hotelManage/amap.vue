@@ -47,7 +47,7 @@ module.exports = {
         citylimit: true
       },
       marker: {
-        position: [116.397477, 39.908692],
+        position: [116.397477, 39.908692]
       },
       address: '',
       events: {
@@ -65,17 +65,16 @@ module.exports = {
       oldParams: null
     }
   },
-  mounted(){
+  mounted () {
     let query = this.$route.query
     this.oldParams = query.params
     console.log(this.$route.query)
-    if(query.params){
-      if(query.params.postLongitude && query.params.postLatitude){
+    if (query.params) {
+      if (query.params.postLongitude && query.params.postLatitude) {
         this.getAddress(query.params.postLongitude, query.params.postLatitude)
       }
       this.address = query.params.postLocation
     }
-
   },
   methods: {
     getBack () {
@@ -86,19 +85,19 @@ module.exports = {
         }
       })
     },
-    addAddress(){
+    addAddress () {
       this.oldParams.postLongitude = this.lng
       this.oldParams.postLatitude = this.lat
       this.oldParams.postLocation = this.address
       this.$router.replace({
-          name: 'editHotel',
-          query: {
-            params: this.oldParams
-          }
+        name: 'editHotel',
+        query: {
+          params: this.oldParams
+        }
       })
     },
 
-    getAddress(lng, lat){
+    getAddress (lng, lat) {
       this.lng = lng
       this.lat = lat
       this.center = [lng, lat]

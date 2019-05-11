@@ -129,32 +129,32 @@
 </template>
 
 <script>
-  export default {
-    name: 'orderedGoods',
-    components: {
+export default {
+  name: 'orderedGoods',
+  components: {
 
+  },
+  data () {
+    return {
+      // 商品 0-待支付,1-待发货,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,8-待收货,9-已完成,99-所有状态
+      // 驿站 0-待支付,1-待确认,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,7-待入住,8-入住中,9-已完成,99-所有状态
+      oderStatus: 1
+    }
+  },
+  created () {
+    this.getDetail()
+  },
+  methods: {
+    getBack () {
+      this.$router.go(-1)
     },
-    data () {
-      return {
-        // 商品 0-待支付,1-待发货,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,8-待收货,9-已完成,99-所有状态
-        // 驿站 0-待支付,1-待确认,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,7-待入住,8-入住中,9-已完成,99-所有状态
-        oderStatus: 1
-      }
-    },
-    created(){
-      this.getDetail()
-    },
-    methods: {
-      getBack () {
-        this.$router.go(-1)
-      },
-      getDetail(){
-        this.$http.fetchGet('/merchant/order/get/goods/detail', {orderId: '00123'}).then((res) => {
-          this.userInfo = res.data.data
-        })
-      }
+    getDetail () {
+      this.$http.fetchGet('/merchant/order/get/goods/detail', {orderId: '00123'}).then((res) => {
+        this.userInfo = res.data.data
+      })
     }
   }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

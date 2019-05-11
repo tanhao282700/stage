@@ -134,15 +134,15 @@ export default {
       }
     }
   },
-  created(){
+  created () {
 
   },
-  mounted(){
+  mounted () {
     let query = this.$route.query
     console.log(query)
-    if(query.params){
+    if (query.params) {
       this.params = query.params
-    }else{
+    } else {
       this.getDate()
     }
   },
@@ -151,18 +151,18 @@ export default {
       this.$router.go(-1)
     },
 
-    getDate(){
-        let params = {
-          merchantId: this.$store.state.merchantId,
-          page: 1,
-          pageSize: 10
-        }
-        this.$http.fetchGet('/merchant/post/get/main', params).then((res) => {
-          this.params = res.data.data.postDetail
-        })
+    getDate () {
+      let params = {
+        merchantId: this.$store.state.merchantId,
+        page: 1,
+        pageSize: 10
+      }
+      this.$http.fetchGet('/merchant/post/get/main', params).then((res) => {
+        this.params = res.data.data.postDetail
+      })
     },
 
-    postData(){
+    postData () {
       let params = this.params
       console.log(params)
       this.$http.fetchPost('/merchant/post/update/merchantInfo', params).then((res) => {
@@ -180,7 +180,7 @@ export default {
         }
       })
     },
-//    头像
+    //    头像
     imagechanged_avater (data) {
       let param = new FormData() // 创建form对象
       param.append('files', data)// 通过append向form对象添加数据
@@ -205,10 +205,10 @@ export default {
         }
       }).then((res) => {
         this.params.imagesInfo.push({
-            url: res.data.data.path,
-//          资源类型【0-图片 1-视频】
-            type: 0,
-            videoCoverImage: ''
+          url: res.data.data.path,
+          //          资源类型【0-图片 1-视频】
+          type: 0,
+          videoCoverImage: ''
         })
         this.previewList.push({
           src: res.data.data.path,
@@ -227,7 +227,7 @@ export default {
       this.$router.replace({
         name: 'amap',
         query: {
-          params: this.params,
+          params: this.params
         }
       })
     }
