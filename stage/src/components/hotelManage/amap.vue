@@ -2,7 +2,7 @@
   <div class="background_gray">
     <div class="iosHeader vux-1px-b">
       <x-icon @click="getBack" class="headericon headericon_left" type="ios-arrow-left" size="60"></x-icon>
-      <span>认证信息</span>
+      <span>驿站地址</span>
     </div>
     <div class="amap-page-container my_amap_container">
       <div class="serch">
