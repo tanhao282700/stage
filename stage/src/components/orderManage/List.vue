@@ -407,10 +407,11 @@ export default {
     }
     .states {
       position: absolute;
-      bottom: -7.2rem;
+      /*bottom: -7.2rem;*/
+      top: 0.92rem;
       width: 100%;
       background: #fff;
-      height: 7.2rem;
+      min-height: 7.2rem;
       z-index: 999;
       li {
         height: 0.8rem;

@@ -39,6 +39,7 @@
 </style>
 <script>
 import { XSwitch, Group, XButton, XInput, XTextarea, Previewer, TransferDom } from 'vux'
+import md5 from 'js-md5'
 export default {
   name: 'Mine',
   directives: {
@@ -73,6 +74,8 @@ export default {
 
     postData () {
       let params = this.params
+      params.newPassword = md5(this.params.newPassword)
+      params.oldPassword = md5(this.params.oldPassword)
       params['merchantId'] = this.$store.state.merchantId
       this.$http.fetchPost('/merchant/update/login/password', params).then((res) => {
         if (res.data.code === 200) {
@@ -80,6 +83,7 @@ export default {
             text: '操作成功',
             position: 'middle'
           })
+          this.$router.go(-1)
         } else {
           this.$vux.toast.show({
             text: res.data.message,

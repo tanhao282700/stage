@@ -66,6 +66,15 @@ export default {
     }
   },
   created () {
+    if(this.$route.path === '/happen') {
+        this.happenSelected = true
+    }
+    if(this.$route.path === '/news') {
+      this.newsSelected = true
+    }
+    if(this.$route.path === '/mine') {
+      this.mineSelected = true
+    }
     this.getData()
   }
 }

@@ -107,7 +107,7 @@
                     </div>
                 </div>
             </div>
-            <div class="special_add">
+            <div @click="addSpecial" class="special_add">
                 <span class="icon iconfont">&#xe600;</span>
                 <span>添加</span>
             </div>
@@ -133,9 +133,14 @@ export default {
 
   },
   methods: {
-    goNextStep () {
+    addSpecial () {
       this.$router.push({
         name: 'addSpecial'
+      })
+    },
+    goNextStep () {
+      this.$router.push({
+        name: 'secondStep'
       })
     },
     getBack () {
@@ -166,7 +171,7 @@ export default {
             height: 0.96rem;
             line-height: 0.96rem;
             background: #19ad19;
-            font-size: 0.32rem;
+            font-size: 0.3rem;
             color: white;
         }
     }
@@ -324,9 +329,11 @@ export default {
         .special_con {
             height: 1.36rem;
             border: 1px solid #d7d7d7;
+          border-radius: 0.1rem;
             display: flex;
             align-items: center;
             .image {
+              margin-left: 0.1rem;
                 width: 1.8rem;
                 height: 1.2rem;
                 margin-right: 0.2rem;
@@ -399,5 +406,6 @@ export default {
         width: 100%;
         height: 100%;
         font-size: 0.24rem;
+      line-height: 0.6rem;
     }
 </style>

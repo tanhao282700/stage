@@ -59,7 +59,7 @@ export default {
   }
   .weui-toast {
     width: auto!important;
-    min-width: em;
+    min-width: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
