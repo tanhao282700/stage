@@ -76,6 +76,16 @@ export default new Router({
       component: resolve => { import('@/components/houseManage/HouseAdd').then(module => resolve(module)) }
     },
     {
+      path: '/houseMap',
+      name: 'houseMap',
+      component: resolve => { import('@/components/houseManage/HouseMap').then(module => resolve(module)) }
+    },
+    {
+      path: '/addSpecial',
+      name: 'addSpecial',
+      component: resolve => { import('@/components/houseManage/AddSpecial').then(module => resolve(module)) }
+    },
+    {
       path: '/hotelManage',
       name: 'hotelManage',
       component: resolve => { import('@/components/hotelManage/HotelManage').then(module => resolve(module)) }
