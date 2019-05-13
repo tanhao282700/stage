@@ -6,37 +6,53 @@
       <span class="headericon icon iconfont">&#xe62f;</span>
     </div>
     <div class="tabBar vux-1px-b">
-      <div class="bar active">
+      <div class="bar" @click="changeTab(1)" :class="{'active': tabIndex == 1}">
         <div class="barInfo">
           <span>驿站</span>
-          <badge text="123"></badge>
+          <badge :text="hotelOrderNum"></badge>
         </div>
       </div>
-      <div class="bar">
+      <div class="bar" @click="changeTab(2)" :class="{'active': tabIndex == 2}">
         <div class="barInfo">
           <span>商品</span>
-          <badge text="123"></badge>
+          <badge :text="goodsOrderNum"></badge>
         </div>
       </div>
     </div>
     <div class="state vux-1px-b">
       <div @click="openState">
-        <span>所有状态</span>
+        <span v-if="params.status == 99">所有状态</span>
+        <span v-if="params.status == 0">待支付</span>
+        <span v-if="params.status == 1 && tabIndex == 2">待发货</span>
+        <span v-if="params.status == 1 && tabIndex == 1">待确认</span>
+        <span v-if="params.status == 2">申请退款</span>
+        <span v-if="params.status == 3">退款失败</span>
+        <span v-if="params.status == 4">退款成功</span>
+        <span v-if="params.status == 5">取消订单</span>
+        <span v-if="params.status == 6">待点评</span>
+        <span v-if="params.status == 7">待入住</span>
+        <span v-if="params.status == 8 && tabIndex == 1">入住中</span>
+        <span v-if="params.status == 8 && tabIndex == 2">待收货</span>
+        <span v-if="params.status == 9">已完成</span>
         <span class="arrow" :class="isStateOpen ? 'arrow-down' : ''"></span>
       </div>
       <ul v-if="isStateOpen" class="states">
-        <li class="vux-1px-b">所有状态</li>
-        <li class="vux-1px-b">待付款</li>
-        <li class="vux-1px-b">待确认</li>
-        <li class="vux-1px-b">待入住</li>
-        <li class="vux-1px-b">入住中</li>
-        <li class="vux-1px-b">已完成</li>
-        <li class="vux-1px-b">申请退款</li>
-        <li class="vux-1px-b">退款成功</li>
-        <li class="vux-1px-b">退款失败</li>
+        <li @click="chooseStatus(99)" class="vux-1px-b">所有状态</li>
+        <li @click="chooseStatus(0)" class="vux-1px-b">待支付</li>
+        <li @click="chooseStatus(1)" v-if="tabIndex == 2" class="vux-1px-b">待发货</li>
+        <li @click="chooseStatus(1)" v-if="tabIndex == 1" class="vux-1px-b">待确认</li>
+        <li @click="chooseStatus(2)" class="vux-1px-b">申请退款</li>
+        <li @click="chooseStatus(3)" class="vux-1px-b">退款失败</li>
+        <li @click="chooseStatus(4)" class="vux-1px-b">退款成功</li>
+        <li @click="chooseStatus(5)" class="vux-1px-b">取消订单</li>
+        <li @click="chooseStatus(6)" class="vux-1px-b">待点评</li>
+        <li @click="chooseStatus(7)" v-if="tabIndex == 1" class="vux-1px-b">待入住</li>
+        <li @click="chooseStatus(8)" v-if="tabIndex == 1" class="vux-1px-b">入住中</li>
+        <li @click="chooseStatus(8)" v-if="tabIndex == 2" class="vux-1px-b">待收货</li>
+        <li @click="chooseStatus(9)" class="vux-1px-b">已完成</li>
       </ul>
     </div>
-    <div class="list_con">
+    <div class="list_con" ref="list_con">
       <div v-if="isStateOpen" class="shadow"></div>
       <div class="wrapper" ref="wrapper">
         <div class="bscroll-container">
@@ -45,27 +61,36 @@
             <span class="refresh-hook">{{pulldownMsg}}</span>
           </div>
           <!-- 内容列表 -->
-          <ul class="content" :class="isMoreData ? 'longCon' : 'shortCon'" >
-            <li @click="goDetails({path: 'orderedGoods', id: ''})" class="item vux-1px-b">
-              <div class="hotel">
+          <ul class="content" ref="content">
+            <li v-for="item in data" class="item vux-1px-b">
+              <div class="hotel" @click="goDetails({path: 'orderedHotel', id: item.orderId})" v-if="tabIndex == 1">
                 <div class="head vux-1px-b">
-                  <span>订单编号：0285452115387</span>
-                  <span>待付款</span>
+                  <span v-text="'订单编号：'+item.orderId "></span>
+                  <span v-if="item.status == 0">待支付</span>
+                  <span v-if="item.status == 1">待确认</span>
+                  <span v-if="item.status == 2">申请退款</span>
+                  <span v-if="item.status == 3">退款失败</span>
+                  <span v-if="item.status == 4">退款成功</span>
+                  <span v-if="item.status == 5">取消订单</span>
+                  <span v-if="item.status == 6">待点评</span>
+                  <span v-if="item.status == 7">待入住</span>
+                  <span v-if="item.status == 8">入住中</span>
+                  <span v-if="item.status == 9">已完成</span>
                 </div>
                 <div class="info vux-1px-b">
                   <div class="name">
-                    <span>吴彦祖</span>
-                    <span>17394930905</span>
+                    <span v-text="item.customName"></span>
+                    <span v-text="item.contactPhone"></span>
                   </div>
                   <div class="time">
                     <span>入离时间：</span>
-                    <span>2018-11-27</span>
+                    <span v-text="item.liveStartDate"></span>
                     <span> 至 </span>
-                    <span>2018-11-28</span>
+                    <span v-text="item.liveEndDate"></span>
                   </div>
                   <div class="address">
                     <span>预定房源：</span>
-                    <span>宽窄巷子阿达瓦吊袜带阿伟大挖到阿伟大挖到</span>
+                    <span v-text="item.roomTitle"></span>
                   </div>
                 </div>
                 <div class="botton">
@@ -73,20 +98,26 @@
                   <span>修改价格</span>
                 </div>
               </div>
-            </li>
-            <li class="item vux-1px-b">
-              <div class="goods">
+              <div @click="goDetails({path: 'orderedGoods', id: item.orderId})" v-if="tabIndex == 2" class="goods">
                 <div class="head vux-1px-b">
-                  <span>订单编号：0285452115387</span>
-                  <span>待付款</span>
+                  <span v-text="'订单编号：'+item.orderId"></span>
+                  <span v-if="item.status == 0">待付款</span>
+                  <span v-if="item.status == 1">待发货</span>
+                  <span v-if="item.status == 2">申请退款</span>
+                  <span v-if="item.status == 3">退款失败</span>
+                  <span v-if="item.status == 4">退款成功</span>
+                  <span v-if="item.status == 5">取消订单</span>
+                  <span v-if="item.status == 6">待点评</span>
+                  <span v-if="item.status == 8">待收货</span>
+                  <span v-if="item.status == 9">已完成</span>
                 </div>
                 <div class="goodsInfo vux-1px-b">
                   <div class="pics">
-                    <img src="../../assets/images/test.png" alt="">
+                    <img :src="item.imageUrl" alt="">
                   </div>
                   <div class="infos">
-                    <span>这里显示商品名称</span>
-                    <span>￥299.00</span>
+                    <span v-text="item.title"></span>
+                    <span v-text="'￥'+item.price"></span>
                   </div>
                 </div>
                 <div class="botton">
@@ -95,11 +126,15 @@
                 </div>
               </div>
             </li>
+            <div v-if="!isMoreData" class="no_data">
+              <span></span>
+              <span>暂无更多数据</span>
+              <span></span>
+            </div>
           </ul>
           <!-- 底部提示信息 -->
-          <div class="bottom-tip">
+          <div v-if="isMoreData" class="bottom-tip">
             <span class="loading-hook">{{pullupMsg}}</span>
-            <load-more :show-loading="false" tip="我是有底线的" background-color="#777"></load-more>
           </div>
         </div>
       </div>
@@ -125,11 +160,21 @@ export default {
     return {
       isStateOpen: false,
       value: '',
-      isMoreData: false,
-      data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26],
+      isMoreData: true,
+      data: [],
       pulldownMsg: '下拉刷新',
       pullupMsg: '加载更多',
-      alertHook: 'none'
+      alertHook: 'none',
+      params: {
+        merchantId: '',
+        status: 99, // 0-待支付,1-待发货,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,8-待收货,9-已完成,99-所有状态
+        // 0-待支付,1-待确认,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,7-待入住,8-入住中,9-已完成,99-所有状态
+        page: 1,
+        pageSize: 10
+      },
+      hotelOrderNum: 0,
+      goodsOrderNum: 0,
+      tabIndex: 1
     }
   },
   methods: {
@@ -138,7 +183,7 @@ export default {
       this.$router.push({
         name: data.path,
         params: {
-
+          id: data.id
         }
       })
     },
@@ -148,71 +193,144 @@ export default {
     getBack () {
       this.$router.go(-1)
     },
-    getData () {
-      let that = this
-      return new Promise(resolve => { // 模拟数据请求
-        setTimeout(() => {
-          that.isMoreData = false
-          console.log(that.isMoreData)
-          const arr = []
-          for (let i = 0; i < 26; i++) {
-            arr.push(count++)
-          }
-          resolve(arr)
-        }, 1000)
-      })
+    chooseStatus (status) {
+      this.params.status = status
+      this.isStateOpen = false
+      this.refreshData()
     },
     refreshalert () { // 刷新成功提示
       this.alertHook = 'block'
       setTimeout(() => {
         this.alertHook = 'none'
       }, 1000)
+    },
+    changeTab (tabIndex) {
+      this.params.status = 99
+      this.tabIndex = tabIndex
+      this.refreshData()
+    },
+    getInitHotelData () {
+      this.$http.fetchGet('/merchant/order/get/room/list', this.params).then((res) => {
+        this.hotelOrderNum = res.data.data.orderNum
+        this.data = res.data.data.orderList
+        if (this.data.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+          this.$nextTick(() => {
+            if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
+              this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
+            }
+          })
+        }
+        this.initScroll()
+      })
+    },
+    getInitGoodsData () {
+      this.$http.fetchGet('/merchant/order/get/goods/list', this.params).then((res) => {
+        this.goodsOrderNum = res.data.data.orderNum
+      })
+    },
+    initScroll () {
+      this.$nextTick(() => {
+        this.scroll = new BScroll(this.$refs.wrapper, { // 初始化better-scroll
+          probeType: 1, // 1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
+          click: true // 是否派发click事件
+        })
+        // 滑动过程中事件
+        this.scroll.on('scroll', (pos) => {
+          if (pos.y > 30) {
+            this.pulldownMsg = '释放立即刷新'
+          }
+        })
+        // 滑动结束松开事件
+        this.scroll.on('touchEnd', (pos) => { // 上拉刷新
+          if (pos.y > 30) {
+            this.refreshData()
+          } else if (pos.y < (this.scroll.maxScrollY - 30)) { // 下拉加载
+            this.loadMoreData()
+          }
+        })
+      })
+    },
+    refreshData () {
+      this.$refs.content.style.height = 'auto'
+      this.pullupMsg = '加载中。。。'
+      this.params.page = 1
+      let url = ''
+      if (this.tabIndex == 1) {
+        url = '/merchant/order/get/room/list'
+      } else {
+        url = '/merchant/order/get/goods/list'
+      }
+      this.$http.fetchGet(url, this.params).then((res) => {
+        if (this.tabIndex == 1) {
+          this.hotelOrderNum = res.data.data.orderNum
+        } else {
+          this.goodsOrderNum = res.data.data.orderNum
+        }
+        this.data = res.data.data.orderList
+        if (this.data.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+          this.$nextTick(() => {
+            if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
+              this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
+            }
+          })
+        }
+        // 恢复文本值
+        this.pullupMsg = '加载更多'
+        // 刷新列表后，重新计算滚动区域高度
+        this.scroll.refresh()
+      })
+    },
+    loadMoreData () {
+      if (this.data.length < this.params.pageSize || this.data.length < this.params.pageSize * this.params.page) {
+        this.isMoreData = false
+        return
+      }
+      this.params.page++
+      let url = ''
+      if (this.tabIndex == 1) {
+        url = '/merchant/order/get/room/list'
+      } else {
+        url = '/merchant/order/get/goods/list'
+      }
+      this.$http.fetchGet(url, this.params).then((res) => {
+        if (this.tabIndex == 1) {
+          this.hotelOrderNum = res.data.data.orderNum
+        } else {
+          this.goodsOrderNum = res.data.data.orderNum
+        }
+        if (this.data.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+        }
+        if (res.data.data.goodsList.length > 0) {
+          res.data.data.goodsList.map((item) => {
+            this.data.push(item)
+          })
+        } else {
+          this.isMoreData = false
+        }
+        // 恢复刷新提示文本值
+        this.pulldownMsg = '下拉刷新'
+        // 刷新列表后，重新计算滚动区域高度
+        this.scroll.refresh()
+      })
     }
   },
   created () {
-    const that = this
-    this.$nextTick(() => {
-      this.scroll = new BScroll(this.$refs.wrapper, { // 初始化better-scroll
-        probeType: 1, // 1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
-        click: true // 是否派发click事件
-      })
-      // 滑动过程中事件
-      this.scroll.on('scroll', (pos) => {
-        if (pos.y > 30) {
-          this.pulldownMsg = '释放立即刷新'
-        }
-      })
-      // 滑动结束松开事件
-      this.scroll.on('touchEnd', (pos) => { // 上拉刷新
-        console.log(pos)
-        if (pos.y > 30) {
-          console.log(222)
-          setTimeout(() => {
-            that.getData().then((res) => {
-              // 刷新数据
-              that.data = res
-              // 恢复刷新提示文本值
-              that.pulldownMsg = '下拉刷新'
-              // 刷新成功后提示
-              that.refreshalert()
-              // 刷新列表后，重新计算滚动区域高度
-              that.scroll.refresh()
-            })
-          }, 2000)
-        } else if (pos.y < (this.scroll.maxScrollY - 30)) { // 下拉加载
-          console.log(333)
-          this.pullupMsg = '加载中。。。'
-          setTimeout(() => {
-            that.getData().then((res) => {
-              // 恢复文本值
-              that.pullupMsg = '加载更多'
-              that.data = this.data.concat(res)
-              that.scroll.refresh()
-            })
-          }, 2000)
-        }
-      })
-    })
+    this.params.merchantId = this.$store.state.merchantId
+    if (this.$route.query.status == 1) {
+      this.params.status = 1
+      this.$router.replace({})
+    }
+    this.getInitHotelData()
+    this.getInitGoodsData()
   }
 }
 </script>
@@ -293,10 +411,11 @@ export default {
     }
     .states {
       position: absolute;
-      bottom: -7.2rem;
+      /*bottom: -7.2rem;*/
+      top: 0.92rem;
       width: 100%;
       background: #fff;
-      height: 7.2rem;
+      min-height: 7.2rem;
       z-index: 999;
       li {
         height: 0.8rem;

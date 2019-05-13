@@ -8,16 +8,16 @@
       <img :src="userInfo.headImage" alt="">
       <span>{{userInfo.nickName}}</span>
     </div>
-    <div class="rest vux-1px-b" style="margin-top: 0.2rem;">
+    <div class="rest vux-1px-b" @click="myMoney" style="margin-top: 0.2rem;">
       <span>我的余额</span>
       <div class="info">
         <span>{{userInfo.balance}}</span>
         <x-icon type="ios-arrow-right" size="40"></x-icon>
       </div>
     </div>
-    <div class="rest">
+    <div class="rest" @click="certification">
       <span>认证信息</span>
-      <div class="info" @click="certification">
+      <div class="info" >
         <span>{{userInfo.certificationInfo && userInfo.certificationInfo.certificationNo ? '已':'未' }}认证</span>
         <x-icon type="ios-arrow-right" size="40"></x-icon>
       </div>
@@ -51,6 +51,11 @@ export default {
     getData () {
       this.$http.fetchGet('/merchant/center/get/main', {merchantId: this.$store.state.merchantId}).then((res) => {
         this.userInfo = res.data.data
+      })
+    },
+    myMoney(){
+      this.$router.push({
+        name: 'myMoney'
       })
     },
     certification () {

@@ -14,7 +14,7 @@
       <x-icon class="infoIcon" type="ios-arrow-right" size="50"></x-icon>
     </div>
     <div class="infoTitle secondTitle">优惠券信息</div>
-    <div class="coupon">
+    <div class="coupon" @click="coupons">
       <span>优惠券</span>
       <div>
         <span v-text="baseInfo.couponNum+'张'"></span>
@@ -142,6 +142,11 @@ export default {
     editHotel () {
       this.$router.push({
         name: 'editHotel'
+      })
+    },
+    coupons(){
+      this.$router.push({
+        name: 'coupons'
       })
     },
     show (index) {

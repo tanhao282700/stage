@@ -24,31 +24,6 @@ export default new Router({
           path: 'mine',
           name: 'Mine',
           component: resolve => { import('@/components/main/Mine').then(module => resolve(module)) }
-        },
-        {
-          path: 'setting',
-          name: 'Setting',
-          component: resolve => { import('@/components/main/Setting').then(module => resolve(module)) }
-        },
-        {
-          path: 'certification',
-          name: 'certification',
-          component: resolve => { import('@/components/main/certification').then(module => resolve(module)) }
-        },
-        {
-          path: 'accountBind',
-          name: 'accountBind',
-          component: resolve => { import('@/components/main/accountBind').then(module => resolve(module)) }
-        },
-        {
-          path: 'setPassword',
-          name: 'setPassword',
-          component: resolve => { import('@/components/main/setPassword').then(module => resolve(module)) }
-        },
-        {
-          path: 'setPayPassword',
-          name: 'setPayPassword',
-          component: resolve => { import('@/components/main/setPayPassword').then(module => resolve(module)) }
         }
       ],
       redirect: to => {
@@ -66,6 +41,31 @@ export default new Router({
       component: resolve => { import('@/components/houseManage/HouseDetail').then(module => resolve(module)) }
     },
     {
+      path: '/houseAdd',
+      name: 'houseAdd',
+      component: resolve => { import('@/components/houseManage/HouseAdd').then(module => resolve(module)) }
+    },
+    {
+      path: '/secondStep',
+      name: 'secondStep',
+      component: resolve => { import('@/components/houseManage/SecondStep').then(module => resolve(module)) }
+    },
+    {
+      path: '/thirdStep',
+      name: 'thirdStep',
+      component: resolve => { import('@/components/houseManage/ThirdStep').then(module => resolve(module)) }
+    },
+    {
+      path: '/houseMap',
+      name: 'houseMap',
+      component: resolve => { import('@/components/houseManage/HouseMap').then(module => resolve(module)) }
+    },
+    {
+      path: '/addSpecial',
+      name: 'addSpecial',
+      component: resolve => { import('@/components/houseManage/AddSpecial').then(module => resolve(module)) }
+    },
+    {
       path: '/hotelManage',
       name: 'hotelManage',
       component: resolve => { import('@/components/hotelManage/HotelManage').then(module => resolve(module)) }
@@ -74,6 +74,11 @@ export default new Router({
       path: '/editHotel',
       name: 'editHotel',
       component: resolve => { import('@/components/hotelManage/editHotel').then(module => resolve(module)) }
+    },
+    {
+      path: '/amap',
+      name: 'amap',
+      component: resolve => { import('@/components/hotelManage/amap').then(module => resolve(module)) }
     },
     {
       path: '/goodsManage',
@@ -104,6 +109,56 @@ export default new Router({
       path: '/orderedGoods',
       name: 'orderedGoods',
       component: resolve => { import('@/components/orderManage/OrderedGoods').then(module => resolve(module)) }
+    },
+    {
+      path: '/orderHotel',
+      name: 'orderHotel',
+      component: resolve => { import('@/components/orderManage/orderHotel').then(module => resolve(module)) }
+    },
+    {
+      path: '/orderSend',
+      name: 'orderSend',
+      component: resolve => { import('@/components/orderManage/orderSend').then(module => resolve(module)) }
+    },
+    {
+      path: '/setting',
+      name: 'Setting',
+      component: resolve => { import('@/components/main/Setting').then(module => resolve(module)) }
+    },
+    {
+      path: '/myMoney',
+      name: 'myMoney',
+      component: resolve => { import('@/components/main/myMoney').then(module => resolve(module)) }
+    },
+    {
+      path: '/certification',
+      name: 'certification',
+      component: resolve => { import('@/components/main/certification').then(module => resolve(module)) }
+    },
+    {
+      path: '/accountBind',
+      name: 'accountBind',
+      component: resolve => { import('@/components/main/accountBind').then(module => resolve(module)) }
+    },
+    {
+      path: '/setPassword',
+      name: 'setPassword',
+      component: resolve => { import('@/components/main/setPassword').then(module => resolve(module)) }
+    },
+    {
+      path: '/setPayPassword',
+      name: 'setPayPassword',
+      component: resolve => { import('@/components/main/setPayPassword').then(module => resolve(module)) }
+    },
+    {
+      path: '/addCoupons',
+      name: 'addCoupons',
+      component: resolve => { import('@/components/hotelManage/addCoupons').then(module => resolve(module)) }
+    },
+    {
+      path: '/coupons',
+      name: 'coupons',
+      component: resolve => { import('@/components/hotelManage/coupons').then(module => resolve(module)) }
     }
   ]
 })

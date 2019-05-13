@@ -4,18 +4,29 @@
       <x-icon @click="getBack" class="headericon headericon_left" type="ios-arrow-left" size="60"></x-icon>
       <span>编辑驿站信息</span>
     </div>
-    <div class="clearfix">
-      <div class="setting_item">
+    <div class="clearfix modal_main">
+      <div class="setting_item avater">
         <span>驿站头像</span>
         <div class="info">
-          <span><img src="../../assets/images/test.png" alt=""></span>
+          <span><img :src="params.postHeadImage" alt=""></span>
           <x-icon type="ios-arrow-right" size="40"></x-icon>
         </div>
+
+        <vue-core-image-upload
+          :class="['btn', 'btn-primary']"
+          :crop="false"
+          @imageuploaded="imageuploaded"
+          @imagechanged="imagechanged_avater"
+          :isXhr="false"
+          input-of-file="file"
+          :max-file-size="5242880"
+          :url="uploadUrl">
+        </vue-core-image-upload>
       </div>
 
       <div class="setting_item">
         <group class="w_100">
-          <x-input title="驿站名称" placeholder="请输入驿站名称" v-model="params.title"></x-input>
+          <x-input title="驿站名称" placeholder="请输入驿站名称" v-model="params.postName"></x-input>
         </group>
       </div>
 
@@ -23,9 +34,9 @@
         <div class="w_100"><span>驿站地址</span></div>
         <div class="address">
           <group class="w_100 address_group">
-            <x-input title="" placeholder="请输入驿站地址" v-model="params.address"></x-input>
+            <x-input title="" placeholder="请输入驿站地址" v-model="params.postLocation"></x-input>
           </group>
-            <i class="iconfont icon-dingweiweizhi"></i>
+            <i class="iconfont icon-dingweiweizhi" @click="goMap"></i>
         </div>
       </div>
 
@@ -33,7 +44,7 @@
         <div class="w_100"><span>驿站简介</span></div>
         <div class="address">
           <group class="w_100">
-            <x-textarea :max="200" name="description" v-model="params.description" placeholder="请输入驿站简介"></x-textarea>
+            <x-textarea :max="200" name="description" v-model="params.postDescription" placeholder="请输入驿站简介"></x-textarea>
           </group>
         </div>
       </div>
@@ -46,8 +57,8 @@
               商品图片<span>(最多上传六张，建议使用横图)</span>
             </p> -->
             <div class="imgs">
-              <div class="pics" v-for="(item,index) in images">
-                <img @click="show(index)" class="previewer-demo-img uploadPics" :src="item" alt="">
+              <div class="pics" v-for="(item,index) in params.imagesInfo">
+                <img @click="show(index)" class="previewer-demo-img uploadPics" :src="item.url" alt="">
                 <span @click="deletePic(index)" class="deleteBtn icon iconfont">&#xe61e;</span>
               </div>
               <div class="pics upload_button">
@@ -72,7 +83,7 @@
         </div>
       </div>
     </div>
-
+    <div @click="postData" class="bottom">保存</div>
     <div v-transfer-dom>
       <previewer :list="previewList" ref="previewer" :options="options"></previewer>
     </div>
@@ -102,9 +113,13 @@ export default {
     return {
       newMessage: true,
       params: {
-        title: '',
-        address: '',
-        description: ''
+        postName: '',
+        postLocation: '',
+        postLatitude: null,
+        postLongitude: null,
+        postDescription: '',
+        postHeadImage: '',
+        imagesInfo: []
       },
       images: [],
       previewList: [],
@@ -119,10 +134,65 @@ export default {
       }
     }
   },
+  created () {
+
+  },
+  mounted () {
+    let query = this.$route.query
+    console.log(query)
+    if (query.params) {
+      this.params = query.params
+    } else {
+      this.getDate()
+    }
+  },
   methods: {
     getBack () {
       this.$router.go(-1)
     },
+
+    getDate () {
+      let params = {
+        merchantId: this.$store.state.merchantId,
+        page: 1,
+        pageSize: 10
+      }
+      this.$http.fetchGet('/merchant/post/get/main', params).then((res) => {
+        this.params = res.data.data.postDetail
+      })
+    },
+
+    postData () {
+      let params = this.params
+      console.log(params)
+      this.$http.fetchPost('/merchant/post/update/merchantInfo', params).then((res) => {
+        if (res.data.code === 200) {
+          this.$vux.toast.show({
+            text: '操作成功',
+            position: 'middle'
+          })
+        } else {
+          this.$vux.toast.show({
+            text: res.data.message,
+            position: 'middle',
+            type: 'warn'
+          })
+        }
+      })
+    },
+    //    头像
+    imagechanged_avater (data) {
+      let param = new FormData() // 创建form对象
+      param.append('files', data)// 通过append向form对象添加数据
+      this.$http.fetchPost('/merchant/common/image/upload', param, {
+        headers: {
+          'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
+        }
+      }).then((res) => {
+        this.params.postHeadImage = res.data.data.path
+      })
+    },
+
     imageuploaded (res) {
       console.log(res)
     },
@@ -134,7 +204,12 @@ export default {
           'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
         }
       }).then((res) => {
-        this.images.push(res.data.data.path)
+        this.params.imagesInfo.push({
+          url: res.data.data.path,
+          //          资源类型【0-图片 1-视频】
+          type: 0,
+          videoCoverImage: ''
+        })
         this.previewList.push({
           src: res.data.data.path,
           msrc: res.data.data.path
@@ -142,16 +217,36 @@ export default {
       })
     },
     deletePic (index) {
-      this.images.splice(index, 1)
+      this.params.imagesInfo.splice(index, 1)
       this.previewList.splice(index, 1)
     },
     show (index) {
       this.$refs.previewer.show(index)
+    },
+    goMap () {
+      this.$router.replace({
+        name: 'amap',
+        query: {
+          params: this.params
+        }
+      })
     }
   }
 }
 </script>
 <style>
+
+.avater{
+    position: relative;
+  }
+ .avater .g-core-image-upload-btn{
+    position: absolute;
+    top: 0px;
+    left:0px;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
   .setting_item .weui-cell {
     padding: 0 0rem!important;
     width: 100%;

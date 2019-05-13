@@ -30,7 +30,7 @@
         </div>
       </div>
     </div>
-    <div class="waitDo">
+    <div @click="goOderManage" class="waitDo">
       <span>待确认订单</span>
       <div class="waitDo_icon">
         <badge v-text="orderData.waitConfirmOrderNum || 0"></badge>
@@ -77,12 +77,20 @@ export default {
     }
   },
   methods: {
+    goOderManage () {
+      this.$router.push({
+        path: 'orderManage',
+        query: {
+          status: 1
+        }
+      })
+    },
     goManagePage (routerPath) {
       this.$router.push(routerPath)
     }
   },
   created () {
-    console.log(this.orderData)
+
   }
 }
 </script>
