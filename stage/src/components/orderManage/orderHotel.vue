@@ -96,8 +96,6 @@
           </div>
         </div>
 
-
-
         <div>
           <div class="defaultTitle defaultText">
             <span>留言</span>
@@ -134,8 +132,6 @@
           </div>
         </div>
 
-
-
         <div class="bottomLine" style="padding-top: 0.2rem;">
           订单编号：{{detail.orderId}}
         </div>
@@ -166,7 +162,6 @@
       <span @click="postData(3)">同意退款</span>
     </div>
 
-
   </div>
 </template>
 
@@ -189,7 +184,7 @@ export default {
         leaveMessage: '我是留言', // 留言信息
         orderAmt: 50, // 订单金额
         orderId: '', // 订单号
-        orderStatus:1,
+        orderStatus: 1,
         refundFailReason: '', // 退款失败理由
         refundReason: '', // 退款理由
         roomInfo: [], // 房源订单信息
@@ -317,18 +312,18 @@ export default {
             text: res.data.message,
             position: 'middle',
             type: 'warn',
-            time:99999
+            time: 99999
           })
         }
       })
     },
     getDetail () {
-      this.$http.fetchGet('/merchant/order/get/room/detail', {orderId: '00123'}).then((res) => {
+      this.$http.fetchGet('/merchant/order/get/room/detail', {orderId: this.$router.query.id}).then((res) => {
         //          this.detail = res.data.data
       })
     },
     dealStatus (status) {
-//      驿站 0-待支付,1-待确认,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,7-待入住,8-入住中,9-已完成,99-所有状态
+      //      驿站 0-待支付,1-待确认,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,7-待入住,8-入住中,9-已完成,99-所有状态
       let name = ''
       switch (status) {
         case 0: name = '待支付'; break

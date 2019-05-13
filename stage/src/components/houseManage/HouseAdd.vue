@@ -2,7 +2,7 @@
     <div class="houseAdd">
         <div class="iosHeader vux-1px-b">
             <span>第一步：基础信息</span>
-            <span @click="getBack" class="headericon icon iconfont">&#xe61a;</span>
+            <span @click="getBack" class="headericon_right headericon icon iconfont">&#xe61a;</span>
         </div>
         <div class="steps">
             <span></span>
@@ -177,23 +177,30 @@ export default {
     }
 
     .iosHeader {
-        width: 100%;
-        height: 1.28rem;
-        background: #fff;
-        position: relative;
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        font-size: 0.32rem;
-        padding-bottom: 0.24rem;
-        .headericon {
-            position: absolute;
-            right: 0.2rem;
-            bottom: 0.14rem;
-            font-size: 0.42rem;
-            color: #000000;
-        }
+  width: 100%;
+  height: 1.28rem;
+  background: #fff;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-size: 0.36rem;
+  padding-bottom: 0.24rem;
+  .headericon {
+    position: absolute;
+    bottom: 0.4rem;
+    font-size: 0.42rem;
+    color: #000000;
+    width: 0.48rem;
+    height: 0.48rem;
+    &.headericon_right{
+      right: 0.2rem;
     }
+    &.headericon_left{
+      left: 0.2rem;
+    }
+  }
+}
 
     .steps {
         height: 0.08rem;

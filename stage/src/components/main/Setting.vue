@@ -34,16 +34,17 @@
     <div class="rest">
       <span>联系客服</span>
       <div class="info">
+        <span>12456879</span>
         <x-icon type="ios-arrow-right" size="40"></x-icon>
       </div>
     </div>
-    <div class="rest">
+    <!-- <div class="rest">
       <span>清空缓存</span>
       <div class="info">
         <span>24.21M</span>
         <x-icon type="ios-arrow-right" size="40"></x-icon>
       </div>
-    </div>
+    </div> -->
     <div class="iphone">
       <x-button type="primary">退出当前账号</x-button>
     </div>

@@ -51,6 +51,11 @@ export default new Router({
       component: resolve => { import('@/components/houseManage/SecondStep').then(module => resolve(module)) }
     },
     {
+      path: '/thirdStep',
+      name: 'thirdStep',
+      component: resolve => { import('@/components/houseManage/ThirdStep').then(module => resolve(module)) }
+    },
+    {
       path: '/houseMap',
       name: 'houseMap',
       component: resolve => { import('@/components/houseManage/HouseMap').then(module => resolve(module)) }

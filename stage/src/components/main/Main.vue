@@ -4,7 +4,7 @@
       <router-view v-bind:orderData="orderData" />
     </div>
     <div class="main_foot vux-1px-t">
-      <tabbar>
+      <tabbar @on-index-change="tabChange">
         <tabbar-item :selected="happenSelected" link="/happen">
           <img slot="icon" src="../../assets/images/happen_noclick.png">
           <img slot="icon-active" src="../../assets/images/happen_click.png">
@@ -46,6 +46,9 @@ export default {
     }
   },
   methods: {
+    tabChange () {
+
+    },
     getData () {
       this.$http.fetchPost('/merchant/login', {account: '18140081852 ', password: md5('123456')}).then((res) => {
         axios.defaults.headers.common['token'] = res.data.data.token
@@ -66,13 +69,14 @@ export default {
     }
   },
   created () {
-    if(this.$route.path === '/happen') {
-        this.happenSelected = true
+    console.log(this.$route.path)
+    if (this.$route.path === '/happen') {
+      this.happenSelected = true
     }
-    if(this.$route.path === '/news') {
+    if (this.$route.path === '/news') {
       this.newsSelected = true
     }
-    if(this.$route.path === '/mine') {
+    if (this.$route.path === '/mine') {
       this.mineSelected = true
     }
     this.getData()
