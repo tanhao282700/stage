@@ -6,7 +6,6 @@
       <span>添加优惠券</span>
     </div>
 
-    <div class="goodsAdd_con">
       <div class="defaultLine">
         <group>
           <x-input title="优惠金额" placeholder="请输入优惠金额" v-model="params.amount"></x-input>
@@ -22,37 +21,57 @@
           <x-input title="发行张数" placeholder="请输入发行张数" v-model="params.buildQuantity"></x-input>
         </group>
       </div>
-      <div class="defaultLine">
-        <group>
-          <datetime-range title="开始时间" class="my_picker" start-date="2017-01-01" end-date="2017-02-02" format="YYYY/MM/DD" v-model="value" @on-change="onChange"></datetime-range>
-          <datetime-range class="my_picker" start-date="2017-01-01" end-date="2017-02-02" format="YYYY/MM/DD" v-model="value" @on-change="onChange"></datetime-range>
+      <div class="defaultLine" style="position: relative;">
+        <div class="my_picker">
+          <group>
+            <datetime-range title="有效期"
+                          :start-date="startDate"
+                          :end-date="endDate"
+                          format="YYYY/MM/DD"
+                          v-model="params.startTime"
+                          @on-change="onChangeStart"></datetime-range>
         </group>
+        </div>
+        <div class="my_picker my_picker2">
+          <group>
+            <datetime-range title="至"
+                          :start-date="startDate"
+                          :end-date="endDate"
+                          format="YYYY/MM/DD"
+                          v-model="params.endTime"
+                          @on-change="onChangeEnd"></datetime-range>
+          </group>
+        </div>
       </div>
 
-
+    <div class="submit">
+      <x-button type="primary" @click.native="postData">确认添加</x-button>
     </div>
 
   </div>
 </template>
 
 <script>
-  import { XInput, Group, DatetimeRange } from 'vux'
+  import { XInput, Group, DatetimeRange, XButton } from 'vux'
   export default {
     name: 'addCoupons',
     components: {
+      XButton,
       XInput,
       Group,
       DatetimeRange
     },
     data () {
       return {
+        startDate: '2017-01-01',
+        endDate: '2020-02-02',
         value: ['2017-01-15', '03', '05'],
         params: {
           amount: '',
           lowerLimitAmount: '',
           buildQuantity: '',
-          startTime: null,
-          endTime: null
+          startTime: [],
+          endTime: []
         }
       }
     },
@@ -60,11 +79,18 @@
       getBack () {
         this.$router.go(-1)
       },
-      onChange (val) {
+      onChangeStart (val) {
         console.log('change', val)
+        this.params.startTime = val
+      },
+      onChangeEnd (val) {
+        console.log('change', val)
+        this.params.endTime = val
       },
       postData () {
-        let params = this.params
+        let params = JSON.parse(JSON.stringify(this.params))
+        params['startTime'] = params.startTime.join('')
+        params['endTime'] = params.endTime.join('')
         params['merchantId'] = this.$store.state.merchantId
         this.$http.fetchPost('/merchant/post/add/coupon', params).then((res) => {
           if (res.data.code === 200) {
@@ -86,6 +112,7 @@
 </script>
 
 <style lang="less" rel="stylesheet/less" scoped>
+
   .Coupons {
     width: 100%;
     height: 100%;
@@ -122,6 +149,18 @@
       color: #000000;
     }
   }
+
+.submit {
+  padding: 0 0.3rem;
+  padding-top: 1rem;
+  button{
+    width: 100%;
+    height: 0.8rem;
+    font-size: 0.32rem;
+    color: #fff;
+    border-radius: 0.4rem;
+  }
+}
 
 </style>
 <style>

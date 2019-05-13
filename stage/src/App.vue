@@ -113,6 +113,24 @@ export default {
   }
 }
 
+ /* 清除浮动 */
+.clearfix::after {
+  content: ".";
+  clear: both;
+  display: block;
+  overflow: hidden;
+  font-size: 0;
+  height: 0;
+}
+.clearfix {
+  zoom: 1;
+}
+ .text-ellipsis{
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
+ }
+
 // 设置-表单样式
 .setting_item .weui-cell{
   padding: 0 0rem!important;
@@ -188,11 +206,26 @@ export default {
   }
 
   .my_picker{
+    width: 50%;
+    position: relative;
     .vux-cell-primary{
       height: 1rem!important;
       line-height: 1rem!important;
       text-align: right;
-      font-size: 0.28rem;
+      width: 3rem;
+      font-size: 0.24rem;
+      position: relative;
+    }
+    &.my_picker2{
+      height: 100%;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      z-index: 9;
+      .vux-popup-picker-select{
+        width: 100%;
+        height: 100%;
+      }
     }
   }
 
