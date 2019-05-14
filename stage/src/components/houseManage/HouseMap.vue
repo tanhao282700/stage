@@ -63,24 +63,44 @@ module.exports = {
   mounted () {
     let query = this.$route.query
     this.oldParams = query.params
+    if(query.params.postLongitude == 0 && query.params.postLatitude == 0) {
+        query.params.postLongitude = 104.065735
+        query.params.postLatitude = 30.659462
+    }
     console.log(this.$route.query)
     if (query.params) {
       if (query.params.postLongitude && query.params.postLatitude) {
         this.getAddress(query.params.postLongitude, query.params.postLatitude)
       }
       this.address = query.params.postLocation
+    } else {
+      this.getAddress(104.065735,30.659462)
+      let that = this
+      geocoder.getAddress([104.065735,30.659462], function (status, result) {
+        if (status === 'complete' && result.info === 'OK') {
+          if (result && result.regeocode) {
+            that.address = result.regeocode.formattedAddress
+            that.$nextTick()
+          }
+        }
+      })
     }
   },
   methods: {
     getBack () {
-      this.$router.go(-1)
+      this.$router.replace({
+          name: 'houseAdd',
+        query: {
+              params: this.oldParams
+        }
+      })
     },
     addAddress () {
       this.oldParams.postLongitude = this.lng
       this.oldParams.postLatitude = this.lat
       this.oldParams.postLocation = this.address
       this.$router.replace({
-        name: 'editHotel',
+        name: 'houseAdd',
         query: {
           params: this.oldParams
         }

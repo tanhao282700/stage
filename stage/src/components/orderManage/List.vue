@@ -182,7 +182,7 @@ export default {
       console.log(data)
       this.$router.push({
         name: data.path,
-        params: {
+        query: {
           id: data.id
         }
       })

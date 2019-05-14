@@ -177,9 +177,13 @@ export default {
   /*底部弹窗样式*/
   .myActionsheet{
     .weui-actionsheet__cell{
-      height:0.7rem;
-      font-size:0.28rem;
-      line-height:0.7rem;
+      /*height:0.7rem;*/
+      font-size:0.24rem;
+      line-height:0.6rem;
+    }
+    .weui-actionsheet__menu {
+      max-height: 5rem;
+      overflow: auto;
     }
   }
   .my_popup{

@@ -17,7 +17,7 @@
                         <span>元/晚</span>
                     </div>
                     <group class="line_input vux-1px-b">
-                        <x-input placeholder="周一~周四及因串休导致需要正常上班的日期" v-model="value"></x-input>
+                        <x-input placeholder="周一~周四及因串休导致需要正常上班的日期" v-model="baseInfo.workPrice"></x-input>
                     </group>
                 </div>
             </div>
@@ -28,16 +28,16 @@
                         <span>元/晚</span>
                     </div>
                     <group class="line_input vux-1px-b">
-                        <x-input placeholder="周五、周六及法定节假日、情人节圣诞节等" v-model="value"></x-input>
+                        <x-input placeholder="周五、周六及法定节假日、情人节圣诞节等" v-model="baseInfo.holidayPrice"></x-input>
                     </group>
                 </div>
             </div>
             <div class="selectLine">
                 <div class="deraultLine_con vux-1px-b">
                     <span>单独设置某日价格</span>
-                    <div class="info">
+                    <div @click="setPrice" class="info">
                         <span>去设置</span>
-                        <x-icon type="ios-arrow-right" size="40"></x-icon>
+                        <x-icon type="ios-arrow-right" size="60"></x-icon>
                     </div>
                 </div>
             </div>
@@ -45,28 +45,28 @@
                 <div class="menberPersons_con vux-1px-b">
                     <span>可住几人</span>
                     <div class="menbers">
-                        <x-icon type="ios-minus" size="50"></x-icon>
-                        <span class="persons">2人</span>
-                        <x-icon type="ios-plus" size="50"></x-icon>
+                        <x-icon @click="reducePerson" type="ios-minus" size="60"></x-icon>
+                        <span class="persons" v-text="baseInfo.housePersonNumber+'人'"></span>
+                        <x-icon @click="addPerson" type="ios-plus" size="60"></x-icon>
                     </div>
                 </div>
             </div>
             <div class="td">
                 <div class="tit">
                     <span>退订政策</span>
-                    <span>修改</span>
+                    <span @click="isShow1=true">修改</span>
                 </div>
                 <div class="tips">客人取消入住可以获得多少退款</div>
-                <div class="tdzc">带娃带娃的撒无多爱我的爱我的爱我的爱我的爱我的</div>
+                <div class="tdzc" v-for="item in baseInfo.ubscribeComments" v-text="item.text" v-if="item.isSelected == 1"></div>
             </div>
             <div class="defaultTitle">更多预定选项</div>
             <div class="menberPersons">
                     <div class="menberPersons_con vux-1px-b">
                         <span>最少预定天数</span>
                         <div class="menbers">
-                            <x-icon type="ios-minus" size="50"></x-icon>
-                            <span class="persons">2</span>
-                            <x-icon type="ios-plus" size="50"></x-icon>
+                            <x-icon @click="reduceMin" type="ios-minus" size="60"></x-icon>
+                            <span class="persons" v-text="baseInfo.minReserveDay+'天'"></span>
+                            <x-icon @click="addMin" type="ios-plus" size="60"></x-icon>
                         </div>
                     </div>
             </div>
@@ -74,63 +74,213 @@
                     <div class="menberPersons_con vux-1px-b">
                         <span>最大预定天数</span>
                         <div class="menbers">
-                            <x-icon type="ios-minus" size="50"></x-icon>
-                            <span class="persons">2</span>
-                            <x-icon type="ios-plus" size="50"></x-icon>
+                            <x-icon @click="reduceMax" type="ios-minus" size="60"></x-icon>
+                            <span class="persons" v-text="baseInfo.maxReserveDay+'天'"></span>
+                            <x-icon @click="addMax" type="ios-plus" size="60"></x-icon>
                         </div>
                     </div>
             </div>
             <div class="td">
                     <div class="tit">
                         <span>当天预定时间</span>
-                        <span>修改</span>
+                        <span @click="isShow2 = true">修改</span>
                     </div>
                     <div class="tips">周五、周六及法定节假日客人可在几点前预定房源？</div>
-                    <div class="tdzc vux-1px-b">带娃带娃的撒无多爱我的爱我的爱我的爱我的爱我的</div>
+                    <div class="tdzc vux-1px-b" v-text="baseInfo.nowReserveTime"></div>
             </div>
             <div class="td">
                     <div class="tit">
                         <span>入住时间</span>
-                        <span>修改</span>
+                        <span @click="isShow3 = true">修改</span>
                     </div>
                     <div class="tips">客人最早几点可以入住？</div>
-                    <div class="tdzc vux-1px-b">12:00</div>
+                    <div class="tdzc vux-1px-b" v-text="baseInfo.checkInTimeFront+'后'"></div>
             </div>
             <div class="td" style="margin-bottom: 0.8rem;padding-bottom: 0.4rem;">
                     <div class="tit">
                         <span>退房时间</span>
-                        <span>修改</span>
+                        <span @click="isShow4=true">修改</span>
                     </div>
                     <div class="tips">客人最晚几点可以退房？</div>
-                    <div class="tdzc">12:00</div>
+                    <div class="tdzc" v-text="baseInfo.checkOutTime+'前'"></div>
             </div>
         </div>
         <div @click="getNextStep" class="bottom">下一步</div>
+      <actionsheet class="myActionsheet"
+                   v-model="isShow1"
+                   :menus="baseInfo.ubscribeComments"
+                   :close-on-clicking-mask="false"
+                   show-cancel
+                   @on-click-menu="confirm1"
+                   @on-click-mask="isShow1 = false">
+      </actionsheet>
+      <actionsheet class="myActionsheet"
+                   v-model="isShow2"
+                   :menus="timer"
+                   :close-on-clicking-mask="false"
+                   show-cancel
+                   @on-click-menu="confirm2"
+                   @on-click-mask="isShow2 = false">
+      </actionsheet>
+      <actionsheet class="myActionsheet"
+                   v-model="isShow3"
+                   :menus="time1"
+                   :close-on-clicking-mask="false"
+                   show-cancel
+                   @on-click-menu="confirm3"
+                   @on-click-mask="isShow3 = false">
+      </actionsheet>
+      <actionsheet class="myActionsheet"
+                   v-model="isShow4"
+                   :menus="time1"
+                   :close-on-clicking-mask="false"
+                   show-cancel
+                   @on-click-menu="confirm4"
+                   @on-click-mask="isShow4 = false">
+      </actionsheet>
     </div>
 </template>
 
 <script>
-import { XInput, Group, InlineXNumber } from 'vux'
+import { XInput, Group, InlineXNumber, Actionsheet } from 'vux'
 export default {
   name: 'thirdStep',
   components: {
     XInput,
     Group,
-    InlineXNumber
+    InlineXNumber,
+    Actionsheet
   },
   data () {
     return {
-      value: ''
+      value: '',
+      baseInfo: {},
+      isShow1: false,
+      isShow2: false,
+      isShow3: false,
+      isShow4: false,
+      timer: {
+          menu1: '提前一天预订',
+        menu2: '22:00前',
+        menu3: '23:00前',
+        menu4: '24:00前',
+        menu5: '不限时间'
+      },
+      time1: {
+        menu1: '1:00',
+        menu2: '2:00',
+        menu3: '3:00',
+        menu4: '4:00',
+        menu5: '5:00',
+        menu6: '6:00',
+        menu7: '7:00',
+        menu8: '8:00',
+        menu9: '9:00',
+        menu10: '10:00',
+        menu11: '11:00',
+        menu12: '21:00',
+        menu13: '13:00',
+        menu14: '14:00',
+        menu15: '15:00',
+        menu16: '16:00',
+        menu17: '17:00',
+        menu18: '18:00',
+        menu19: '19:00',
+        menu20: '20:00',
+        menu21: '21:00',
+        menu22: '22:00',
+        menu23: '23:00',
+        menu24: '24:00'
+      }
     }
   },
   created () {
-
+    this.getBaseData()
   },
   methods: {
-    getBack () {
-      this.$router.go(-1)
+    setPrice(){
+        this.$router.replace({
+            name: 'setPrice',
+          query: {
+            params: this.$route.query.params
+          }
+        })
     },
-    getNextStep () { }
+      reduceMax() {
+        if(this.baseInfo.maxReserveDay < 2 || this.baseInfo.maxReserveDay === this.baseInfo.minReserveDay){
+          return
+        }
+        this.baseInfo.maxReserveDay--
+      },
+    addMax() {
+      this.baseInfo.maxReserveDay++
+    },
+    reduceMin() {
+        if(this.baseInfo.minReserveDay < 2){
+            return
+        }
+        this.baseInfo.minReserveDay--
+    },
+    addMin() {
+          if(this.baseInfo.maxReserveDay === this.baseInfo.minReserveDay) {
+              return
+          }
+      this.baseInfo.minReserveDay++
+    },
+    reducePerson() {
+        if(this.baseInfo.housePersonNumber < 2) {
+            return
+        }
+        this.baseInfo.housePersonNumber--
+    },
+    addPerson() {
+      this.baseInfo.housePersonNumber++
+    },
+    confirm4(menuKey,menuItem) {
+          this.baseInfo.checkOutTime = menuItem
+    },
+    confirm3(menuKey,menuItem){
+      this.baseInfo.checkInTimeFront = menuItem
+    },
+    confirm2(menuKey,menuItem){
+      this.baseInfo.nowReserveTime = menuItem
+    },
+    confirm1(menuKey,menuItem) {
+      this.baseInfo.ubscribeCommentsId = menuItem.id
+      this.baseInfo.ubscribeComments.map((item)=>{
+          if(item.id === menuItem.id) {
+              item.isSelected = 1
+          } else {
+            item.isSelected = 0
+          }
+      })
+    },
+      getBaseData() {
+          this.$http.fetchGet('/merchant/room/get/reserveInfo',{roomId: this.$route.query.params.id}).then((res)=>{
+            this.baseInfo = res.data.data
+            this.baseInfo.ubscribeComments.map((item)=>{
+                item.label = item.text
+            })
+          })
+      },
+    getBack () {
+      this.$router.replace({
+        name: 'secondStep',
+        query: {
+          params: this.$route.query.params
+        }
+      })
+    },
+    getNextStep () {
+      this.$http.fetchPost('/merchant/room/add/reserveInfo',this.baseInfo).then((res)=>{
+        this.$router.replace({
+          name: 'fourthStep',
+          query: {
+            params: this.$route.query.params
+          }
+        })
+      })
+    }
   }
 }
 </script>
@@ -243,7 +393,7 @@ export default {
                         margin-right: 0.1rem;
                     }
                     .persons {
-                        width: 1rem;
+                        width: 0.6rem;
                         text-align: center;
                         margin-right: 0.1rem;
                     }
@@ -309,7 +459,7 @@ export default {
         margin-top: 0;
     }
 
-    .thirdStep .vux-x-icon {
+    .menberPersons .vux-x-icon {
         fill: #19ad19;
     }
 </style>

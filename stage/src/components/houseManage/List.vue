@@ -36,7 +36,7 @@
                 <span v-text="'最后编辑于 ' + item.updateTime"></span>
                 <span v-text="'￥' + item.price"></span>
               </div>
-              <span v-if="tabIndex == 3" class="edit">继续编辑</span>
+              <span @click="edit(item)" v-if="tabIndex != 1" class="edit">继续编辑</span>
             </li>
             <div v-if="!isMoreData" class="no_data">
               <span></span>
@@ -86,6 +86,17 @@ export default {
     }
   },
   methods: {
+    edit(item) {
+      this.$router.push({
+        name: 'houseAdd',
+        query: {
+          params: {
+            id: item.id
+          }
+        }
+      })
+      event.stopPropagation()
+    },
     addHouse () {
       this.$router.push('houseAdd')
     },

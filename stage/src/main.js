@@ -21,7 +21,7 @@ const FastClick = require('fastclick')
 FastClick.attach(document.body)
 
 VueAMap.initAMapApiLoader({
-  key: 'c0408319200d0542ad91622c187a6104',
+  key: '7817e03cdc916a4817be3a6da24fddcf',
   plugin: ['AMap.Autocomplete', 'AMap.Geocoder', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor'],
   // 默认高德 sdk 版本为 1.4.4
   v: '1.4.4'

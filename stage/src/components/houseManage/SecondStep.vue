@@ -14,7 +14,7 @@
       <div class="textarea1">
         <div class="textarea1_con vux-1px-b">
             <group>
-                <x-textarea placeholder="一个好的标题应该尽可能简洁的介绍房源特点，能帮您带来更多的客人" :max=60 :show-counter=true v-model="value"></x-textarea>
+                <x-textarea placeholder="一个好的标题应该尽可能简洁的介绍房源特点，能帮您带来更多的客人" :max=60 :show-counter=true v-model="baseInfo.title"></x-textarea>
               </group>
         </div>
       </div>
@@ -22,30 +22,23 @@
       <div class="textarea1" style="padding-bottom: 0.2rem;">
           <div class="textarea1_con vux-1px-b">
               <group>
-                  <x-textarea placeholder="您的房源有什么特点，如位置（离地铁站近、景点近？）、设施（有大投影？能做饭？）以及其它特点" autosize :max=500 :show-counter=true v-model="value"></x-textarea>
+                  <x-textarea placeholder="您的房源有什么特点，如位置（离地铁站近、景点近？）、设施（有大投影？能做饭？）以及其它特点" autosize :max=500 :show-counter=true v-model="baseInfo.text"></x-textarea>
                 </group>
           </div>
       </div>
       <div class="defaultTitle">您对客人有什么要求</div>
-      <div class="requestLine">
-          <span>允许抽烟</span>
+      <div class="requestLine" v-for="(item,index) in baseInfo.requirements">
+          <span v-text="item.text"></span>
           <div class=radios>
-              <span class="red headericon icon iconfont">&#xe61e;</span>
-              <span class="headericon icon iconfont">&#xe60e;</span>
-          </div>
-      </div>
-      <div class="requestLine">
-          <span>允许做饭</span>
-          <div class=radios>
-              <span class="headericon icon iconfont">&#xe61e;</span>
-              <span class="green headericon icon iconfont">&#xe60e;</span>
+              <span @click="sele(index,2)" :class="{'red':item.checkedStatus == 2}" class="headericon icon iconfont">&#xe61e;</span>
+              <span @click="sele(index,1)" :class="{'green':item.checkedStatus == 1}" class="headericon icon iconfont">&#xe60e;</span>
           </div>
       </div>
       <div class="defaultTitle">其它注意事项</div>
       <div class="textarea1">
         <div class="textarea1_con vux-1px-b">
             <group>
-                <x-textarea autosize placeholder="其它需要客人遵守的规则" :max=100 :show-counter=true v-model="value"></x-textarea>
+                <x-textarea autosize placeholder="其它需要客人遵守的规则" :max=100 :show-counter=true v-model="baseInfo.otherRequirement"></x-textarea>
               </group>
         </div>
       </div>
@@ -66,28 +59,38 @@ export default {
     return {
       value: '',
       value2: '',
-      radio003: [{
-        icon: 'http://dn-placeholder.qbox.me/110x110/FF2D55/000',
-        key: '001',
-        value: 'radio001'
-      }, {
-        icon: 'http://dn-placeholder.qbox.me/110x110/FF2D55/000',
-        key: '002',
-        value: 'radio002'
-      }]
+      baseInfo: {}
     }
   },
   created () {
-
+    this.getBaseData()
   },
   methods: {
+    sele(index,status) {
+      this.baseInfo.requirements[index].checkedStatus = status
+    },
+      getBaseData() {
+        this.$http.fetchGet('/merchant/room/get/introduceInfo',{roomId: this.$route.query.params.id}).then((res)=>{
+          this.baseInfo = res.data.data
+        })
+      },
     getBack () {
-      this.$router.go(-1)
+      this.$router.replace({
+        name: 'houseAdd',
+        query: {
+          params: this.$route.query.params
+        }
+      })
     },
     getNextStep () {
-      this.$router.push({
-        name: 'thirdStep'
-      })
+          this.$http.fetchPost('/merchant/room/add/introduceInfo',this.baseInfo).then((res)=>{
+            this.$router.replace({
+              name: 'thirdStep',
+              query: {
+                  params: this.$route.query.params
+              }
+            })
+          })
     }
   }
 }

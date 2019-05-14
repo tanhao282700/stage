@@ -272,8 +272,8 @@ export default {
       })
     },
     getDetail () {
-      this.$http.fetchGet('/merchant/order/get/goods/detail', {orderId: this.$router.query.id}).then((res) => {
-        //        this.detail = res.data.data
+      this.$http.fetchGet('/merchant/order/get/goods/detail', {orderId: this.$route.query.id}).then((res) => {
+                this.detail = res.data.data
       })
     },
     dealStatus (status) {

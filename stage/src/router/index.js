@@ -56,9 +56,24 @@ export default new Router({
       component: resolve => { import('@/components/houseManage/ThirdStep').then(module => resolve(module)) }
     },
     {
+      path: '/fourthStep',
+      name: 'fourthStep',
+      component: resolve => { import('@/components/houseManage/FourthStep').then(module => resolve(module)) }
+    },
+    {
       path: '/houseMap',
       name: 'houseMap',
       component: resolve => { import('@/components/houseManage/HouseMap').then(module => resolve(module)) }
+    },
+    {
+      path: '/houseEquipment',
+      name: 'houseEquipment',
+      component: resolve => { import('@/components/houseManage/HouseEquipment').then(module => resolve(module)) }
+    },
+    {
+      path: '/setPrice',
+      name: 'setPrice',
+      component: resolve => { import('@/components/houseManage/SetPrice').then(module => resolve(module)) }
     },
     {
       path: '/addSpecial',

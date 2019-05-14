@@ -15,38 +15,72 @@
             <div class="address">
                 <div class="tit">详细地址</div>
                 <div @click="chooseAddress" class="addrIcon vux-1px-b">
-                    <span>四川省创都市高新西区四川省创都市高新西区四川省创都市高新西区</span>
+                    <span v-text="baseInfo.detailAddress"></span>
                     <span class="icon iconfont">&#xe62e;</span>
                 </div>
                 <div class="tit">楼、单元、门牌号</div>
                 <div class="addrIcon houseAddAttrArea vux-1px-b">
                     <group>
-                        <x-textarea placeholder="请填写您的门牌号，此信息只对预定的客人展示" :show-counter="true" :max="20" v-model="value"></x-textarea>
+                        <x-textarea placeholder="请填写您的门牌号，此信息只对预定的客人展示" :show-counter="true" :max="20" v-model="baseInfo.houseNumber"></x-textarea>
                     </group>
                 </div>
             </div>
             <div class="defaultTitle">房型信息</div>
             <div class="defaultLine">
-                <div class="deraultLine_con vux-1px-b">
+                <div @click="isShow1=true" class="deraultLine_con vux-1px-b">
                     <span>驿站类型</span>
                     <div class="info">
-                        <span>请选择</span>
+                        <span v-text="baseInfo.roomTypeInfo[0].isSelected ? baseInfo.roomTypeInfo[0].name : '请选择'"></span>
                         <x-icon type="ios-arrow-right" size="40"></x-icon>
                     </div>
                 </div>
             </div>
             <div class="defaultLine">
-                <div class="deraultLine_con">
+                <div class="deraultLine_con vux-1px-b">
                     <span>整套户型</span>
                     <div class="info">
-                        <span>请选择</span>
-                        <x-icon type="ios-arrow-right" size="40"></x-icon>
+                        <!--<span>请选择</span>
+                        <x-icon type="ios-arrow-right" size="40"></x-icon>-->
                     </div>
                 </div>
             </div>
+          <div class="addLine">
+            <div class="childLine">
+              <div class="nums">
+                <x-icon @click="reduce(1)" type="ios-minus" size="60"></x-icon>
+                <span v-text="baseInfo.apartmentInfo[0].room_quantity" class="persons"></span>
+                <x-icon @click="adder(1)" type="ios-plus" size="60"></x-icon>
+              </div>
+              <div class="types">室</div>
+            </div>
+            <div class="childLine">
+              <div class="nums">
+                <x-icon @click="reduce(2)" type="ios-minus" size="60"></x-icon>
+                <span v-text="baseInfo.apartmentInfo[0].office_quantity" class="persons"></span>
+                <x-icon @click="adder(2)" type="ios-plus" size="60"></x-icon>
+              </div>
+              <div class="types">厅</div>
+            </div>
+            <div class="childLine">
+              <div class="nums">
+                <x-icon @click="reduce(3)" type="ios-minus" size="60"></x-icon>
+                <span v-text="baseInfo.apartmentInfo[0].kitchen_quantity" class="persons"></span>
+                <x-icon @click="adder(3)" type="ios-plus" size="60"></x-icon>
+              </div>
+              <div class="types">厨</div>
+            </div>
+            <div class="childLine">
+              <div class="nums">
+                <x-icon @click="reduce(4)" type="ios-minus" size="60"></x-icon>
+                <span v-text="baseInfo.apartmentInfo[0].toilet_quantity" class="persons"></span>
+                <x-icon @click="adder(4)" type="ios-plus" size="60"></x-icon>
+              </div>
+              <div class="types">卫</div>
+            </div>
+          </div>
             <div class="defaultTitle">整套面积（平米）</div>
             <div class="defaultLine vux-1px-b">
-                <div class="deraultLine_con">
+                <div @click="getEquipment" class="deraultLine_con">
                     <span>房间设施</span>
                     <div class="info">
                         <span>请选择</span>
@@ -55,10 +89,10 @@
                 </div>
             </div>
             <div class="defaultLine vux-1px-b">
-                <div class="deraultLine_con">
+                <div @click="isShow2=true" class="deraultLine_con">
                     <span>床型</span>
                     <div class="info">
-                        <span>请选择</span>
+                        <span v-text="baseInfo.bedModelInfo[0].isSelected ? baseInfo.bedModelInfo[0].name : '请选择'">请选择</span>
                         <x-icon type="ios-arrow-right" size="40"></x-icon>
                     </div>
                 </div>
@@ -67,8 +101,9 @@
                 <div class="selectLineCon">
                     <span>卫生间</span>
                     <div class="info">
-                        <span>独卫</span>
-                        <span>公共</span>
+                        <span @click="chooseToilet(1)" :class="{'active':baseInfo.toiletStatus == 1}">独卫</span>
+                        <span @click="chooseToilet(2)" :class="{'active':baseInfo.toiletStatus == 2}">公共</span>
+                        <span @click="chooseToilet(3)" :class="{'active':baseInfo.toiletStatus == 3}">独卫+公共</span>
                     </div>
                 </div>
             </div>
@@ -76,8 +111,9 @@
                 <div class="selectLineCon">
                     <span>厨房</span>
                     <div class="info">
-                        <span class="active">燃气灶</span>
-                        <span>电磁炉</span>
+                        <span @click="chooseKitchen(1)" :class="{'active':baseInfo.kitchenStatus == 1}">燃气灶</span>
+                        <span @click="chooseKitchen(2)" :class="{'active':baseInfo.kitchenStatus == 2}">电磁炉</span>
+                      <span @click="chooseKitchen(3)" :class="{'active':baseInfo.kitchenStatus == 3}">燃气灶+电磁炉</span>
                     </div>
                 </div>
             </div>
@@ -85,26 +121,16 @@
                 <span>定制项目</span>
                 <span>可添加一些付费定制项目（如枕头、鲜花等），供客人下单时自助选择。定制的价格最终会加到房间的房费中。</span>
             </div>
-            <div class="special">
+            <div class="special" v-for="(item,index) in baseInfo.customProjectInfo">
                 <div class="special_con">
                     <div class="image">
-                        <img src="../../assets/images/test.png" alt="">
+                        <img :src="item.image_path" alt="">
                     </div>
                     <div class="info">
-                        <span>这里显示标题</span>
-                        <span>¥29.00</span>
+                        <span v-text="item.title"></span>
+                        <span v-text="'¥'+item.price"></span>
                     </div>
-                </div>
-            </div>
-            <div class="special">
-                <div class="special_con">
-                    <div class="image">
-                        <img src="../../assets/images/test.png" alt="">
-                    </div>
-                    <div class="info">
-                        <span>这里显示标题</span>
-                        <span>¥29.00</span>
-                    </div>
+                  <span @click="deleteSpecial(index)" class="deleteBtn icon iconfont">&#xe61e;</span>
                 </div>
             </div>
             <div @click="addSpecial" class="special_add">
@@ -113,43 +139,223 @@
             </div>
         </div>
         <div @click="goNextStep" class="bottom">下一步</div>
+        <actionsheet class="myActionsheet"
+                     v-model="isShow1"
+                     :menus="menuList1"
+                     :close-on-clicking-mask="false"
+                     show-cancel
+                     @on-click-menu="confirm1"
+                     @on-click-mask="isShow1 = false">
+        </actionsheet>
+      <actionsheet class="myActionsheet"
+                   v-model="isShow2"
+                   :menus="menuList2"
+                   :close-on-clicking-mask="false"
+                   show-cancel
+                   @on-click-menu="confirm2"
+                   @on-click-mask="isShow2 = false">
+      </actionsheet>
     </div>
 </template>
 
 <script>
-import { XTextarea, Group } from 'vux'
+import { XTextarea, Group, Actionsheet } from 'vux'
 export default {
   name: 'houseAdd',
   components: {
     XTextarea,
-    Group
+    Group,
+    Actionsheet
   },
   data () {
     return {
-      value: ''
+      value: '',
+      baseInfo: {},
+      isShow1: false,
+      menuList1: [],
+      isShow2: false,
+      menuList2: []
     }
   },
   created () {
-
+    this.getBaseInfo()
   },
   methods: {
+      deleteSpecial(index){
+          this.baseInfo.customProjectInfo.splice(index,1)
+      },
+    getEquipment() {
+      this.$http.fetchPost('/merchant/room/add/baseInfo', this.baseInfo).then((res)=>{
+        this.$router.replace({
+          name: 'houseEquipment',
+          query: {
+            params: {
+              id: res.data.data.id
+            }
+          }
+        })
+      })
+    },
+    reduce (type) {
+        if(type == 1) {
+            if(this.baseInfo.apartmentInfo[0].room_quantity == 0) {
+                return
+            }
+            this.baseInfo.apartmentInfo[0].room_quantity--
+        }
+      if(type == 2) {
+        if(this.baseInfo.apartmentInfo[0].office_quantity == 0) {
+          return
+        }
+        this.baseInfo.apartmentInfo[0].office_quantity--
+      }
+      if(type == 3) {
+        if(this.baseInfo.apartmentInfo[0].kitchen_quantity == 0) {
+          return
+        }
+        this.baseInfo.apartmentInfo[0].kitchen_quantity--
+      }
+      if(type == 4) {
+        if(this.baseInfo.apartmentInfo[0].toilet_quantity == 0) {
+          return
+        }
+        this.baseInfo.apartmentInfo[0].toilet_quantity--
+      }
+    },
+    adder (type) {
+      if(type == 1) {
+        this.baseInfo.apartmentInfo[0].room_quantity++
+      }
+      if(type == 2) {
+        this.baseInfo.apartmentInfo[0].office_quantity++
+      }
+      if(type == 3) {
+        this.baseInfo.apartmentInfo[0].kitchen_quantity++
+      }
+      if(type == 4) {
+        this.baseInfo.apartmentInfo[0].toilet_quantity++
+      }
+    },
+    chooseToilet(status) {
+        if(status == this.baseInfo.toiletStatus) {
+          this.baseInfo.toiletStatus = 0
+          return
+        }
+        this.baseInfo.toiletStatus = status
+    },
+    chooseKitchen(status) {
+      if(status == this.baseInfo.kitchenStatus) {
+        this.baseInfo.kitchenStatus = 0
+        return
+      }
+      this.baseInfo.kitchenStatus = status
+    },
+    confirm1(menuKey,menuItem) {
+        menuItem.isSelected = true
+      this.baseInfo.roomTypeInfo = [menuItem]
+      this.baseInfo.roomTypeId = menuItem.id
+      this.isShow1 = false
+    },
+    confirm2(menuKey,menuItem) {
+      menuItem.isSelected = true
+      this.baseInfo.bedModelInfo = [menuItem]
+      this.baseInfo.bedModelId = menuItem.id
+      this.isShow1 = false
+    },
     addSpecial () {
-      this.$router.push({
-        name: 'addSpecial'
+      this.$http.fetchPost('/merchant/room/add/baseInfo', this.baseInfo).then((res)=>{
+        this.$router.replace({
+          name: 'addSpecial',
+          query: {
+            params: {
+              postLongitude: this.baseInfo.longitude,
+              postLatitude: this.baseInfo.latitude,
+              id: res.data.data.id
+            }
+          }
+        })
       })
     },
     goNextStep () {
-      this.$router.push({
-        name: 'secondStep'
+      this.$http.fetchPost('/merchant/room/add/baseInfo', this.baseInfo).then((res)=>{
+        this.$router.replace({
+          name: 'secondStep',
+          query: {
+            params: {
+              postLongitude: this.baseInfo.longitude,
+              postLatitude: this.baseInfo.latitude,
+              id: res.data.data.id
+            }
+          }
+        })
       })
     },
     getBack () {
       this.$router.go(-1)
     },
     chooseAddress () {
-      this.$router.push({
-        name: 'houseMap'
+      this.$http.fetchPost('/merchant/room/add/baseInfo', this.baseInfo).then((res)=>{
+        this.$router.replace({
+          name: 'houseMap',
+          query: {
+            params: {
+              postLongitude: this.baseInfo.longitude,
+              postLatitude: this.baseInfo.latitude,
+              id: res.data.data.id
+            }
+          }
+        })
       })
+    },
+    getBaseInfo () {
+        let id = ''
+        if(this.$route.query.params) {
+            id = this.$route.query.params.id || ''
+        }
+        this.$http.fetchGet('/merchant/room/get/baseInfo',{roomId: id}).then((res)=>{
+          this.baseInfo = res.data.data
+          this.baseInfo.merchantId = this.$store.state.merchantId
+          if(this.$route.query.params && this.$route.query.params.postLocation) {
+              this.baseInfo.detailAddress = this.$route.query.params.postLocation
+            this.baseInfo.latitude = this.$route.query.params.postLatitude
+            this.baseInfo.longitude = this.$route.query.params.postLongitude
+          }
+          this.menuList1 = res.data.data.roomTypeInfo
+          this.menuList1.map((item)=>{
+              item.label = item.name
+            if(item.isSelected){
+              this.baseInfo.roomTypeInfo = [item]
+              this.baseInfo.roomTypeId = item.id
+            }
+          })
+          this.menuList2 = res.data.data.bedModelInfo
+          this.menuList2.map((item)=>{
+            item.label = item.name
+            if(item.isSelected){
+              this.baseInfo.bedModelInfo = [item]
+              this.baseInfo.bedModelId = item.id
+            }
+          })
+
+          let facilitiesInfo = []
+          this.baseInfo.facilitiesInfo.map((item)=>{
+              let flag = false
+            let childList = []
+              item.facilities.map((child)=>{
+                    if(child.isSelected == 1){
+                      flag = true
+                      childList.push(child)
+                    }
+              })
+            if(flag) {
+                  item.facilities = childList
+              facilitiesInfo.push(item)
+            }
+          })
+          this.baseInfo.facilitiesInfo = facilitiesInfo
+
+
+        })
     }
   }
 }
@@ -270,6 +476,28 @@ export default {
         font-weight: bold;
         text-align: left;
     }
+    .addLine {
+      height: 0.72rem;
+      background: #fff;
+      padding: 0 0.2rem;
+      display: flex;
+      justify-content: space-around;
+      .childLine {
+        display: flex;
+        align-items: center;
+        .nums {
+          display: flex;
+          align-items: center;
+          svg:first-child {
+            margin-right: 0.1rem;
+          }
+          svg:last-child {
+            margin-left: 0.1rem;
+            margin-right: 0.1rem;
+          }
+        }
+      }
+    }
 
     .defaultLine {
         height: 0.72rem;
@@ -310,7 +538,8 @@ export default {
                 align-items: center;
                 display: flex;
                 span {
-                    width: 1.08rem;
+                    /*width: 1.08rem;*/
+                    padding: 0 0.1rem;
                     height: 0.46rem;
                     text-align: center;
                     line-height: 0.46rem;
@@ -318,7 +547,7 @@ export default {
                     border-radius: 0.1rem;
                     font-size: 0.28rem;
                 }
-                span:first-child {
+                span:first-child,span:nth-child(2) {
                     margin-right: 0.2rem;
                 }
                 .active {
@@ -339,6 +568,14 @@ export default {
           border-radius: 0.1rem;
             display: flex;
             align-items: center;
+          position: relative;
+          .deleteBtn {
+            position: absolute;
+            right: 0;
+            top: -0.17rem;
+            font-size: 0.34rem;
+            color: #d7d7d7;
+          }
             .image {
               margin-left: 0.1rem;
                 width: 1.8rem;
@@ -414,5 +651,8 @@ export default {
         height: 100%;
         font-size: 0.24rem;
       line-height: 0.6rem;
+    }
+    .houseAdd .vux-x-icon {
+      fill: #19ad19;
     }
 </style>

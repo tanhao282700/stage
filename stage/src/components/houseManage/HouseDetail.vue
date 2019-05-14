@@ -49,10 +49,9 @@
             <inline-calendar
               ref="calendar"
               class="inline-calendar-demo"
-              :show.sync="show"
+              show.sync="true"
               v-model="value"
-              start-date="2016-04-01"
-              end-date="2018-05-30"
+              @on-view-change="changeMonth"
               :render-function="buildSlotFn">
             </inline-calendar>
           </div>
@@ -85,7 +84,7 @@
         <div class="bottom">
           <span @click="checkStatus(2)" v-if="tabIndex == 1">下架</span>
           <span @click="checkStatus(1)" v-if="tabIndex == 2">上架</span>
-          <span>修改</span>
+          <span @click="getEdit">修改</span>
         </div>
       </div>
       <div v-show="index == 1" class="con">
@@ -174,7 +173,7 @@ export default {
     return {
       tabIndex: 0,
       isShowMore: false,
-      value: ['2019-05-12', '2019-05-13'],
+      value: [],
       data3: 4.5,
       index: 0,
       list2: ['详情', '评价'],
@@ -273,6 +272,41 @@ export default {
     }
   },
   methods: {
+    getEdit(){
+        this.$router.push({
+            name: 'houseAdd',
+          query: {
+                params:{
+                    id: this.$route.query.id
+                }
+          }
+        })
+    },
+    changeMonth(data, index){
+      if(index!==0){
+        if(data.month<10){
+          data.month = '0'+data.month
+        }
+        this.$http.fetchGet('/merchant/room/get/reserveday',{roomId: this.$route.query.id,month: data.year+'-'+data.month}).then((res)=>{
+            res.data.data.map((item)=>{
+            this.value.push(item.live_time)
+          })
+        })
+      }
+    },
+      getOrderMonth(){
+        let timer = new Date()
+        let year = timer.getFullYear()
+        let month = timer.getMonth()+1
+        if(month < 10){
+            month = '0'+month
+        }
+          this.$http.fetchGet('/merchant/room/get/reserveday',{roomId: this.$route.query.id,month: year+'-'+month}).then((res)=>{
+            res.data.data.map((item)=>{
+                this.value.push(item.live_time)
+            })
+          })
+      },
     checkStatus (status) {
       this.$http.fetchGet('/merchant/room/update/status', {roomId: this.$route.query.id, operate: status}).then((res) => {
         if (res.data.code === 200) {
@@ -313,6 +347,7 @@ export default {
   created () {
     this.tabIndex = this.$route.query.tabIndex
     this.getBaseInfo()
+    this.getOrderMonth()
     // const that = this
     // this.$nextTick(() => {
     //   this.scroll = new BScroll(this.$refs.wrapper, {
@@ -742,11 +777,23 @@ export default {
   border-radius: 0.1rem;
   color: white;
 }
-.inline-calendar td.is-disabled div {
+.inline-calendar td div {
   display: none;
+}
+.inline-calendar td.current div {
+  display: inline-block;
+  font-size: 0.24rem;
 }
 .current div{
   display: block!important;
   color:white;
+}
+  .houseDetail .vux-prev-icon {
+    width: 0.12rem;
+    height: 0.12rem;
+  }
+.houseDetail .vux-next-icon {
+  width: 0.12rem;
+  height: 0.12rem;
 }
 </style>
