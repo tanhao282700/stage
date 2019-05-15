@@ -136,6 +136,11 @@ export default new Router({
       component: resolve => { import('@/components/orderManage/orderSend').then(module => resolve(module)) }
     },
     {
+      path: '/changePrice',
+      name: 'changePrice',
+      component: resolve => { import('@/components/orderManage/changePrice').then(module => resolve(module)) }
+    },
+    {
       path: '/setting',
       name: 'Setting',
       component: resolve => { import('@/components/main/Setting').then(module => resolve(module)) }

@@ -19,16 +19,15 @@
           <div class="defaultTitle defaultText">
             <span>预定房源</span>
           </div>
-          <div class="orderedHouse"
-               v-for="(item, index) in detail.roomInfo" :key="index">
+          <div class="orderedHouse">
             <div class="img">
-              <img :src="item.url" alt="">
+              <img :src="detail.roomInfo.url" alt="">
             </div>
             <div class="info">
-              <p>{{item.title}}</p>
-              <span>{{item.liveDay}}</span>
+              <p>{{detail.roomInfo.title}}</p>
+              <span>{{detail.roomInfo.liveDay}}</span>
             </div>
-            <span class="price redText">¥{{item.amount}}</span>
+            <span class="price redText">¥{{detail.roomInfo.amount}}</span>
           </div>
         </div>
 
@@ -311,15 +310,14 @@ export default {
           this.$vux.toast.show({
             text: res.data.message,
             position: 'middle',
-            type: 'warn',
-            time: 99999
+            type: 'warn'
           })
         }
       })
     },
     getDetail () {
-      this.$http.fetchGet('/merchant/order/get/room/detail', {orderId: this.$router.query.id}).then((res) => {
-        //          this.detail = res.data.data
+      this.$http.fetchGet('/merchant/order/get/room/detail', {orderId: this.$route.query.id}).then((res) => {
+         this.detail = res.data.data
       })
     },
     dealStatus (status) {

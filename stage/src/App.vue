@@ -275,4 +275,58 @@ export default {
     font-size: 0.28rem;
   }
 
+
+  @media screen and (min-width: 1024px){
+    .weui-dialog {
+      width: 6.1rem!important;
+    }
+  }
+  .priceTit {
+    height: 0.92rem;;
+    display: flex;
+    justify-content: space-between;
+    width: 6.1rem;
+    align-items: center;
+    padding: 0 0.2rem;
+    background: #f7f7f7;
+    span {
+      color: #6c6c6c;
+      font-size: 0.32rem;
+    }
+  }
+  .priceArea {
+    padding: 0 0.4rem 0.2rem 0.4rem;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    span:first-child {
+      font-size: 0.28rem;
+      padding: 0.2rem 0 0.1rem 0;
+    }
+    .vux-x-input {
+      background: #efefef;
+    }
+  }
+  .priceBottom {
+    height: 1.1rem;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0.4rem;
+    span {
+      width: 2.4rem;
+      height: 0.78rem;
+      border: 1px solid #d7d7d7;
+      font-size: 0.28rem;
+      color: #6c6c6c;
+      line-height: 0.78rem;
+      text-align: center;
+      border-radius: 0.1rem;
+      margin-top: 0.2rem;
+    }
+    span:last-child {
+      background: #19ad19;
+      color: white;
+    }
+  }
+
 </style>

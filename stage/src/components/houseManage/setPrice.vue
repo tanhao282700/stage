@@ -10,31 +10,114 @@
         show.sync="false"
         class="inline-calendar-demo"
         v-model="value"
+        :show-last-month="false"
+        :show-next-month="false"
         @on-view-change="changeMonth"
+        @on-select-single-date="selectDate"
         :render-function="buildSlotFn">
       </inline-calendar>
     </div>
-    <div class="bottom">保存</div>
+    <div @click="saveData" class="bottom">保存</div>
+    <div v-transfer-dom>
+      <x-dialog v-model="show" class="dialog-demo">
+        <div class="priceTit">
+          <span>修改价格</span>
+          <span @click="show=false" class="icon iconfont">&#xe61a;</span>
+        </div>
+        <div class="priceArea">
+          <span v-text="chooseData.day"></span>
+          <x-input placeholder="输入价格" v-model="chooseData.price"></x-input>
+        </div>
+        <div class="priceBottom">
+          <span @click="show=false">取消</span>
+          <span @click="changePrice">确定</span>
+        </div>
+      </x-dialog>
+    </div>
   </div>
 </template>
 
 <script>
-  import { InlineCalendar } from 'vux'
+  import { InlineCalendar, XDialog, XInput, TransferDomDirective as TransferDom } from 'vux'
   export default {
     name: 'setPrice',
+    directives: {
+      TransferDom
+    },
     components: {
-      InlineCalendar
+      InlineCalendar,
+      XDialog,
+      XInput
     },
     data () {
       return {
-        value: [],
-        timePrice: []
+          value1: '',
+        value: '',
+        timePrice: [],
+        show: false,
+        chooseData: {
+          day: '',
+          price: ''
+        },
+        chooseDataList: []
       }
     },
     created () {
       this.getData()
     },
     methods: {
+      saveData() {
+          console.log(this.chooseDataList)
+        this.$http.fetchGet('/merchant/room/get/reserveInfo',{roomId: this.$route.query.params.id}).then((res)=>{
+          res.data.data.specialDaysPrice = this.chooseDataList
+          this.$http.fetchPost('/merchant/room/add/reserveInfo',res.data.data).then((req)=>{
+            if(res.data.code == 200){
+              this.$vux.toast.show({
+                text: '价格保存成功',
+                position: 'middle'
+              })
+              this.getBack()
+            }else{
+              this.$vux.toast.show({
+                text: res.data.message,
+                position: 'middle',
+                type: 'warn'
+              })
+            }
+          })
+        })
+      },
+      changePrice() {
+          let flag = true
+        this.chooseDataList.map((item)=>{
+            if(item.day === this.chooseData.day){
+              flag = false
+                item.price = chooseData.price
+            }
+        })
+        if(flag){
+          this.chooseDataList.push({
+              day: this.chooseData.day,
+            price: this.chooseData.price
+          })
+        }
+        this.timePrice.map((item)=>{
+            if(item.day === this.chooseData.day) {
+              item.price = this.chooseData.price
+            }
+        })
+        this.show = false
+      },
+      selectDate(currentValue) {
+        this.show = true;
+          this.timePrice.map((item)=>{
+              if(item.day === currentValue){
+                  this.chooseData.day = item.day
+                this.chooseData.price = ''
+                return
+              }
+          })
+      },
       getData(){
         let timer = new Date()
         let year = timer.getFullYear()
@@ -52,6 +135,13 @@
         }
         this.$http.fetchGet('/merchant/room/get/dayprice',{roomId: this.$route.query.params.id,month: data.year+'-'+data.month}).then((res)=>{
           this.timePrice = res.data.data
+          this.timePrice.map((item)=>{
+              this.chooseDataList.map((child)=>{
+                  if(item.day === child.day) {
+                      item.price = child.price
+                  }
+              })
+          })
         })
       },
       buildSlotFn(pa1,pa2,pa3){

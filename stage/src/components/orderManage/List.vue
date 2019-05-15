@@ -63,7 +63,7 @@
           <!-- 内容列表 -->
           <ul class="content" ref="content">
             <li v-for="item in data" class="item vux-1px-b">
-              <div class="hotel" @click="goDetails({path: 'orderedHotel', id: item.orderId})" v-if="tabIndex == 1">
+              <div class="hotel" @click="goDetails({path: 'orderHotel', id: item.orderId})" v-if="tabIndex == 1">
                 <div class="head vux-1px-b">
                   <span v-text="'订单编号：'+item.orderId "></span>
                   <span v-if="item.status == 0">待支付</span>
@@ -94,8 +94,8 @@
                   </div>
                 </div>
                 <div class="botton">
-                  <span>取消订单</span>
-                  <span>修改价格</span>
+                  <span v-if="item.status == 0">取消订单</span>
+                  <span @click="changePrice(item.orderId)">修改价格</span>
                 </div>
               </div>
               <div @click="goDetails({path: 'orderedGoods', id: item.orderId})" v-if="tabIndex == 2" class="goods">
@@ -121,8 +121,8 @@
                   </div>
                 </div>
                 <div class="botton">
-                  <span>取消订单</span>
-                  <span>修改价格</span>
+                  <span v-if="item.status == 0">取消订单</span>
+                  <!--<span>修改价格</span>-->
                 </div>
               </div>
             </li>
@@ -178,6 +178,15 @@ export default {
     }
   },
   methods: {
+    changePrice(id) {
+        this.$router.push({
+            name: 'changePrice',
+          query: {
+            id: id
+          }
+        })
+      event.stopPropagation()
+    },
     goDetails (data) {
       console.log(data)
       this.$router.push({
