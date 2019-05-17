@@ -1,7 +1,7 @@
 <template>
   <div class="goodsDetail">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" class="headerIcon" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>商品详情</span>
     </div>
     <div class="content">
@@ -29,7 +29,7 @@
                 </div>
               </div>
             </div>
-            <div v-if="status == 2" class="bottom">
+            <div class="bottom">
               <span @click="checkGoods(2)" v-if="status == 1">下架</span>
               <span @click="checkGoods(1)" v-if="status == 2">上架</span>
               <span @click="getEdit">修改</span>
@@ -41,15 +41,15 @@
             <div class="statistics">
               <div class="statistics_con">
                 <div class="left">
-                  <span class="num">1</span>
+                  <span class="num" v-text="commentsInfo.point || 5"></span>
                   <div class="raters">
                     <span>超赞</span>
                     <div>
-                      <rater disabled v-model="data3"></rater>
+                      <rater disabled v-model="commentsInfo.point || 5"></rater>
                     </div>
                   </div>
                 </div>
-                <div class="right">132条评论</div>
+                <div class="right" v-text="commentsInfo.commentNumber+'条评论'"></div>
               </div>
             </div>
             <div class="statisticsList" ref="list_con">
@@ -61,25 +61,27 @@
                     </div>
                   <!-- 内容列表 -->
                   <ul class="content" ref="content">
-                    <li class="item vux-1px-b" v-for="item in commentsInfo.comments">
+                    <li class="item vux-1px-b" v-for="(item,parentIndex) in commentsInfo.comments">
                       <div class="userInfo">
                         <div class="user">
-                          <img src="../../assets/images/test.png" alt="">
+                          <img :src="item.head_image" alt="">
                           <div class="nickName">
-                            <span>用户昵称</span>
-                            <span>2018-08-18</span>
+                            <span v-text="item.nick_name"></span>
+                            <span v-text="item.comment_date"></span>
                           </div>
                         </div>
                         <div class="rater">
-                          <rater disabled v-model="data3"></rater>
+                          <rater disabled v-model="item.comment_point"></rater>
                         </div>
                       </div>
-                      <div class="description">带娃阿伟大阿伟大阿伟大阿伟大挖到佛挡杀佛撒旦法阿斯蒂芬瓦达瓦阿伟大阿瑟的阿伟大阿伟大阿伟大阿伟大阿伟大阿伟大阿伟大</div>
+                      <div class="description" v-text="item.comment_text"></div>
+                      <div class="description" style="color:#5d5d5d;" v-if="item.replyText" v-text="'我：'+item.replyText"></div>
+
                       <div class="imgs">
-                        <img class="previewer-demo-img" v-for="(item, index) in list" :src="item.src" width="100" @click="show(index)">
+                        <img class="previewer-demo-img" v-for="(child, index) in item.commentImageInfo" :src="child.url" width="100" @click="show(parentIndex,index)">
                       </div>
-                      <div class="reply">
-                        <span>回复</span>
+                      <div v-if="!item.replyText" class="reply">
+                        <span @click="showDialog(item.id)">回复</span>
                       </div>
                     </li>
                     <div v-if="!isMoreData" class="no_data">
@@ -100,7 +102,7 @@
       </swiper>
     </div>
     <div v-transfer-dom>
-      <previewer :list="list" ref="previewer" :options="options"></previewer>
+      <previewer :list="previewList" ref="previewer" :options="options"></previewer>
     </div>
   </div>
 </template>
@@ -125,6 +127,10 @@ export default {
   },
   data () {
     return {
+      currentCommentId: '',
+      commentsValue: '',
+      showToast: false,
+      previewList: [],
       pulldownMsg: '下拉刷新',
       pullupMsg: '加载更多',
       alertHook: 'none',
@@ -185,15 +191,62 @@ export default {
     }
   },
   methods: {
+    showDialog(id) {
+      this.currentCommentId = id
+      this.showToast = true
+    },
+    replyComment () {
+      if(!this.commentsValue){
+        this.$vux.toast.show({
+          text: '请输入内容',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      this.$http.fetchPost('/merchant/good/add/commentreply',{commentId: this.currentCommentId,merchantId:this.$store.state.merchantId,replyText:this.commentsValue}).then((res)=>{
+        if(res.data.code == 200) {
+          this.$vux.toast.show({
+            text: '评论成功',
+            position: 'middle',
+            type: 'warn'
+          })
+          this.commentsInfo.comments.map((item)=>{
+            if(item.id === this.currentCommentId){
+              item.replyText = this.commentsValue
+            }
+          })
+          this.currentCommentId = ''
+          this.commentsValue = ''
+          this.showToast = false
+        }else{
+          this.$vux.toast.show({
+            text: res.data.message,
+            position: 'middle',
+            type: 'warn'
+          })
+        }
+      })
+    },
     getBack () {
       this.$router.go(-1)
     },
-    show (index) {
-      this.$refs.previewer.show(index)
+    show (parent,index) {
+      this.previewList = this.commentsInfo.comments[parent].commentImageInfo
+      this.previewList.map((item)=>{
+        item.msrc = item.src = item.url
+        item.w = item.h = 0
+      })
+      this.$nextTick(()=>{
+        this.$refs.previewer.show(index)
+      })
     },
     getData () {
       this.$http.fetchGet('/merchant/good/get/detail', {goodId: this.$route.query.id}).then((res) => {
-        this.baseInfo = res.data.data
+        setTimeout(() => {
+          this.$vux.loading.hide()
+        }, 500)
+          this.baseInfo = res.data.data
       })
     },
     getList () {
@@ -239,8 +292,14 @@ export default {
         this.isMoreData = false
         return
       }
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.params.page++
       this.$http.fetchGet('/merchant/good/get/comments', this.params).then((res) => {
+        setTimeout(() => {
+          this.$vux.loading.hide()
+        }, 500)
         if (this.commentsInfo.comments.length === this.params.pageSize) {
           this.isMoreData = true
         } else {
@@ -260,12 +319,19 @@ export default {
       })
     },
     checkGoods (status) {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.$http.fetchGet('/merchant/good/update/status', {goodId: this.$route.query.id, operate: status}).then((res) => {
-        if (res.data.code === 200) {
+        this.$vux.loading.hide()
+          if (res.data.code === 200) {
           this.$vux.toast.show({
             text: '操作成功',
             position: 'middle'
           })
+          if(status == 1) {
+              this.$router.go(-1)
+          }
         } else {
           this.$vux.toast.show({
             text: res.data.message,
@@ -307,6 +373,9 @@ export default {
     }
   },
   created () {
+    this.$vux.loading.show({
+      text: '加载中...'
+    })
     this.params.goodId = this.$route.query.id
     this.status = this.$route.query.tabIndex
     this.getData()
@@ -323,28 +392,6 @@ export default {
     background: rgb(247,247,247);
     display: flex;
     flex-direction: column;
-  }
-  .iosHeader {
-    width: 100%;
-    height: 1.28rem;
-    background: #fff;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    font-size: 0.36rem;
-    padding-bottom: 0.24rem;
-    svg {
-      width: 0.48rem;
-      height: 0.48rem;
-    }
-    .headerIcon {
-      position: absolute;
-      left: 0.2rem;
-      bottom: 0.14rem;
-      font-size: 0.42rem;
-      color: #000000;
-    }
   }
   .content {
     flex: 1;

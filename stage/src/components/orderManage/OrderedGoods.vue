@@ -1,7 +1,7 @@
 <template>
   <div class="orderedGoods">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" class="headerIcon" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>订单详情</span>
     </div>
     <div class="con">
@@ -214,6 +214,9 @@ export default {
     }
   },
   created () {
+    this.$vux.loading.show({
+      text: '加载中...'
+    })
     this.detail.goodsInfo = this.goodsInfo
     this.detail.couponInfo = this.couponInfo
     this.detail.scheduleInfo = this.scheduleInfo
@@ -226,10 +229,14 @@ export default {
     oderSend () {
       this.$router.replace({
         name: 'orderSend',
-        query: {
+        /*query: {
           orderId: this.detail.orderId,
           receiverPhone: this.detail.receiverPhone,
           senderPhone: this.detail.senderPhone
+        }*/
+        query: {
+          id: this.$route.query.id,
+          receiverPhone: this.detail.receiverPhone
         }
       })
     },
@@ -273,7 +280,10 @@ export default {
     },
     getDetail () {
       this.$http.fetchGet('/merchant/order/get/goods/detail', {orderId: this.$route.query.id}).then((res) => {
-                this.detail = res.data.data
+        setTimeout(() => {
+        this.$vux.loading.hide()
+      }, 500)
+          this.detail = res.data.data
       })
     },
     dealStatus (status) {
@@ -305,28 +315,6 @@ export default {
     background: rgb(247,247,247);
     display: flex;
     flex-direction: column;
-  }
-  .iosHeader {
-    width: 100%;
-    height: 1.28rem;
-    background: #fff;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    font-size: 0.36rem;
-    padding-bottom: 0.24rem;
-    svg {
-      width: 0.48rem;
-      height: 0.48rem;
-    }
-    .headerIcon {
-      position: absolute;
-      left: 0.2rem;
-      bottom: 0.14rem;
-      font-size: 0.42rem;
-      color: #000000;
-    }
   }
   .con{
     flex: 1;

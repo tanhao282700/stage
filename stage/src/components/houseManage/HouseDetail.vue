@@ -1,9 +1,8 @@
 <template>
   <div class="houseDetail">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>房态管理</span>
-      <span>修改价格</span>
     </div>
     <div class="content">
       <tab :scroll-threshold=3 :line-width=2 v-model="index">
@@ -111,26 +110,27 @@
                       <span class="refresh-hook">{{pulldownMsg}}</span>
                     </div>
                   <ul class="content" ref="content">
-                    <li class="item vux-1px-b" v-for="item in commentsInfo.comments">
+                    <li class="item vux-1px-b" v-for="(item,parentIndex) in commentsInfo.comments" :key="item.id">
                     <!-- <li class="item vux-1px-b" v-for="i in 10"> -->
                       <div class="userInfo">
                         <div class="user">
-                          <img src="../../assets/images/test.png" alt="">
+                          <img :src="item.head_image" alt="">
                           <div class="nickName">
-                            <span>用户昵称</span>
-                            <span>2018-08-18</span>
+                            <span v-text="item.nick_name"></span>
+                            <span v-text="item.comment_date"></span>
                           </div>
                         </div>
                         <div class="rater">
-                          <rater disabled v-model="data3"></rater>
+                          <rater disabled v-model="item.comment_point"></rater>
                         </div>
                       </div>
-                      <div class="description">带娃阿伟大阿伟大阿伟大阿伟大挖到佛挡杀佛撒旦法阿斯蒂芬瓦达瓦阿伟大阿瑟的阿伟大阿伟大阿伟大阿伟大阿伟大阿伟大阿伟大</div>
+                      <div class="description" v-text="item.comment_text"></div>
+                      <div class="description" style="color:#5d5d5d;" v-if="item.replyText" v-text="'我：'+item.replyText"></div>
                       <div class="imgs">
-                        <img class="previewer-demo-img" v-for="(item, index) in list" :src="item.src" width="100" @click="show(index)">
+                        <img class="previewer-demo-img" v-for="(child, index) in item.commentImageInfo" :src="child.url" width="100" @click="show(parentIndex,index)">
                       </div>
-                      <div class="reply">
-                        <span>回复</span>
+                      <div v-if="!item.replyText" class="reply">
+                        <span @click="showDialog(item.id)">回复</span>
                       </div>
                     </li>
                     <div v-if="!isMoreData" class="no_data">
@@ -150,7 +150,24 @@
       </div>
     </div>
     <div v-transfer-dom>
-      <previewer :list="list" ref="previewer" :options="options"></previewer>
+      <previewer :list="previewList" ref="previewer" :options="options"></previewer>
+    </div>
+    <div v-transfer-dom>
+      <x-dialog v-model="showToast" class="dialog-demo">
+        <div class="replyComments">
+          <div class="tit">
+            <span>回复评论</span>
+            <span @click="showToast=false" class="icon iconfont">&#xe61a;</span>
+          </div>
+          <group>
+            <x-textarea placeholder="请输入内容" v-model="commentsValue"></x-textarea>
+          </group>
+          <div class="bottom">
+            <span @click="showToast=false">取消</span>
+            <span @click="replyComment">确定</span>
+          </div>
+        </div>
+      </x-dialog>
     </div>
   </div>
 </template>
@@ -165,7 +182,8 @@ import {
   TabItem,
   Swiper,
   SwiperItem,
-  InlineCalendar
+  InlineCalendar,
+  XDialog, XTextarea, Group
 } from 'vux'
 let count = 1
 export default {
@@ -181,10 +199,17 @@ export default {
     SwiperItem,
     Rater,
     Previewer,
-    TransferDom
+    TransferDom,
+    XTextarea,
+    Group,
+    XDialog
   },
   data () {
     return {
+      currentCommentId: '',
+      commentsValue: '',
+      showToast: false,
+      previewList: [],
       pulldownMsg: '下拉刷新',
       pullupMsg: '加载更多',
       alertHook: 'none',
@@ -294,6 +319,43 @@ export default {
     }
   },
   methods: {
+    showDialog(id) {
+      this.currentCommentId = id
+      this.showToast = true
+    },
+    replyComment () {
+      if(!this.commentsValue){
+        this.$vux.toast.show({
+          text: '请输入内容',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      this.$http.fetchPost('/merchant/room/add/commentreply',{commentId: this.currentCommentId,merchantId:this.$store.state.merchantId,replyText:this.commentsValue}).then((res)=>{
+        if(res.data.code == 200) {
+          this.$vux.toast.show({
+            text: '评论成功',
+            position: 'middle',
+            type: 'warn'
+          })
+          this.commentsInfo.comments.map((item)=>{
+              if(item.id === this.currentCommentId){
+                  item.replyText = this.commentsValue
+              }
+          })
+          this.currentCommentId = ''
+          this.commentsValue = ''
+          this.showToast = false
+        }else{
+          this.$vux.toast.show({
+            text: res.data.message,
+            position: 'middle',
+            type: 'warn'
+          })
+        }
+      })
+    },
     tabChange (item, index) {
       console.log(222)
       if (index == 1) {
@@ -336,8 +398,12 @@ export default {
       })
     },
     checkStatus (status) {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.$http.fetchGet('/merchant/room/update/status', {roomId: this.$route.query.id, operate: status}).then((res) => {
-        if (res.data.code === 200) {
+        this.$vux.loading.hide()
+          if (res.data.code === 200) {
           this.$vux.toast.show({
             text: '操作成功',
             position: 'middle'
@@ -363,12 +429,22 @@ export default {
     getBack () {
       this.$router.go(-1)
     },
-    show (index) {
-      this.$refs.previewer.show(index)
+    show (parent,index) {
+      this.previewList = this.commentsInfo.comments[parent].commentImageInfo
+      this.previewList.map((item)=>{
+          item.msrc = item.src = item.url
+          item.w = item.h = 0
+      })
+      this.$nextTick(()=>{
+        this.$refs.previewer.show(index)
+      })
     },
     getBaseInfo () {
       this.$http.fetchGet('/merchant/room/get/details', {roomId: this.$route.query.id}).then((res) => {
-        this.baseData = res.data.data
+        setTimeout(() => {
+          this.$vux.loading.hide()
+        }, 500)
+          this.baseData = res.data.data
       })
     },
     getComments () {
@@ -414,8 +490,14 @@ export default {
         this.isMoreData = false
         return
       }
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.params.page++
       this.$http.fetchGet('/merchant/room/get/comments', this.params).then((res) => {
+        setTimeout(() => {
+        this.$vux.loading.hide()
+      }, 500)
         if (this.commentsInfo.comments.length === this.params.pageSize) {
           this.isMoreData = true
         } else {
@@ -458,6 +540,9 @@ export default {
     }
   },
   created () {
+    this.$vux.loading.show({
+      text: '加载中...'
+    })
     this.params.roomId = this.$route.query.id
     this.tabIndex = this.$route.query.tabIndex
     this.getBaseInfo()
@@ -475,23 +560,6 @@ export default {
   background: rgb(247, 247, 247);
   display: flex;
   flex-direction: column;
-}
-.iosHeader {
-  width: 100%;
-  height: 1.28rem;
-  background: #fff;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  font-size: 0.36rem;
-  padding: 0 0.2rem 0.24rem 0.2rem;
-  svg {
-    width: 0.48rem;
-    height: 0.48rem;
-  }
-  span:last-child {
-    font-size: 0.28rem;
-  }
 }
 .content {
   flex: 1;

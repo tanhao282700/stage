@@ -1,27 +1,23 @@
 <template>
 <div class="background_gray">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" class="headericon headericon_left" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>账号绑定</span>
     </div>
     <div class="clearfix">
-        <div class="setting_item">
+        <!--<div class="setting_item">
             <span>微信</span>
           <div class="info">
               <span></span>
               <a class="removeBind"  @click="getWechat">绑定</a>
           </div>
-        </div>
+        </div>-->
       <div class="setting_item"
           v-for="(item,index) in bindAccountList" :key="index">
         <span>{{item.name}}</span>
-        <div class="info" v-if="item.account">
+        <div class="info">
           <span>{{item.account}}</span>
-          <a class="removeBind"  @click="removeBind(item)">解绑</a>
-        </div>
-        <div class="info" v-else>
-          <span>{{item.account}}</span>
-          <a class="removeBind" @click="bind(item)">绑定</a>
+          <a class="removeBind"  @click="bind(item)">{{item.account?'解绑':'绑定'}}</a>
         </div>
       </div>
     </div>
@@ -69,7 +65,35 @@ export default {
     getWechat () {
       let that = this
       window.wechat = function (account, openid) {
-
+        that.$vux.loading.show({
+          text: '加载中...'
+        })
+        let params = {
+          account: account,
+          openid: openid,
+          accountType: that.operItem.accountType,
+          merchantId: that.$store.state.merchantId,
+          operate: 0
+        }
+        that.$http.fetchPost('/merchant/center/update/acct', params).then((res) => {
+          setTimeout(() => {
+            that.$vux.loading.hide()
+          }, 500)
+          if (res.data.code === 200) {
+            that.$vux.toast.show({
+              text: '操作成功',
+              position: 'middle'
+            })
+            that.isShow = false
+            that.getAccount()
+          } else {
+            that.$vux.toast.show({
+              text: res.data.message,
+              position: 'middle',
+              type: 'warn'
+            })
+          }
+        })
       }
       window.AndroidListener.onOpenWxListener()
     },
@@ -99,7 +123,18 @@ export default {
 
     bind (item) {
       this.operItem = item
-      this.isShow = true
+      if(item.account){
+          //解绑
+          this.offBind()
+      }else{
+          //绑定
+        if(item.accountType == 0) {
+            //微信
+          this.getWechat()
+        }else{
+            this.isShow = true
+        }
+      }
     },
 
     onConfirm (msg) {
@@ -113,14 +148,18 @@ export default {
         })
       }
     },
-    bindPost (msg) {
-      let params = {
-        account: msg,
-        accountType: this.operItem.accountType,
-        merchantId: this.$store.state.merchantId,
-        operate: 0
-      }
+    offBind () {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
+        let params = {
+          account: '',
+          accountType: this.operItem.accountType,
+          merchantId: this.$store.state.merchantId,
+          operate: 1
+        }
       this.$http.fetchPost('/merchant/center/update/acct', params).then((res) => {
+        this.$vux.loading.hide()
         if (res.data.code === 200) {
           this.$vux.toast.show({
             text: '操作成功',
@@ -137,12 +176,12 @@ export default {
         }
       })
     },
-    removeBind (item) {
+    bindPost (msg) {
       let params = {
-        account: item.account,
-        accountType: item.accountType,
+        account: msg,
+        accountType: this.operItem.accountType,
         merchantId: this.$store.state.merchantId,
-        operate: 1
+        operate: 0
       }
       this.$http.fetchPost('/merchant/center/update/acct', params).then((res) => {
         if (res.data.code === 200) {
@@ -150,7 +189,7 @@ export default {
             text: '操作成功',
             position: 'middle'
           })
-
+          this.isShow = false
           this.getAccount()
         } else {
           this.$vux.toast.show({

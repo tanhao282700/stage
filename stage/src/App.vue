@@ -328,5 +328,74 @@ export default {
       color: white;
     }
   }
-
+  .replyComments {
+    height: 4rem;
+    .tit {
+      height: 0.92rem;;
+      display: flex;
+      justify-content: space-between;
+      width: 6.1rem;
+      align-items: center;
+      padding: 0 0.2rem;
+      background: #f7f7f7;
+      span {
+        color: #6c6c6c;
+        font-size: 0.28rem;
+      }
+    }
+    textarea {
+      height: 1.6rem;
+      font-size: 0.28rem;
+    }
+    .bottom {
+      height: 1.1rem;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 0.4rem;
+      span {
+        width: 2.4rem;
+        height: 0.78rem;
+        border: 1px solid #d7d7d7;
+        font-size: 0.28rem;
+        color: #6c6c6c;
+        line-height: 0.78rem;
+        text-align: center;
+        border-radius: 0.1rem;
+        margin-top: 0.2rem;
+      }
+      span:last-child {
+        background: #19ad19;
+        color: white;
+      }
+    }
+  }
+  .iosHeader {
+    width: 100%;
+    height: 1.28rem;
+    background: #fff;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    font-size: 0.32rem;
+    padding: 0 0.2rem 0.24rem 0.2rem;
+    position: relative;
+    svg {
+      width: 0.5rem;
+      height: 0.5rem;
+    }
+    .left{
+      position: absolute;
+      left: 0.2rem;
+    }
+    .right {
+      position: absolute;
+      right: 0.2rem;
+    }
+    .headericon {
+      font-size: 0.3rem;
+    }
+  }
+  .weui-toast {
+    top: 3.8rem!important;
+  }
 </style>

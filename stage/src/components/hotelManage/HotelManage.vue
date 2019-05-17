@@ -1,7 +1,7 @@
 <template>
   <div class="hotelManage">
     <div class="iosHeader">
-      <x-icon @click="getBack" class="headerIcon" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>驿站管理</span>
     </div>
     <div class="infoTitle">驿站信息</div>
@@ -25,45 +25,76 @@
       <span v-text="'驿站评价('+baseInfo.commentInfo.commentNumber+'条)'"></span>
       <span v-show="baseInfo.commentInfo.point" v-text="baseInfo.commentInfo.point+'分'"></span>
     </div>
-    <div class="assess">
+    <div class="assess" ref="list_con">
       <div class="wrapper" ref="wrapper">
         <div class="bscroll-container">
+          <!-- 刷新提示信息 -->
+          <div class="top-tip">
+            <span class="refresh-hook">{{pulldownMsg}}</span>
+          </div>
           <!-- 内容列表 -->
-          <ul class="content">
-            <li class="item vux-1px-b" v-for="item in data">
+          <ul class="content" ref="content">
+            <li class="item vux-1px-b" v-for="(item,parentIndex) in data">
               <div class="userInfo">
                 <div class="user">
-                  <img src="../../assets/images/test.png" alt="">
+                  <img :src="item.head_image" alt="">
                   <div class="nickName">
-                    <span>用户昵称</span>
-                    <span>2018-08-18</span>
+                    <span v-text="item.nick_name"></span>
+                    <span v-text="item.comment_date"></span>
                   </div>
                 </div>
                 <div class="rater">
-                  <rater disabled v-model="data3"></rater>
+                  <rater disabled v-model="item.comment_point"></rater>
                 </div>
               </div>
-              <div class="description">带娃阿伟大阿伟大阿伟大阿伟大挖到佛挡杀佛撒旦法阿斯蒂芬瓦达瓦阿伟大阿瑟的阿伟大阿伟大阿伟大阿伟大阿伟大阿伟大阿伟大</div>
+              <div class="description" v-text="item.comment_text"></div>
+              <div class="description" style="color:#5d5d5d;" v-if="item.replyText" v-text="'我：'+item.replyText"></div>
               <div class="imgs">
-                <img class="previewer-demo-img" v-for="(item, index) in list" :src="item.src" width="100" @click="show(index)">
+                <img class="previewer-demo-img" v-for="(child, index) in item.commentImageInfo" :src="child.src" width="100" @click="show(parentIndex,index)">
               </div>
-              <div class="reply">
-                <span>回复</span>
+              <div v-if="!item.replyText" class="reply">
+                <span @click="showDialog(item.id)">回复</span>
               </div>
             </li>
+            <div v-if="!isMoreData" class="no_data">
+              <span></span>
+              <span>暂无更多数据</span>
+              <span></span>
+            </div>
           </ul>
+          <!-- 底部提示信息 -->
+          <div v-if="isMoreData" class="bottom-tip">
+            <span class="loading-hook">{{pullupMsg}}</span>
+          </div>
         </div>
       </div>
     </div>
     <div v-transfer-dom>
-      <previewer :list="list" ref="previewer" :options="options"></previewer>
+      <previewer :list="previewList" ref="previewer" :options="options"></previewer>
+    </div>
+    <div v-transfer-dom>
+      <x-dialog v-model="showToast" class="dialog-demo">
+        <div class="replyComments">
+          <div class="tit">
+            <span>回复评论</span>
+            <span @click="showToast=false" class="icon iconfont">&#xe61a;</span>
+          </div>
+          <group>
+            <x-textarea placeholder="请输入内容" v-model="commentsValue"></x-textarea>
+          </group>
+          <div class="bottom">
+            <span @click="showToast=false">取消</span>
+            <span @click="replyComment">确定</span>
+          </div>
+        </div>
+      </x-dialog>
     </div>
   </div>
 </template>
 
 <script>
 import BScroll from 'better-scroll'
-import { Rater, Previewer, TransferDom } from 'vux'
+import { Rater, Previewer, TransferDom, XDialog, XTextarea, Group } from 'vux'
 let count = 1
 export default {
   name: 'hotelManage',
@@ -72,10 +103,20 @@ export default {
   },
   components: {
     Rater,
-    Previewer
+    Previewer,
+    XTextarea,
+    Group,
+    XDialog
   },
   data () {
     return {
+        currentCommentId: '',
+      commentsValue: '',
+      showToast: false,
+      isMoreData: true,
+      pulldownMsg: '下拉刷新',
+      pullupMsg: '加载更多',
+      alertHook: 'none',
       baseInfo: {
         postDetail: {
           postName: '',
@@ -94,7 +135,7 @@ export default {
       },
       data3: 4.5,
       data: [],
-      /* list: [{
+       list: [{
           msrc: 'http://ww1.sinaimg.cn/thumbnail/663d3650gy1fplwu9ze86j20m80b40t2.jpg',
           src: 'http://ww1.sinaimg.cn/large/663d3650gy1fplwu9ze86j20m80b40t2.jpg',
           w: 800,
@@ -119,8 +160,8 @@ export default {
             src: 'http://ww1.sinaimg.cn/large/663d3650gy1fplwvqwuoaj20xc0p0t9s.jpg',
             w: 1200,
             h: 900
-          }], */
-      list: [],
+          }],
+      previewList: [],
       options: {
         getThumbBoundsFn (index) {
           // find thumbnail element
@@ -139,6 +180,43 @@ export default {
     }
   },
   methods: {
+    showDialog(id) {
+      this.currentCommentId = id
+      this.showToast = true
+    },
+    replyComment () {
+      if(!this.commentsValue){
+        this.$vux.toast.show({
+          text: '请输入内容',
+          position: 'middle',
+          type: 'warn'
+        })
+          return
+      }
+      this.$http.fetchPost('/merchant/post/add/commentreply',{commentId: this.currentCommentId,merchantId:this.$store.state.merchantId,replyText:this.commentsValue}).then((res)=>{
+        if(res.data.code == 200) {
+          this.$vux.toast.show({
+            text: '评论成功',
+            position: 'middle',
+            type: 'warn'
+          })
+          this.data.map((item)=>{
+            if(item.id === this.currentCommentId){
+              item.replyText = this.commentsValue
+            }
+          })
+          this.currentCommentId = ''
+          this.commentsValue = ''
+          this.showToast = false
+        }else{
+          this.$vux.toast.show({
+            text: res.data.message,
+            position: 'middle',
+            type: 'warn'
+          })
+        }
+      })
+    },
     editHotel () {
       this.$router.push({
         name: 'editHotel'
@@ -149,8 +227,15 @@ export default {
         name: 'coupons'
       })
     },
-    show (index) {
-      this.$refs.previewer.show(index)
+    show (parent,index) {
+      this.previewList = this.data[parent].commentImageInfo
+      this.previewList.map((item)=>{
+        item.msrc = item.src = item.url
+        item.w = item.h = 0
+      })
+      this.$nextTick(()=>{
+        this.$refs.previewer.show(index)
+      })
     },
     getBack () {
       this.$router.go(-1)
@@ -172,34 +257,108 @@ export default {
     getInfo () {
       // 驿站信息
       this.$http.fetchGet('/merchant/post/get/main', this.params).then((res) => {
+        setTimeout(() => {
+          this.$vux.loading.hide()
+        }, 500)
         this.baseInfo = res.data.data
         this.data = res.data.data.commentInfo.comments
+        if (this.data.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+          this.$nextTick(() => {
+            if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
+            this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
+          }
+        })
+        }
+        this.initScroll()
       })
-    }
+    },
+    refreshData () {
+      this.$refs.content.style.height = 'auto'
+      this.pullupMsg = '加载中。。。'
+      this.params.page = 1
+      this.$http.fetchGet('/merchant/post/get/main', this.params).then((res) => {
+        this.baseInfo = res.data.data
+        this.data = res.data.data.commentInfo.comments
+        if (this.data.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+          this.$nextTick(() => {
+            if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
+              this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
+            }
+          })
+        }
+        // 恢复文本值
+        this.pullupMsg = '加载更多'
+        // 刷新列表后，重新计算滚动区域高度
+        this.scroll.refresh()
+      })
+    },
+    loadMoreData () {
+      if (this.data.length < this.params.pageSize || this.data.length < this.params.pageSize * this.params.page) {
+        this.isMoreData = false
+        return
+      }
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
+      this.params.page++
+      this.$http.fetchGet('/merchant/post/get/main', this.params).then((res) => {
+        setTimeout(() => {
+        this.$vux.loading.hide()
+      }, 500)
+        this.baseInfo = res.data.data
+        if (this.data.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+        }
+        if (res.data.data.commentInfo.comments.length > 0) {
+          res.data.data.commentInfo.comments.map((item) => {
+            this.data.push(item)
+          })
+        } else {
+          this.isMoreData = false
+        }
+        // 恢复刷新提示文本值
+        this.pulldownMsg = '下拉刷新'
+        // 刷新列表后，重新计算滚动区域高度
+        this.scroll.refresh()
+      })
+    },
+    initScroll () {
+      this.$nextTick(() => {
+        this.scroll = new BScroll(this.$refs.wrapper, { // 初始化better-scroll
+          probeType: 1, // 1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
+          click: true // 是否派发click事件
+        })
+        // 滑动过程中事件
+        this.scroll.on('scroll', (pos) => {
+          if (pos.y > 30) {
+            this.pulldownMsg = '释放立即刷新'
+          }
+        })
+        // 滑动结束松开事件
+        this.scroll.on('touchEnd', (pos) => { // 上拉刷新
+          if (pos.y > 30) {
+            this.refreshData()
+          } else if (pos.y < (this.scroll.maxScrollY - 30)) { // 下拉加载
+            this.loadMoreData()
+          }
+        })
+      })
+    },
   },
   created () {
+    this.$vux.loading.show({
+      text: '加载中...'
+    })
     this.params.merchantId = this.$store.state.merchantId
     this.getInfo()
-    const that = this
-    this.$nextTick(() => {
-      this.scroll = new BScroll(this.$refs.wrapper, { // 初始化better-scroll
-        probeType: 1, // 1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
-        click: true // 是否派发click事件
-      })
-      // 滑动结束松开事件
-      this.scroll.on('touchEnd', (pos) => { // 上拉刷新
-        if (pos.y < (this.scroll.maxScrollY) || pos.y === (this.scroll.maxScrollY)) { // 下拉加载
-          console.log(333)
-          setTimeout(() => {
-            that.getData().then((res) => {
-              // 恢复文本值
-              that.data = this.data.concat(res)
-              that.scroll.refresh()
-            })
-          }, 2000)
-        }
-      })
-    })
   }
 }
 </script>
@@ -211,28 +370,6 @@ export default {
     background: #fff;
     display: flex;
     flex-direction: column;
-  }
-  .iosHeader {
-    width: 100%;
-    height: 1.28rem;
-    background: #fff;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    font-size: 0.36rem;
-    padding-bottom: 0.24rem;
-    svg {
-      width: 0.48rem;
-      height: 0.48rem;
-    }
-    .headerIcon {
-      position: absolute;
-      left: 0.2rem;
-      bottom: 0.14rem;
-      font-size: 0.42rem;
-      color: #000000;
-    }
   }
   .infoTitle {
     height: 0.8rem;
@@ -380,5 +517,45 @@ export default {
       color: #1aad19;
       margin-top: 0.12rem;
     }
+  }
+  /* 下拉、上拉提示信息 */
+  .top-tip {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    color: #555;
+  }
+
+  .bottom-tip {
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    color: #777;
+    /*background: #f2f2f2;*/
+    position: absolute;
+    bottom: -35px;
+    left: 0;
+  }
+
+  /* 全局提示信息 */
+  .alert-hook {
+    display: none;
+    position: fixed;
+    top: 62px;
+    left: 0;
+    z-index: 2;
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+    background: rgba(7, 17, 27, 0.5);
   }
 </style>

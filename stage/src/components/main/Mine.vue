@@ -2,7 +2,7 @@
   <div class="mine">
     <div class="iosHeader vux-1px-b">
       <span>个人中心</span>
-      <span class="headericon icon iconfont" @click="goSetting">&#xe61d;</span>
+      <span style="font-size: 0.36rem;" class="right headericon icon iconfont" @click="goSetting">&#xe61d;</span>
     </div>
     <div class="pictrue">
       <img :src="userInfo.headImage" alt="">
@@ -80,24 +80,6 @@ export default {
     background: rgb(247,247,247);
     display: flex;
     flex-direction: column;
-  }
-  .iosHeader {
-    width: 100%;
-    height: 1.28rem;
-    background: #fff;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    font-size: 0.32rem;
-    padding-bottom: 0.24rem;
-    .headericon {
-      position: absolute;
-      right: 0.2rem;
-      bottom: 0.14rem;
-      font-size: 0.42rem;
-      color: #000000;
-    }
   }
   .pictrue {
     height: 1.4rem;

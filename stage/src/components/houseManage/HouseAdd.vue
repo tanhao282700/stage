@@ -2,7 +2,7 @@
     <div class="houseAdd">
         <div class="iosHeader vux-1px-b">
             <span>第一步：基础信息</span>
-            <span @click="getBack" class="headericon_right headericon icon iconfont">&#xe61a;</span>
+            <span @click="getBack" class="right headericon icon iconfont">&#xe61a;</span>
         </div>
         <div class="steps">
             <span></span>
@@ -178,6 +178,9 @@ export default {
     }
   },
   created () {
+    this.$vux.loading.show({
+      text: '加载中...'
+    })
     this.getBaseInfo()
   },
   methods: {
@@ -185,7 +188,11 @@ export default {
           this.baseInfo.customProjectInfo.splice(index,1)
       },
     getEquipment() {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.$http.fetchPost('/merchant/room/add/baseInfo', this.baseInfo).then((res)=>{
+        this.$vux.loading.hide()
         this.$router.replace({
           name: 'houseEquipment',
           query: {
@@ -263,7 +270,11 @@ export default {
       this.isShow1 = false
     },
     addSpecial () {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.$http.fetchPost('/merchant/room/add/baseInfo', this.baseInfo).then((res)=>{
+        this.$vux.loading.hide()
         this.$router.replace({
           name: 'addSpecial',
           query: {
@@ -277,7 +288,11 @@ export default {
       })
     },
     goNextStep () {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.$http.fetchPost('/merchant/room/add/baseInfo', this.baseInfo).then((res)=>{
+        this.$vux.loading.hide()
         this.$router.replace({
           name: 'secondStep',
           query: {
@@ -294,7 +309,11 @@ export default {
       this.$router.go(-1)
     },
     chooseAddress () {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.$http.fetchPost('/merchant/room/add/baseInfo', this.baseInfo).then((res)=>{
+        this.$vux.loading.hide()
         this.$router.replace({
           name: 'houseMap',
           query: {
@@ -313,6 +332,9 @@ export default {
             id = this.$route.query.params.id || ''
         }
         this.$http.fetchGet('/merchant/room/get/baseInfo',{roomId: id}).then((res)=>{
+          setTimeout(() => {
+            this.$vux.loading.hide()
+          }, 500)
           this.baseInfo = res.data.data
           this.baseInfo.merchantId = this.$store.state.merchantId
           if(this.$route.query.params && this.$route.query.params.postLocation) {
@@ -382,31 +404,7 @@ export default {
         }
     }
 
-    .iosHeader {
-  width: 100%;
-  height: 1.28rem;
-  background: #fff;
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  font-size: 0.36rem;
-  padding-bottom: 0.24rem;
-  .headericon {
-    position: absolute;
-    bottom: 0.4rem;
-    font-size: 0.42rem;
-    color: #000000;
-    width: 0.48rem;
-    height: 0.48rem;
-    &.headericon_right{
-      right: 0.2rem;
-    }
-    &.headericon_left{
-      left: 0.2rem;
-    }
-  }
-}
+
 
     .steps {
         height: 0.08rem;

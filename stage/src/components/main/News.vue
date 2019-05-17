@@ -103,6 +103,9 @@ export default {
               }
             })
           }
+          setTimeout(() => {
+            this.$vux.loading.hide()
+          }, 500)
           this.initScroll()
         })
     },
@@ -155,9 +158,14 @@ export default {
         this.isMoreData = false
         return
       }
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.params.page++
       this.$http.fetchGet('/merchant/center/get/message/list', this.params).then((res) => {
-        this.data = res.data.data.messageList
+        setTimeout(() => {
+        this.$vux.loading.hide()
+      }, 500)
         if (this.data.length === this.params.pageSize) {
           this.isMoreData = true
         } else {
@@ -170,6 +178,7 @@ export default {
         } else {
           this.isMoreData = false
         }
+        console.log(this.data)
         // 恢复刷新提示文本值
         this.pulldownMsg = '下拉刷新'
         // 刷新列表后，重新计算滚动区域高度
@@ -178,6 +187,9 @@ export default {
     }
   },
   created () {
+    this.$vux.loading.show({
+      text: '加载中...'
+    })
     this.params.merchantId = this.$store.state.merchantId
     this.getData()
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="orderedGoods">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" class="headerIcon" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>订单详情</span>
     </div>
     <div class="con">
@@ -149,7 +149,7 @@
 
     <div class="bottom" v-if="detail.orderStatus == 1">
       <span @click="postData(0)">取消订单</span>
-      <span @click="postData(1)">修改价格</span>
+      <span @click="postData(1)">确认订单</span>
     </div>
 
     <div class="bottom" v-if="detail.orderStatus == 7">
@@ -259,6 +259,9 @@ export default {
     }
   },
   created () {
+    this.$vux.loading.show({
+      text: '加载中...'
+    })
     this.detail.travellerInfo = this.travellerInfo
     this.detail.couponInfo = this.couponInfo
     this.detail.scheduleInfo = this.scheduleInfo
@@ -296,7 +299,7 @@ export default {
       let params = {
         amount: 0, // 订单金额【修改价格时必输】 ,
         operate: flag, // 操作【0-取消订单,1-确认订单,2-办理入住,3-同意退款,4-拒绝退款,5-修改价格】 ,
-        orderId: '000', // 订单编号 ,
+        orderId: this.$route.query.id, // 订单编号 ,
         refuseReason: this.detail.refundReason // 拒绝理由【拒绝退款时必输】
       }
       this.$http.fetchPost('/merchant/order/update/room', params).then((res) => {
@@ -317,7 +320,10 @@ export default {
     },
     getDetail () {
       this.$http.fetchGet('/merchant/order/get/room/detail', {orderId: this.$route.query.id}).then((res) => {
-         this.detail = res.data.data
+        setTimeout(() => {
+        this.$vux.loading.hide()
+      }, 500)
+          this.detail = res.data.data
       })
     },
     dealStatus (status) {
@@ -351,28 +357,6 @@ export default {
     background: rgb(247,247,247);
     display: flex;
     flex-direction: column;
-  }
-  .iosHeader {
-    width: 100%;
-    height: 1.28rem;
-    background: #fff;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    font-size: 0.36rem;
-    padding-bottom: 0.24rem;
-    svg {
-      width: 0.48rem;
-      height: 0.48rem;
-    }
-    .headerIcon {
-      position: absolute;
-      left: 0.2rem;
-      bottom: 0.14rem;
-      font-size: 0.42rem;
-      color: #000000;
-    }
   }
   .con{
     flex: 1;

@@ -1,7 +1,7 @@
 <template>
   <div class="goodsAdd">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" class="headerIcon" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>添加商品</span>
     </div>
     <div class="goodsAdd_con">
@@ -239,9 +239,13 @@ export default {
           }
         })
       })
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.$http.fetchPost('/merchant/good/add/goods/baseInfo', this.params).then((res) => {
         this.$http.fetchGet('/merchant/good/get/goods/sku', {goodsId: res.data.data.id}).then((request) => {
-          let param = request.data.data
+          this.$vux.loading.hide()
+            let param = request.data.data
           param.goodsSkuInfo[0].memberPrice = this.params.price
           param.goodsSkuInfo[0].stock = this.params.stock
           this.$http.fetchPost('/merchant/good/add/goods/sku', param).then((req) => {
@@ -303,7 +307,10 @@ export default {
     },
     getBaseInfo () {
       this.$http.fetchGet('/merchant/good/get/goods/baseInfo', {goodsId: this.$route.query.id}).then((res) => {
-        this.specsList = res.data.data.goodsAttrItemDto
+        setTimeout(() => {
+          this.$vux.loading.hide()
+        }, 500)
+          this.specsList = res.data.data.goodsAttrItemDto
         this.specsList.map((item, index) => {
           item.isReadonly = false
         })
@@ -378,6 +385,9 @@ export default {
     }
   },
   created () {
+    this.$vux.loading.show({
+      text: '加载中...'
+    })
     this.params.id = this.$route.query.id
     this.params.merchantId = this.$store.state.merchantId
     this.getBaseInfo()
@@ -397,28 +407,6 @@ export default {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-  }
-  .iosHeader {
-    width: 100%;
-    height: 1.28rem;
-    background: #fff;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    font-size: 0.36rem;
-    padding-bottom: 0.24rem;
-    svg {
-      width: 0.48rem;
-      height: 0.48rem;
-    }
-    .headerIcon {
-      position: absolute;
-      left: 0.2rem;
-      bottom: 0.14rem;
-      font-size: 0.42rem;
-      color: #000000;
-    }
   }
   .goodsAdd_con {
     flex: 1;

@@ -1,7 +1,7 @@
 <template>
   <div class="houseEquipment">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" class="headericon headericon_left" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>房间设施</span>
     </div>
     <div class="con">
@@ -56,6 +56,9 @@
         })
       },
       saveData() {
+        this.$vux.loading.show({
+          text: '加载中...'
+        })
         let facilitiesInfo = []
         this.baseInfo.facilitiesInfo.map((item)=>{
           let flag = false
@@ -73,6 +76,7 @@
         })
         this.baseInfo.facilitiesInfo = facilitiesInfo
         this.$http.fetchPost('/merchant/room/add/baseInfo', this.baseInfo).then((res)=>{
+          this.$vux.loading.hide()
           this.$router.replace({
             name: 'houseAdd',
             query: {
@@ -91,31 +95,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" rel="stylesheet/less" scoped>
-  .iosHeader {
-    width: 100%;
-    height: 1.28rem;
-    background: #fff;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    font-size: 0.32rem;
-    padding-bottom: 0.24rem;
-    .headericon {
-      position: absolute;
-      bottom: 0.14rem;
-      font-size: 0.42rem;
-      color: #000000;
-      width: 0.48rem;
-      height: 0.48rem;
-      &.headericon_right{
-        right: 0.2rem;
-      }
-      &.headericon_left{
-        left: 0.2rem;
-      }
-    }
-  }
+
   .houseEquipment {
     width: 100%;
     height: 100%;

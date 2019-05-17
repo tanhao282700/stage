@@ -2,7 +2,7 @@
     <div class="addSpecial">
         <div class="iosHeader vux-1px-b">
             <span>添加定制项目</span>
-            <span @click="getBack" class="headericon icon iconfont">&#xe61a;</span>
+            <span @click="getBack" class="right headericon icon iconfont">&#xe61a;</span>
         </div>
       <div class="con">
         <div class="picbox">
@@ -88,8 +88,12 @@ export default {
         })
         return
       }
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.baseInfo.customProjectInfo.push(this.params)
       this.$http.fetchPost('/merchant/room/add/baseInfo', this.baseInfo).then((res)=>{
+        this.$vux.loading.hide()
         this.$router.replace({
         name: 'houseAdd',
         query: {
@@ -148,25 +152,6 @@ export default {
         background: rgb(247, 247, 247);
         display: flex;
         flex-direction: column;
-    }
-
-    .iosHeader {
-        width: 100%;
-        height: 1.28rem;
-        background: #fff;
-        position: relative;
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        font-size: 0.32rem;
-        padding-bottom: 0.24rem;
-        .headericon {
-            position: absolute;
-            right: 0.2rem;
-            bottom: 0.14rem;
-            font-size: 0.42rem;
-            color: #000000;
-        }
     }
 
     .bottom {
@@ -233,7 +218,7 @@ export default {
     }
   }
 </style>
-<style>
+<style lang="less" rel="stylesheet/less">
   .houseAddAttrArea > div {
     width: 100%;
     height: 100%;
@@ -268,5 +253,31 @@ export default {
   }
   .houseAdd .vux-x-icon {
     fill: #19ad19;
+  }
+
+  .addSpecial .upload {
+    height: 2.6rem;
+    border: 1px dashed #bdbdbd;
+    border-radius: 0.1rem;
+    .imgs {
+      height: 100%;
+      .pics {
+        height: 100%;
+        width: 100%;
+        .aa {
+          width: 100%;
+          height: 100%;
+          border-radius: 0.1rem;
+        }
+        .g-core-image-upload-btn {
+          width: 100%;
+          height: 100%;
+        }
+        .pic_btn {
+          margin-left: 2.7rem;
+          margin-top: 0.6rem;
+        }
+      }
+    }
   }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="mine">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" class="headericon" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>设置</span>
     </div>
     <div class="rest">
@@ -99,28 +99,6 @@ export default {
     background: rgb(247,247,247);
     display: flex;
     flex-direction: column;
-  }
-  .iosHeader {
-    width: 100%;
-    height: 1.28rem;
-    background: #fff;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    font-size: 0.32rem;
-    padding-bottom: 0.24rem;
-    svg {
-      width: 0.48rem;
-      height: 0.48rem;
-    }
-    .headericon {
-      position: absolute;
-      left: 0.2rem;
-      bottom: 0.14rem;
-      font-size: 0.82rem;
-      color: #000000;
-    }
   }
   .rest {
     font-family: PingFang SC;

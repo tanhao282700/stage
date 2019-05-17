@@ -151,6 +151,11 @@ export default new Router({
       component: resolve => { import('@/components/main/myMoney').then(module => resolve(module)) }
     },
     {
+      path: '/getMoney',
+      name: 'getMoney',
+      component: resolve => { import('@/components/main/getMoney').then(module => resolve(module)) }
+    },
+    {
       path: '/certification',
       name: 'certification',
       component: resolve => { import('@/components/main/certification').then(module => resolve(module)) }

@@ -1,9 +1,9 @@
 <template>
   <div class="houseList">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon class="left" @click="getBack" type="ios-arrow-left" size="60"></x-icon>
       <span>房态管理</span>
-      <x-icon @click="addHouse" type="ios-plus-empty" size="60"></x-icon>
+      <x-icon class="right" @click="addHouse" type="ios-plus-empty" size="60"></x-icon>
     </div>
     <div class="tabBar">
       <div class="bar" @click=tabChange(1) :class="{'active':tabIndex == 1}">
@@ -120,6 +120,9 @@ export default {
     },
     getData () {
       this.$http.fetchGet('/merchant/room/get/list', this.params).then((res) => {
+        setTimeout(() => {
+        this.$vux.loading.hide()
+      }, 500)
         this.isSale = res.data.data.roomOnNum
         this.stopSale = res.data.data.roomDownNum
         this.waitSale = res.data.data.roomProcessNum
@@ -138,6 +141,9 @@ export default {
       })
     },
     tabChange (tabIndex) {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.$refs.content.style.height = 'auto'
       this.tabIndex = tabIndex
       this.params.page = 1
@@ -149,6 +155,9 @@ export default {
       this.pullupMsg = '加载中。。。'
       this.params.page = 1
       this.$http.fetchGet('/merchant/room/get/list', this.params).then((res) => {
+        setTimeout(() => {
+        this.$vux.loading.hide()
+      }, 500)
         this.isSale = res.data.data.roomOnNum
         this.stopSale = res.data.data.roomDownNum
         this.waitSale = res.data.data.roomProcessNum
@@ -174,8 +183,14 @@ export default {
         this.isMoreData = false
         return
       }
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.params.page++
       this.$http.fetchGet('/merchant/room/get/list', this.params).then((res) => {
+        setTimeout(() => {
+        this.$vux.loading.hide()
+      }, 500)
         this.isSale = res.data.data.roomOnNum
         this.stopSale = res.data.data.roomDownNum
         this.waitSale = res.data.data.roomProcessNum
@@ -221,6 +236,9 @@ export default {
     }
   },
   created () {
+    this.$vux.loading.show({
+      text: '加载中...'
+    })
     this.params.merchantId = this.$store.state.merchantId
     this.getData()
   }
@@ -234,24 +252,6 @@ export default {
   background: rgb(247, 247, 247);
   display: flex;
   flex-direction: column;
-}
-.iosHeader {
-  width: 100%;
-  height: 1.28rem;
-  background: #fff;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  font-size: 0.36rem;
-  padding: 0 0.2rem 0.24rem 0.2rem;
-  svg {
-    width: 0.48rem;
-    height: 0.48rem;
-  }
-  svg:last-child {
-    width: 0.5rem;
-    height: 0.5rem;
-  }
 }
 .tabBar {
   height: 0.92rem;

@@ -20,6 +20,9 @@ Vue.config.productionTip = false
 const FastClick = require('fastclick')
 FastClick.attach(document.body)
 
+import  { LoadingPlugin } from 'vux'
+Vue.use(LoadingPlugin)
+
 VueAMap.initAMapApiLoader({
   key: '7817e03cdc916a4817be3a6da24fddcf',
   plugin: ['AMap.Autocomplete', 'AMap.Geocoder', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor'],

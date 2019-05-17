@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" class="headericon" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>设置</span>
     </div>
     <div class="rest" @click="isShow=true">
@@ -58,7 +58,9 @@ export default {
       params: {
         trackingNo: '',
         companyId: '',
-        senderPhone: ''
+        senderPhone: '',
+        receiverPhone: '',
+        orderId: '',
       },
       isShow: false,
       list: {},
@@ -66,6 +68,8 @@ export default {
     }
   },
   created () {
+      this.params.receiverPhone = this.$route.query.receiverPhone
+    this.params.orderId = this.$route.query.id
     this.getData()
   },
   mounted () {
@@ -75,7 +79,11 @@ export default {
   methods: {
     getBack () {
       this.$router.replace({
-        name: 'orderedGoods'
+        name: 'orderedGoods',
+        query: {
+          id: this.$route.query.id,
+          receiverPhone: this.$route.query.receiverPhone
+        }
       })
     },
     getData () {
@@ -91,12 +99,36 @@ export default {
       this.isShow = false
     },
     orderSend () {
-      let params = this.params
-      params['orderId'] = this.query.orderId
-      params['receiverPhone'] = this.query.receiverPhone
-      console.log(params)
-      this.$http.fetchPost('/merchant/order/update/goods/confirm', params).then((res) => {
-        if (res.data.code === 200) {
+      if(!this.params.companyId){
+        this.$vux.toast.show({
+          text: '请选择物流公司',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(!this.params.senderPhone){
+        this.$vux.toast.show({
+          text: '请输入寄件人电话',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(!this.params.trackingNo){
+        this.$vux.toast.show({
+          text: '请输入物流单号',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
+      this.$http.fetchPost('/merchant/order/update/goods/confirm', this.params).then((res) => {
+        this.$vux.loading.hide()
+          if (res.data.code === 200) {
           this.$vux.toast.show({
             text: '操作成功',
             position: 'middle'
@@ -141,28 +173,6 @@ export default {
     font-size: 0.28rem;
   }
 
-  .iosHeader {
-    width: 100%;
-    height: 1.28rem;
-    background: #fff;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    font-size: 0.32rem;
-    padding-bottom: 0.24rem;
-    svg {
-      width: 0.48rem;
-      height: 0.48rem;
-    }
-    .headericon {
-      position: absolute;
-      left: 0.2rem;
-      bottom: 0.14rem;
-      font-size: 0.82rem;
-      color: #000000;
-    }
-  }
   .rest {
     font-family: PingFang SC;
     width: 100%;

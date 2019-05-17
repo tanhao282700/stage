@@ -1,7 +1,7 @@
 <template>
 <div class="background_gray">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" class="headericon headericon_left" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>认证信息</span>
     </div>
     <div class="clearfix">
@@ -33,7 +33,7 @@
           v-for="(item,index) in bindAccountList" :key="index">
         <span>{{item.name}}</span>
         <div class="info">
-          <span>{{item.account}}</span>
+          <span>{{item.account || '未绑定'}}</span>
         </div>
       </div>
 

@@ -1,9 +1,9 @@
 <template>
   <div class="orderManage">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <x-input placeholder="输入订单号、客户姓名、客户手机号搜索" v-model="value"></x-input>
-      <span class="headericon icon iconfont">&#xe62f;</span>
+      <span style="font-size: 0.36rem;" class="right headericon icon iconfont">&#xe62f;</span>
     </div>
     <div class="tabBar vux-1px-b">
       <div class="bar" @click="changeTab(1)" :class="{'active': tabIndex == 1}">
@@ -95,7 +95,7 @@
                 </div>
                 <div class="botton">
                   <span v-if="item.status == 0">取消订单</span>
-                  <span @click="changePrice(item.orderId)">修改价格</span>
+                  <!--<span @click="changePrice(item.orderId)">修改价格</span>-->
                 </div>
               </div>
               <div @click="goDetails({path: 'orderedGoods', id: item.orderId})" v-if="tabIndex == 2" class="goods">
@@ -203,6 +203,9 @@ export default {
       this.$router.go(-1)
     },
     chooseStatus (status) {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.params.status = status
       this.isStateOpen = false
       this.refreshData()
@@ -214,13 +217,19 @@ export default {
       }, 1000)
     },
     changeTab (tabIndex) {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.params.status = 99
       this.tabIndex = tabIndex
       this.refreshData()
     },
     getInitHotelData () {
       this.$http.fetchGet('/merchant/order/get/room/list', this.params).then((res) => {
-        this.hotelOrderNum = res.data.data.orderNum
+        setTimeout(() => {
+        this.$vux.loading.hide()
+      }, 500)
+          this.hotelOrderNum = res.data.data.orderNum
         this.data = res.data.data.orderList
         if (this.data.length === this.params.pageSize) {
           this.isMoreData = true
@@ -273,6 +282,9 @@ export default {
         url = '/merchant/order/get/goods/list'
       }
       this.$http.fetchGet(url, this.params).then((res) => {
+        setTimeout(() => {
+        this.$vux.loading.hide()
+      }, 500)
         if (this.tabIndex == 1) {
           this.hotelOrderNum = res.data.data.orderNum
         } else {
@@ -333,6 +345,9 @@ export default {
     }
   },
   created () {
+    this.$vux.loading.show({
+      text: '加载中...'
+    })
     this.params.merchantId = this.$store.state.merchantId
     if (this.$route.query.status == 1) {
       this.params.status = 1
@@ -351,24 +366,6 @@ export default {
     background: rgb(247,247,247);
     display: flex;
     flex-direction: column;
-  }
-  .iosHeader {
-    width: 100%;
-    height: 1.28rem;
-    background: #fff;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    font-size: 0.36rem;
-    padding: 0 0.2rem 0.24rem 0.2rem;
-    svg {
-      width: 0.48rem;
-      height: 0.48rem;
-    }
-    .headericon {
-      font-size: 0.44rem;
-      color: #000000;
-    }
   }
   .tabBar {
     height: 0.92rem;

@@ -1,7 +1,7 @@
 <template>
 <div class="editHotel">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" class="headericon headericon_left" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>编辑驿站信息</span>
     </div>
     <div class="clearfix modal_main">
@@ -135,12 +135,15 @@ export default {
     }
   },
   created () {
-
+    this.$vux.loading.show({
+      text: '加载中...'
+    })
   },
   mounted () {
     let query = this.$route.query
     console.log(query)
     if (query.params) {
+      this.$vux.loading.hide()
       this.params = query.params
     } else {
       this.getDate()
@@ -158,14 +161,22 @@ export default {
         pageSize: 10
       }
       this.$http.fetchGet('/merchant/post/get/main', params).then((res) => {
+        setTimeout(() => {
+        this.$vux.loading.hide()
+      }, 500)
         this.params = res.data.data.postDetail
       })
     },
 
     postData () {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       let params = this.params
       console.log(params)
       this.$http.fetchPost('/merchant/post/update/merchantInfo', params).then((res) => {
+          debugger
+        this.$vux.loading.hide()
         if (res.data.code === 200) {
           this.$vux.toast.show({
             text: '操作成功',

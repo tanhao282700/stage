@@ -2,7 +2,7 @@
 <template>
   <div class="Coupons goodsAdd">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" class="headerIcon" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>添加优惠券</span>
     </div>
 
@@ -88,11 +88,15 @@
         this.params.endTime = val
       },
       postData () {
+        this.$vux.loading.show({
+          text: '加载中...'
+        })
         let params = JSON.parse(JSON.stringify(this.params))
         params['startTime'] = params.startTime.join('')
         params['endTime'] = params.endTime.join('')
         params['merchantId'] = this.$store.state.merchantId
         this.$http.fetchPost('/merchant/post/add/coupon', params).then((res) => {
+          this.$vux.loading.hide()
           if (res.data.code === 200) {
             this.$vux.toast.show({
               text: '操作成功',
@@ -126,29 +130,6 @@
     overflow-y: auto;
   }
 
-
-  .iosHeader {
-    width: 100%;
-    height: 1.28rem;
-    background: #fff;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    font-size: 0.36rem;
-    padding-bottom: 0.24rem;
-    svg {
-      width: 0.48rem;
-      height: 0.48rem;
-    }
-    .headerIcon {
-      position: absolute;
-      left: 0.2rem;
-      bottom: 0.14rem;
-      font-size: 0.42rem;
-      color: #000000;
-    }
-  }
 
 .submit {
   padding: 0 0.3rem;

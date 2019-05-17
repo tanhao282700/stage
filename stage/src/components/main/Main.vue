@@ -61,6 +61,9 @@ export default {
         this.waitDoOrders(res.data.data.merchantId)
         this.getundoMessage(res.data.data.merchantId)
         this.$store.state.merchantId = res.data.data.merchantId
+        setTimeout(() => {
+          this.$vux.loading.hide()
+        }, 500)
       })
     },
     waitDoOrders (merchantId) {
@@ -75,6 +78,9 @@ export default {
     }
   },
   created () {
+    this.$vux.loading.show({
+      text: '加载中...'
+    })
     console.log(this.$route.query)
     if (this.$route.path === '/happen') {
       this.happenSelected = true

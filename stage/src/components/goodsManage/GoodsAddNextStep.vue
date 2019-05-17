@@ -1,7 +1,7 @@
 <template>
   <div class="nextStep">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" class="headerIcon" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>添加商品</span>
     </div>
     <div class="con">
@@ -94,8 +94,12 @@ export default {
       this.dataList.splice(index, 1)
     },
     sendData (type) {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.$http.fetchPost('/merchant/good/add/goods/detailInfo', {id: this.$route.query.id, operate: type, detailsList: this.dataList}).then((res) => {
-        if (res.data.code === 200) {
+        this.$vux.loading.hide()
+          if (res.data.code === 200) {
           let txt = ''
           if (type === 0) {
             txt = '商品保存成功'
@@ -138,28 +142,6 @@ export default {
     background: rgb(247,247,247);
     display: flex;
     flex-direction: column;
-  }
-  .iosHeader {
-    width: 100%;
-    height: 1.28rem;
-    background: #fff;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    font-size: 0.36rem;
-    padding-bottom: 0.24rem;
-    svg {
-      width: 0.48rem;
-      height: 0.48rem;
-    }
-    .headerIcon {
-      position: absolute;
-      left: 0.2rem;
-      bottom: 0.14rem;
-      font-size: 0.42rem;
-      color: #000000;
-    }
   }
   .con {
     flex: 1;

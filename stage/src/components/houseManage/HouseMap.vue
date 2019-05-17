@@ -1,7 +1,7 @@
 <template>
     <div class="background_gray">
         <div class="iosHeader vux-1px-b">
-            <x-icon @click="getBack" class="headericon headericon_left" type="ios-arrow-left" size="60"></x-icon>
+            <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
             <span>驿栈地址</span>
         </div>
         <div class="amap-page-container my_amap_container">

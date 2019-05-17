@@ -2,9 +2,9 @@
 <template>
   <div class="goodsManage">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>商品管理</span>
-      <x-icon @click="addGoods" type="ios-plus-empty" size="70"></x-icon>
+      <x-icon @click="addGoods" class="right" type="ios-plus-empty" size="60"></x-icon>
     </div>
     <div class="tabBar">
       <div @click="changeTab(1)" class="bar" :class="{'active': params.status === 1}">
@@ -107,6 +107,9 @@ export default {
     },
     getData () {
       this.$http.fetchGet('/merchant/good/get/list', this.params).then((res) => {
+        setTimeout(() => {
+          this.$vux.loading.hide()
+        }, 500)
         this.baseInfo.goodsDownNum = res.data.data.goodsDownNum
         this.baseInfo.goodsOnNum = res.data.data.goodsOnNum
         this.data = res.data.data.goodsList
@@ -128,6 +131,9 @@ export default {
       this.pullupMsg = '加载中。。。'
       this.params.page = 1
       this.$http.fetchGet('/merchant/good/get/list', this.params).then((res) => {
+        setTimeout(() => {
+          this.$vux.loading.hide()
+        }, 500)
         this.baseInfo.goodsDownNum = res.data.data.goodsDownNum
         this.baseInfo.goodsOnNum = res.data.data.goodsOnNum
         this.data = res.data.data.goodsList
@@ -152,8 +158,14 @@ export default {
         this.isMoreData = false
         return
       }
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.params.page++
       this.$http.fetchGet('/merchant/good/get/list', this.params).then((res) => {
+        setTimeout(() => {
+        this.$vux.loading.hide()
+      }, 500)
         this.baseInfo.goodsDownNum = res.data.data.goodsDownNum
         this.baseInfo.goodsOnNum = res.data.data.goodsOnNum
         if (this.data.length === this.params.pageSize) {
@@ -197,6 +209,9 @@ export default {
       })
     },
     changeTab (tabIndex) {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
       this.$refs.content.style.height = 'auto'
       this.params.page = 1
       this.params.status = tabIndex
@@ -210,6 +225,9 @@ export default {
     }
   },
   created () {
+    this.$vux.loading.show({
+      text: '加载中...'
+    })
     this.params.merchantId = this.$store.state.merchantId
     this.getData()
   }
@@ -225,24 +243,6 @@ export default {
     flex-direction: column;
   }
 
-  .iosHeader {
-    width: 100%;
-    height: 1.28rem;
-    background: #fff;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    font-size: 0.36rem;
-    padding: 0 0.2rem 0.24rem 0.2rem;
-    svg {
-      width: 0.48rem;
-      height: 0.48rem;
-    }
-    svg:last-child {
-      width: 0.5rem;
-      height: 0.5rem;
-    }
-  }
 
   .tabBar {
     height: 0.92rem;

@@ -1,9 +1,9 @@
 <template>
   <div class="secondStep">
     <div class="iosHeader vux-1px-b">
-      <x-icon @click="getBack" type="ios-arrow-left" size="60"></x-icon>
+      <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>第二步：房源介绍</span>
-      <span @click="getBack" class="headericon icon iconfont">&#xe61a;</span>
+      <span @click="getBack" class="right headericon icon iconfont">&#xe61a;</span>
     </div>
     <div class="steps">
       <span></span>
@@ -83,7 +83,11 @@ export default {
       })
     },
     getNextStep () {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
           this.$http.fetchPost('/merchant/room/add/introduceInfo',this.baseInfo).then((res)=>{
+            this.$vux.loading.hide()
             this.$router.replace({
               name: 'thirdStep',
               query: {
@@ -105,24 +109,6 @@ export default {
     display: flex;
     flex-direction: column;
     text-align: left;
-  }
-  .iosHeader {
-    width: 100%;
-    height: 1.28rem;
-    background: #fff;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    font-size: 0.36rem;
-    padding: 0 0.2rem 0.24rem 0.2rem;
-    svg {
-      width: 0.48rem;
-      height: 0.48rem;
-    }
-    .headericon {
-      font-size: 0.3rem;
-      color: #000000;
-    }
   }
   .steps {
     height: 0.08rem;
