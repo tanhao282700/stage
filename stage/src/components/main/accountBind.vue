@@ -5,6 +5,13 @@
       <span>账号绑定</span>
     </div>
     <div class="clearfix">
+        <div class="setting_item">
+            <span>微信</span>
+          <div class="info">
+              <span></span>
+              <a class="removeBind"  @click="getWechat">绑定</a>
+          </div>
+        </div>
       <div class="setting_item"
           v-for="(item,index) in bindAccountList" :key="index">
         <span>{{item.name}}</span>
@@ -59,6 +66,13 @@ export default {
     this.getAccount()
   },
   methods: {
+    getWechat () {
+      let that = this
+      window.wechat = function (account, openid) {
+
+      }
+      window.AndroidListener.onOpenWxListener()
+    },
     getBack () {
       this.$router.go(-1)
     },

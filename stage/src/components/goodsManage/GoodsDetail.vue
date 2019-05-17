@@ -52,12 +52,16 @@
                 <div class="right">132条评论</div>
               </div>
             </div>
-            <div class="statisticsList">
+            <div class="statisticsList" ref="list_con">
               <div class="wrapper" ref="wrapper">
                 <div class="bscroll-container">
+                  <!-- 刷新提示信息 -->
+                  <div class="top-tip">
+                      <span class="refresh-hook">{{pulldownMsg}}</span>
+                    </div>
                   <!-- 内容列表 -->
-                  <ul class="content">
-                    <li class="item vux-1px-b" v-for="item in data">
+                  <ul class="content" ref="content">
+                    <li class="item vux-1px-b" v-for="item in commentsInfo.comments">
                       <div class="userInfo">
                         <div class="user">
                           <img src="../../assets/images/test.png" alt="">
@@ -78,7 +82,16 @@
                         <span>回复</span>
                       </div>
                     </li>
+                    <div v-if="!isMoreData" class="no_data">
+                        <span></span>
+                        <span>暂无更多数据</span>
+                        <span></span>
+                      </div>
                   </ul>
+                  <!-- 底部提示信息 -->
+                  <div v-if="isMoreData" class="bottom-tip">
+                      <span class="loading-hook">{{pullupMsg}}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -112,6 +125,11 @@ export default {
   },
   data () {
     return {
+      pulldownMsg: '下拉刷新',
+      pullupMsg: '加载更多',
+      alertHook: 'none',
+      isMoreData: true,
+      commentsInfo: [],
       params: {
         goodId: '',
         page: 1,
@@ -122,7 +140,7 @@ export default {
       data3: 4.5,
       index: 0,
       list2: ['详情', '评价'],
-      data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26],
+      data: [],
       list: [{
         msrc: 'http://ww1.sinaimg.cn/thumbnail/663d3650gy1fplwu9ze86j20m80b40t2.jpg',
         src: 'http://ww1.sinaimg.cn/large/663d3650gy1fplwu9ze86j20m80b40t2.jpg',
@@ -180,7 +198,65 @@ export default {
     },
     getList () {
       this.$http.fetchGet('/merchant/good/get/comments', this.params).then((res) => {
-
+        this.commentsInfo = res.data.data
+        if (this.commentsInfo.comments.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+          this.$nextTick(() => {
+            if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
+              this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
+            }
+          })
+        }
+        this.initScroll()
+      })
+    },
+    refreshData () {
+      this.$refs.content.style.height = 'auto'
+      this.pullupMsg = '加载中。。。'
+      this.params.page = 1
+      this.$http.fetchGet('/merchant/good/get/comments', this.params).then((res) => {
+        this.commentsInfo = res.data.data
+        if (this.commentsInfo.comments.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+          this.$nextTick(() => {
+            if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
+              this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
+            }
+          })
+        }
+        // 恢复文本值
+        this.pullupMsg = '加载更多'
+        // 刷新列表后，重新计算滚动区域高度
+        this.scroll.refresh()
+      })
+    },
+    loadMoreData () {
+      if (this.commentsInfo.comments.length < this.params.pageSize || this.commentsInfo.comments.length < this.params.pageSize * this.params.page) {
+        this.isMoreData = false
+        return
+      }
+      this.params.page++
+      this.$http.fetchGet('/merchant/good/get/comments', this.params).then((res) => {
+        if (this.commentsInfo.comments.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+        }
+        if (res.data.data.comments.length > 0) {
+          res.data.data.comments.map((item) => {
+            this.commentsInfo.comments.push(item)
+          })
+        } else {
+          this.isMoreData = false
+        }
+        // 恢复刷新提示文本值
+        this.pulldownMsg = '下拉刷新'
+        // 刷新列表后，重新计算滚动区域高度
+        this.scroll.refresh()
       })
     },
     checkGoods (status) {
@@ -206,12 +282,33 @@ export default {
           id: this.$route.query.id
         }
       })
+    },
+    initScroll () {
+      this.$nextTick(() => {
+        this.scroll = new BScroll(this.$refs.wrapper, { // 初始化better-scroll
+          probeType: 1, // 1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
+          click: true // 是否派发click事件
+        })
+        // 滑动过程中事件
+        this.scroll.on('scroll', (pos) => {
+          if (pos.y > 30) {
+            this.pulldownMsg = '释放立即刷新'
+          }
+        })
+        // 滑动结束松开事件
+        this.scroll.on('touchEnd', (pos) => { // 上拉刷新
+          if (pos.y > 30) {
+            this.refreshData()
+          } else if (pos.y < (this.scroll.maxScrollY - 30)) { // 下拉加载
+            this.loadMoreData()
+          }
+        })
+      })
     }
   },
   created () {
     this.params.goodId = this.$route.query.id
     this.status = this.$route.query.tabIndex
-    console.log(this.$route.query.tabIndex)
     this.getData()
     this.getList()
   }
@@ -447,6 +544,46 @@ export default {
         }
       }
     }
+  }
+  /* 下拉、上拉提示信息 */
+.top-tip {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    color: #555;
+  }
+
+  .bottom-tip {
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    color: #777;
+    /*background: #f2f2f2;*/
+    position: absolute;
+    bottom: -35px;
+    left: 0;
+  }
+
+  /* 全局提示信息 */
+  .alert-hook {
+    display: none;
+    position: fixed;
+    top: 62px;
+    left: 0;
+    z-index: 2;
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+    background: rgba(7, 17, 27, 0.5);
   }
 </style>
 <style>

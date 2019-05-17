@@ -45,8 +45,8 @@
         <x-icon type="ios-arrow-right" size="40"></x-icon>
       </div>
     </div> -->
-    <div class="iphone">
-      <x-button type="primary">退出当前账号</x-button>
+    <div @click="backTo" class="iphone">
+      <x-button type="primary">返回用户端</x-button>
     </div>
   </div>
 </template>
@@ -66,6 +66,9 @@ export default {
     }
   },
   methods: {
+    backTo () {
+      window.AndroidListener.onBackListener()
+    },
     getBack () {
       this.$router.go(-1)
     },

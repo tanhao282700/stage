@@ -50,7 +50,13 @@ export default {
 
     },
     getData () {
-      this.$http.fetchPost('/merchant/login', {account: '18140081852 ', password: md5('123456')}).then((res) => {
+      // this.$http.fetchPost('/merchant/login', {account: '18140081852 ', password: md5('123456')}).then((res) => {
+      //   axios.defaults.headers.common['token'] = res.data.data.token
+      //   this.waitDoOrders(res.data.data.merchantId)
+      //   this.getundoMessage(res.data.data.merchantId)
+      //   this.$store.state.merchantId = res.data.data.merchantId
+      // })
+      this.$http.fetchPost('/merchant/token/login', {userId: '1556954666365000', key: md5('1556954666365000:@!')}).then((res) => {
         axios.defaults.headers.common['token'] = res.data.data.token
         this.waitDoOrders(res.data.data.merchantId)
         this.getundoMessage(res.data.data.merchantId)
@@ -69,7 +75,7 @@ export default {
     }
   },
   created () {
-    console.log(this.$route.path)
+    console.log(this.$route.query)
     if (this.$route.path === '/happen') {
       this.happenSelected = true
     }
@@ -128,7 +134,7 @@ export default {
     width: 0.28rem;
     line-height: 0.28rem;
     border-radius: 0.28rem;
-    /*padding: 0 6px;*/
+    padding: 0;
     background-clip: padding-box;
     vertical-align: middle;
   }

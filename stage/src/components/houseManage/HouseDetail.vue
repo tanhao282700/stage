@@ -7,7 +7,7 @@
     </div>
     <div class="content">
       <tab :scroll-threshold=3 :line-width=2 v-model="index">
-        <tab-item class="vux-center" v-for="(item, index) in list2" @click="demo2 = item" :key="index">{{item}}</tab-item>
+        <tab-item class="vux-center" v-for="(item, index) in list2" @on-item-click="tabChange(item,index)" :key="index">{{item}}</tab-item>
       </tab>
       <div v-show="index == 0" class="con">
         <div class="con_main">
@@ -92,22 +92,27 @@
             <div class="statistics">
               <div class="statistics_con">
                 <div class="left">
-                  <span class="num">4.5</span>
+                  <span class="num" v-text="commentsInfo.point"></span>
                   <div class="raters">
                     <span>超赞</span>
                     <div>
-                      <rater disabled v-model="data3"></rater>
+                      <rater disabled v-model="commentsInfo.point"></rater>
                     </div>
                   </div>
                 </div>
-                <div class="right">132条评论</div>
+                <div class="right" v-text="commentsInfo.commentNumber+'条评论'"></div>
               </div>
             </div>
-            <div class="statisticsList">
+            <div class="statisticsList" ref="list_con">
               <div class="wrapper" ref="wrapper">
                 <div class="bscroll-container">
-                  <ul class="content">
-                    <li class="item vux-1px-b" v-for="item in data">
+                  <!-- 刷新提示信息 -->
+                  <div class="top-tip">
+                      <span class="refresh-hook">{{pulldownMsg}}</span>
+                    </div>
+                  <ul class="content" ref="content">
+                    <li class="item vux-1px-b" v-for="item in commentsInfo.comments">
+                    <!-- <li class="item vux-1px-b" v-for="i in 10"> -->
                       <div class="userInfo">
                         <div class="user">
                           <img src="../../assets/images/test.png" alt="">
@@ -128,7 +133,16 @@
                         <span>回复</span>
                       </div>
                     </li>
+                    <div v-if="!isMoreData" class="no_data">
+                        <span></span>
+                        <span>暂无更多数据</span>
+                        <span></span>
+                      </div>
                   </ul>
+                  <!-- 底部提示信息 -->
+                  <div v-if="isMoreData" class="bottom-tip">
+                      <span class="loading-hook">{{pullupMsg}}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -171,6 +185,10 @@ export default {
   },
   data () {
     return {
+      pulldownMsg: '下拉刷新',
+      pullupMsg: '加载更多',
+      alertHook: 'none',
+      isMoreData: true,
       tabIndex: 0,
       isShowMore: false,
       value: [],
@@ -249,9 +267,7 @@ export default {
       options: {
         getThumbBoundsFn (index) {
           // find thumbnail element
-          let thumbnail = document.querySelectorAll('.previewer-demo-img')[
-            index
-          ]
+          let thumbnail = document.querySelectorAll('.previewer-demo-img')[index]
           // get window scroll Y
           let pageYScroll =
             window.pageYOffset || document.documentElement.scrollTop
@@ -268,45 +284,57 @@ export default {
         apartmentInfo: {},
         facilitiesInfo: [],
         imageInfo: []
-      }
+      },
+      params: {
+        roomId: '',
+        page: 1,
+        pageSize: 10
+      },
+      commentsInfo: {}
     }
   },
   methods: {
-    getEdit(){
-        this.$router.push({
-            name: 'houseAdd',
-          query: {
-                params:{
-                    id: this.$route.query.id
-                }
-          }
-        })
+    tabChange (item, index) {
+      console.log(222)
+      if (index == 1) {
+        this.refreshData()
+      }
     },
-    changeMonth(data, index){
-      if(index!==0){
-        if(data.month<10){
-          data.month = '0'+data.month
+    getEdit () {
+      this.$router.push({
+        name: 'houseAdd',
+        query: {
+          params: {
+            id: this.$route.query.id
+          }
         }
-        this.$http.fetchGet('/merchant/room/get/reserveday',{roomId: this.$route.query.id,month: data.year+'-'+data.month}).then((res)=>{
-            res.data.data.map((item)=>{
+      })
+    },
+    changeMonth (data, index) {
+      if (index !== 0) {
+        if (data.month < 10) {
+          data.month = '0' + data.month
+        }
+        this.$http.fetchGet('/merchant/room/get/reserveday', {roomId: this.$route.query.id, month: data.year + '-' + data.month}).then((res) => {
+          res.data.data.map((item) => {
             this.value.push(item.live_time)
           })
         })
       }
     },
-      getOrderMonth(){
-        let timer = new Date()
-        let year = timer.getFullYear()
-        let month = timer.getMonth()+1
-        if(month < 10){
-            month = '0'+month
-        }
-          this.$http.fetchGet('/merchant/room/get/reserveday',{roomId: this.$route.query.id,month: year+'-'+month}).then((res)=>{
-            res.data.data.map((item)=>{
-                this.value.push(item.live_time)
-            })
-          })
-      },
+    getOrderMonth () {
+      let timer = new Date()
+      let year = timer.getFullYear()
+      let month = timer.getMonth() + 1
+      if (month < 10) {
+        month = '0' + month
+      }
+      this.$http.fetchGet('/merchant/room/get/reserveday', {roomId: this.$route.query.id, month: year + '-' + month}).then((res) => {
+        res.data.data.map((item) => {
+          this.value.push(item.live_time)
+        })
+      })
+    },
     checkStatus (status) {
       this.$http.fetchGet('/merchant/room/update/status', {roomId: this.$route.query.id, operate: status}).then((res) => {
         if (res.data.code === 200) {
@@ -342,38 +370,99 @@ export default {
       this.$http.fetchGet('/merchant/room/get/details', {roomId: this.$route.query.id}).then((res) => {
         this.baseData = res.data.data
       })
+    },
+    getComments () {
+      this.$http.fetchGet('/merchant/room/get/comments', this.params).then((res) => {
+        this.commentsInfo = res.data.data
+        if (this.commentsInfo.comments.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+          this.$nextTick(() => {
+            if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
+              this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
+            }
+          })
+        }
+        this.initScroll()
+      })
+    },
+    refreshData () {
+      this.$refs.content.style.height = 'auto'
+      this.pullupMsg = '加载中。。。'
+      this.params.page = 1
+      this.$http.fetchGet('/merchant/room/get/comments', this.params).then((res) => {
+        this.commentsInfo = res.data.data
+        if (this.commentsInfo.comments.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+          this.$nextTick(() => {
+            if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
+              this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
+            }
+          })
+        }
+        // 恢复文本值
+        this.pullupMsg = '加载更多'
+        // 刷新列表后，重新计算滚动区域高度
+        this.scroll.refresh()
+      })
+    },
+    loadMoreData () {
+      if (this.commentsInfo.comments.length < this.params.pageSize || this.commentsInfo.comments.length < this.params.pageSize * this.params.page) {
+        this.isMoreData = false
+        return
+      }
+      this.params.page++
+      this.$http.fetchGet('/merchant/room/get/comments', this.params).then((res) => {
+        if (this.commentsInfo.comments.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+        }
+        if (res.data.data.comments.length > 0) {
+          res.data.data.comments.map((item) => {
+            this.commentsInfo.comments.push(item)
+          })
+        } else {
+          this.isMoreData = false
+        }
+        // 恢复刷新提示文本值
+        this.pulldownMsg = '下拉刷新'
+        // 刷新列表后，重新计算滚动区域高度
+        this.scroll.refresh()
+      })
+    },
+    initScroll () {
+      this.$nextTick(() => {
+        this.scroll = new BScroll(this.$refs.wrapper, { // 初始化better-scroll
+          probeType: 1, // 1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
+          click: true // 是否派发click事件
+        })
+        // 滑动过程中事件
+        this.scroll.on('scroll', (pos) => {
+          if (pos.y > 30) {
+            this.pulldownMsg = '释放立即刷新'
+          }
+        })
+        // 滑动结束松开事件
+        this.scroll.on('touchEnd', (pos) => { // 上拉刷新
+          if (pos.y > 30) {
+            this.refreshData()
+          } else if (pos.y < (this.scroll.maxScrollY - 30)) { // 下拉加载
+            this.loadMoreData()
+          }
+        })
+      })
     }
   },
   created () {
+    this.params.roomId = this.$route.query.id
     this.tabIndex = this.$route.query.tabIndex
     this.getBaseInfo()
     this.getOrderMonth()
-    // const that = this
-    // this.$nextTick(() => {
-    //   this.scroll = new BScroll(this.$refs.wrapper, {
-    //     // 初始化better-scroll
-    //     probeType: 1, // 1 滚动的时候会派发scroll事件，会截流。2滚动的时候实时派发scroll事件，不会截流。 3除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
-    //     click: true // 是否派发click事件
-    //   })
-    //   // 滑动结束松开事件
-    //   this.scroll.on('touchEnd', pos => {
-    //     // 上拉刷新
-    //     if (
-    //       pos.y < this.scroll.maxScrollY ||
-    //       pos.y === this.scroll.maxScrollY
-    //     ) {
-    //       // 下拉加载
-    //       console.log(333)
-    //       setTimeout(() => {
-    //         that.getData().then(res => {
-    //           // 恢复文本值
-    //           that.data = this.data.concat(res)
-    //           that.scroll.refresh()
-    //         })
-    //       }, 2000)
-    //     }
-    //   })
-    // })
+    this.getComments()
   }
 }
 </script>
@@ -730,6 +819,46 @@ export default {
     }
   }
 }
+/* 下拉、上拉提示信息 */
+.top-tip {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    color: #555;
+  }
+
+  .bottom-tip {
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    color: #777;
+    /*background: #f2f2f2;*/
+    position: absolute;
+    bottom: -35px;
+    left: 0;
+  }
+
+  /* 全局提示信息 */
+  .alert-hook {
+    display: none;
+    position: fixed;
+    top: 62px;
+    left: 0;
+    z-index: 2;
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+    background: rgba(7, 17, 27, 0.5);
+  }
 </style>
 <style>
 .houseDetail .vux-tab-wrap {
