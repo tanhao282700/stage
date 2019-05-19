@@ -7,8 +7,11 @@ let baseurl = ''
 if (debug) {
   baseurl = './api'
 } else {
-  baseurl = 'http://xyzsh.zbtdvip.com/api'
+  baseurl = 'http://zayz.zbtdvip.com/api'
 }
+
+// http://zayz.zbtdvip.com  测试环境
+// http://xyz.zbtdvip.com  正式环境
 
 axios.defaults.timeout = 5000 // 响应时间
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8' // 配置请求头

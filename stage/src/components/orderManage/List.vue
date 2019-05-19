@@ -2,8 +2,8 @@
   <div class="orderManage">
     <div class="iosHeader vux-1px-b">
       <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
-      <x-input placeholder="输入订单号、客户姓名、客户手机号搜索" v-model="value"></x-input>
-      <span style="font-size: 0.36rem;" class="right headericon icon iconfont">&#xe62f;</span>
+      <x-input placeholder="输入订单号、客户姓名、客户手机号搜索" v-model="params.matchParam"></x-input>
+      <span @click="refreshData" style="font-size: 0.36rem;" class="right headericon icon iconfont">&#xe62f;</span>
     </div>
     <div class="tabBar vux-1px-b">
       <div class="bar" @click="changeTab(1)" :class="{'active': tabIndex == 1}">
@@ -166,6 +166,7 @@ export default {
       pullupMsg: '加载更多',
       alertHook: 'none',
       params: {
+        matchParam: '',
         merchantId: '',
         status: 99, // 0-待支付,1-待发货,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,8-待收货,9-已完成,99-所有状态
         // 0-待支付,1-待确认,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,7-待入住,8-入住中,9-已完成,99-所有状态
@@ -178,13 +179,13 @@ export default {
     }
   },
   methods: {
-    changePrice(id) {
-        this.$router.push({
-            name: 'changePrice',
-          query: {
-            id: id
-          }
-        })
+    changePrice (id) {
+      this.$router.push({
+        name: 'changePrice',
+        query: {
+          id: id
+        }
+      })
       event.stopPropagation()
     },
     goDetails (data) {
@@ -217,6 +218,7 @@ export default {
       }, 1000)
     },
     changeTab (tabIndex) {
+      this.params.matchParam = ''
       this.$vux.loading.show({
         text: '加载中...'
       })
@@ -227,9 +229,9 @@ export default {
     getInitHotelData () {
       this.$http.fetchGet('/merchant/order/get/room/list', this.params).then((res) => {
         setTimeout(() => {
-        this.$vux.loading.hide()
-      }, 500)
-          this.hotelOrderNum = res.data.data.orderNum
+          this.$vux.loading.hide()
+        }, 500)
+        this.hotelOrderNum = res.data.data.orderNum
         this.data = res.data.data.orderList
         if (this.data.length === this.params.pageSize) {
           this.isMoreData = true
@@ -283,8 +285,8 @@ export default {
       }
       this.$http.fetchGet(url, this.params).then((res) => {
         setTimeout(() => {
-        this.$vux.loading.hide()
-      }, 500)
+          this.$vux.loading.hide()
+        }, 500)
         if (this.tabIndex == 1) {
           this.hotelOrderNum = res.data.data.orderNum
         } else {

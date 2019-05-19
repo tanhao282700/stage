@@ -21,6 +21,11 @@ export default new Router({
           component: resolve => { import('@/components/main/News').then(module => resolve(module)) }
         },
         {
+          path: 'newsDetail',
+          name: 'newsDetail',
+          component: resolve => { import('@/components/main/newsDetail').then(module => resolve(module)) }
+        },
+        {
           path: 'mine',
           name: 'Mine',
           component: resolve => { import('@/components/main/Mine').then(module => resolve(module)) }

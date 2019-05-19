@@ -78,6 +78,7 @@ export default {
     }
   },
   created () {
+    console.log(this.$route.query.userId)
     this.$vux.loading.show({
       text: '加载中...'
     })

@@ -13,7 +13,7 @@
           <!-- 内容列表 -->
           <ul class="content" ref="content" >
             <!--<li v-for="item in data">{{item}}</li>-->
-            <li v-for="item in data" class="item vux-1px-b">
+            <li @click="getDetails(item)" v-for="item in data" class="item vux-1px-b">
               <img src="../../assets/images/orderpage.png" alt="">
               <div class="infos">
                 <span v-text="item.title"></span>
@@ -24,28 +24,6 @@
                 <!--<badge text="123"></badge>-->
               </div>
             </li>
-            <!--<li class="item vux-1px-b">
-              <img src="../../assets/images/orderpage.png" alt="">
-              <div class="infos">
-                <span>退款申请</span>
-                <span>我是退款申请带娃带娃阿伟大阿伟大阿伟大阿伟大wa</span>
-              </div>
-              <div class="times">
-                <span>今天 14:00</span>
-                <badge text="123"></badge>
-              </div>
-            </li>
-            <li class="item vux-1px-b">
-              <img src="../../assets/images/money.png" alt="">
-              <div class="infos">
-                <span>退款申请</span>
-                <span>我是退款申请带娃带娃阿伟大阿伟大阿伟大阿伟大wa</span>
-              </div>
-              <div class="times">
-                <span>今天 14:00</span>
-                <badge text="123"></badge>
-              </div>
-            </li>-->
             <div v-if="!isMoreData" class="no_data">
               <span></span>
               <span>暂无更多数据</span>
@@ -90,24 +68,82 @@ export default {
     }
   },
   methods: {
+    getDetails (item) {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
+      this.$http.fetchGet('/merchant/center/update/message/status', {messageId: item.id}).then((res) => {
+        this.$vux.loading.hide()
+        if (item.type == 7) {
+          this.$router.push({
+            name: 'goodsDetail',
+            query: {
+              tabIndex: 0,
+              id: item.bizId
+            }
+          })
+        } else if (item.type == 8 || item.type == 13) {
+          this.$router.push({
+            name: 'hotelManage'
+          })
+        } else if (item.type == 10 || item.type == 12) {
+          this.$router.push({
+            name: 'myMoney'
+          })
+        } else if (item.type == 14) {
+          this.$router.push({
+            name: 'goodsDetail',
+            query: {
+              tabIndex: 0,
+              id: item.bizId
+            }
+          })
+        } else if (item.type == 15) {
+          this.$router.push({
+            name: 'houseDetail',
+            query: {
+              tabIndex: 0,
+              id: item.bizId
+            }
+          })
+        } else if (item.type == 16) {
+          this.$router.push({
+            name: 'houseDetail',
+            query: {
+              tabIndex: 0,
+              id: item.bizId
+            }
+          })
+        } else {
+          this.$router.push({
+            name: 'newsDetail',
+            query: {
+              title: item.title,
+              info: item.info,
+              messageDate: item.messageDate
+            }
+          })
+        }
+      })
+    },
     getData () {
-        this.$http.fetchGet('/merchant/center/get/message/list',this.params).then((res)=>{
-          this.data = res.data.data.messageList
-          if (this.data.length === this.params.pageSize) {
-            this.isMoreData = true
-          } else {
-            this.isMoreData = false
-            this.$nextTick(() => {
-              if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
-                this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
-              }
-            })
-          }
-          setTimeout(() => {
-            this.$vux.loading.hide()
-          }, 500)
-          this.initScroll()
-        })
+      this.$http.fetchGet('/merchant/center/get/message/list', this.params).then((res) => {
+        this.data = res.data.data.messageList
+        if (this.data.length === this.params.pageSize) {
+          this.isMoreData = true
+        } else {
+          this.isMoreData = false
+          this.$nextTick(() => {
+            if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
+              this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
+            }
+          })
+        }
+        setTimeout(() => {
+          this.$vux.loading.hide()
+        }, 500)
+        this.initScroll()
+      })
     },
     initScroll () {
       this.$nextTick(() => {
@@ -131,7 +167,7 @@ export default {
         })
       })
     },
-    refreshData() {
+    refreshData () {
       this.$refs.content.style.height = 'auto'
       this.pullupMsg = '加载中。。。'
       this.params.page = 1
@@ -153,7 +189,7 @@ export default {
         this.scroll.refresh()
       })
     },
-    loadMoreData() {
+    loadMoreData () {
       if (this.data.length < this.params.pageSize || this.data.length < this.params.pageSize * this.params.page) {
         this.isMoreData = false
         return
@@ -164,8 +200,8 @@ export default {
       this.params.page++
       this.$http.fetchGet('/merchant/center/get/message/list', this.params).then((res) => {
         setTimeout(() => {
-        this.$vux.loading.hide()
-      }, 500)
+          this.$vux.loading.hide()
+        }, 500)
         if (this.data.length === this.params.pageSize) {
           this.isMoreData = true
         } else {
