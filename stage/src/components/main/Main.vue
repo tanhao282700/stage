@@ -50,20 +50,30 @@ export default {
 
     },
     getData () {
-      // this.$http.fetchPost('/merchant/login', {account: '18140081852 ', password: md5('123456')}).then((res) => {
-      //   axios.defaults.headers.common['token'] = res.data.data.token
-      //   this.waitDoOrders(res.data.data.merchantId)
-      //   this.getundoMessage(res.data.data.merchantId)
-      //   this.$store.state.merchantId = res.data.data.merchantId
-      // })
-      this.$http.fetchPost('/merchant/token/login', {userId: '1556954666365000', key: md5('1556954666365000:@!')}).then((res) => {
-        axios.defaults.headers.common['token'] = res.data.data.token
-        this.waitDoOrders(res.data.data.merchantId)
-        this.getundoMessage(res.data.data.merchantId)
-        this.$store.state.merchantId = res.data.data.merchantId
-        setTimeout(() => {
-          this.$vux.loading.hide()
-        }, 500)
+       /*this.$http.fetchPost('/merchant/login', {account: '13558986137 ', password: md5('123456')}).then((res) => {
+         axios.defaults.headers.common['token'] = res.data.data.token
+         this.waitDoOrders(res.data.data.merchantId)
+         this.getundoMessage(res.data.data.merchantId)
+         this.$store.state.merchantId = res.data.data.merchantId
+       })*/
+      let userId = this.$route.query.userId
+      if(userId) {
+          this.$store.state.userId = userId
+      }
+      /*userId = '1556954666365000'*/
+      this.$http.fetchPost('/merchant/token/login', {userId: this.$store.state.userId, key: md5(this.$store.state.userId+':@!')}).then((res) => {
+        if(res.data.code === 200) {
+          axios.defaults.headers.common['token'] = res.data.data.token
+          this.waitDoOrders(res.data.data.merchantId)
+          this.getundoMessage(res.data.data.merchantId)
+          this.$store.state.merchantId = res.data.data.merchantId
+        } else {
+          this.$vux.toast.show({
+            text: res.data.message,
+            position: 'middle',
+            type: 'warn'
+          })
+        }
       })
     },
     waitDoOrders (merchantId) {
@@ -78,10 +88,11 @@ export default {
     }
   },
   created () {
+    window.AndroidListener.onHideDialog()
     console.log(this.$route.query.userId)
-    this.$vux.loading.show({
+    /*this.$vux.loading.show({
       text: '加载中...'
-    })
+    })*/
     console.log(this.$route.query)
     if (this.$route.path === '/happen') {
       this.happenSelected = true

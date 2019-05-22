@@ -64,12 +64,12 @@ export default {
   methods: {
     getWechat () {
       let that = this
-      window.wechat = function (account, openid) {
+      window.wechat = function (openid, name) {
         that.$vux.loading.show({
           text: '加载中...'
         })
         let params = {
-          account: account,
+          account: name,
           openid: openid,
           accountType: that.operItem.accountType,
           merchantId: that.$store.state.merchantId,
@@ -125,7 +125,7 @@ export default {
       this.operItem = item
       if(item.account){
           //解绑
-          this.offBind()
+          this.offBind(item)
       }else{
           //绑定
         if(item.accountType == 0) {
@@ -148,13 +148,14 @@ export default {
         })
       }
     },
-    offBind () {
+    offBind (item) {
       this.$vux.loading.show({
         text: '加载中...'
       })
         let params = {
           account: '',
           accountType: this.operItem.accountType,
+          openid: item.openid || '',
           merchantId: this.$store.state.merchantId,
           operate: 1
         }
