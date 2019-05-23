@@ -154,7 +154,13 @@ export default {
   data () {
     return {
       value: '',
-      baseInfo: {},
+      baseInfo: {
+        workPrice: '',
+        holidayPrice: '',
+        housePersonNumber: '',
+        minReserveDay: '',
+        maxReserveDay: ''
+      },
       isShow1: false,
       isShow2: false,
       isShow3: false,
@@ -199,12 +205,18 @@ export default {
   },
   methods: {
     setPrice(){
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
+      this.$http.fetchPost('/merchant/room/add/reserveInfo',this.baseInfo).then((res)=>{
+        this.$vux.loading.hide()
         this.$router.replace({
-            name: 'setPrice',
+          name: 'setPrice',
           query: {
             params: this.$route.query.params
           }
         })
+      })
     },
       reduceMax() {
         if(this.baseInfo.maxReserveDay < 2 || this.baseInfo.maxReserveDay === this.baseInfo.minReserveDay){
@@ -258,9 +270,12 @@ export default {
       getBaseData() {
           this.$http.fetchGet('/merchant/room/get/reserveInfo',{roomId: this.$route.query.params.id}).then((res)=>{
             this.baseInfo = res.data.data
+            this.baseInfo.id = this.$route.query.params.id
             this.baseInfo.ubscribeComments.map((item)=>{
                 item.label = item.text
             })
+            this.baseInfo.workPrice == 0 ? this.baseInfo.workPrice = '' : this.baseInfo.workPrice
+            this.baseInfo.holidayPrice == 0 ? this.baseInfo.holidayPrice = '' : this.baseInfo.holidayPrice
           })
       },
     getBack () {

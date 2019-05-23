@@ -23,13 +23,13 @@
               :crop="false"
               :isXhr="false"
               @imagechanged="imagechanged0"
-              input-of-file="file"
+              :inputAccept="'image/*'"
               :max-file-size="5242880"
               :url="uploadUrl">
             </vue-core-image-upload>
           </div>
           <div class="tips">封面有且只能上传1张照片，建议使用或卧室横图</div>
-          <div class="imgs">
+          <div class="imgs" v-if="baseInfo.imagesInfo[0].imageItems.length>0">
             <div class="pics" v-for="(item,index) in baseInfo.imagesInfo[0].imageItems">
               <img v-if="item.type == 0" class="previewer-demo-img" :src="item.url" alt="">
               <span @click="deletePic(0,index)" class="deleteBtn icon iconfont">&#xe61e;</span>
@@ -47,12 +47,12 @@
               :crop="false"
               :isXhr="false"
               @imagechanged="imagechanged1"
-              input-of-file="file"
+              :inputAccept="'image/*'"
               :max-file-size="5242880"
               :url="uploadUrl">
             </vue-core-image-upload>
           </div>
-          <div class="imgs">
+          <div class="imgs" v-if="baseInfo.imagesInfo[1].imageItems.length>0">
             <div class="pics" v-for="(item,index) in baseInfo.imagesInfo[1].imageItems">
               <img v-if="item.type == 0" class="previewer-demo-img" :src="item.url" alt="">
               <span @click="deletePic(1,index)" class="deleteBtn icon iconfont">&#xe61e;</span>
@@ -70,12 +70,12 @@
               :crop="false"
               :isXhr="false"
               @imagechanged="imagechanged2"
-              input-of-file="file"
+              :inputAccept="'image/*'"
               :max-file-size="5242880"
               :url="uploadUrl">
             </vue-core-image-upload>
           </div>
-          <div class="imgs">
+          <div class="imgs" v-if="baseInfo.imagesInfo[2].imageItems.length>0">
             <div class="pics" v-for="(item,index) in baseInfo.imagesInfo[2].imageItems">
               <img v-if="item.type == 0" class="previewer-demo-img" :src="item.url" alt="">
               <span @click="deletePic(2,index)" class="deleteBtn icon iconfont">&#xe61e;</span>
@@ -93,12 +93,12 @@
               :crop="false"
               :isXhr="false"
               @imagechanged="imagechanged3"
-              input-of-file="file"
+              :inputAccept="'image/*'"
               :max-file-size="5242880"
               :url="uploadUrl">
             </vue-core-image-upload>
           </div>
-          <div class="imgs">
+          <div class="imgs" v-if="baseInfo.imagesInfo[3].imageItems.length>0">
             <div class="pics" v-for="(item,index) in baseInfo.imagesInfo[3].imageItems">
               <img v-if="item.type == 0" class="previewer-demo-img" :src="item.url" alt="">
               <span @click="deletePic(3,index)" class="deleteBtn icon iconfont">&#xe61e;</span>
@@ -116,12 +116,12 @@
               :crop="false"
               :isXhr="false"
               @imagechanged="imagechanged4"
-              input-of-file="file"
+              :inputAccept="'image/*'"
               :max-file-size="5242880"
               :url="uploadUrl">
             </vue-core-image-upload>
           </div>
-          <div class="imgs">
+          <div class="imgs" v-if="baseInfo.imagesInfo[4].imageItems.length>0">
             <div class="pics" v-for="(item,index) in baseInfo.imagesInfo[4].imageItems">
               <img v-if="item.type == 0" class="previewer-demo-img" :src="item.url" alt="">
               <span @click="deletePic(4,index)" class="deleteBtn icon iconfont">&#xe61e;</span>
@@ -139,12 +139,12 @@
               :crop="false"
               :isXhr="false"
               @imagechanged="imagechanged5"
-              input-of-file="file"
+              :inputAccept="'image/*'"
               :max-file-size="5242880"
               :url="uploadUrl">
             </vue-core-image-upload>
           </div>
-          <div class="imgs">
+          <div class="imgs" v-if="baseInfo.imagesInfo[5].imageItems.length>0">
             <div class="pics" v-for="(item,index) in baseInfo.imagesInfo[5].imageItems">
               <img v-if="item.type == 0" class="previewer-demo-img" :src="item.url" alt="">
               <span @click="deletePic(5,index)" class="deleteBtn icon iconfont">&#xe61e;</span>
@@ -185,7 +185,9 @@
             // http://javascript.info/tutorial/coordinates
           }
         },
-        baseInfo: {}
+        baseInfo: {
+          imagesInfo: [{imageItems: []},{imageItems: []},{imageItems: []},{imageItems: []},{imageItems: []},{imageItems: []}]
+        }
       }
     },
     created () {

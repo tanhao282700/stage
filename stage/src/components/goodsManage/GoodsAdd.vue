@@ -21,7 +21,7 @@
               @imageuploaded="imageuploaded"
               @imagechanged="imagechanged"
               :isXhr="false"
-              input-of-file="file"
+              :inputAccept="'image/*'"
               :max-file-size="5242880"
               :url="uploadUrl">
               <!--<img width="150" src="../../assets/images/test.png" />-->

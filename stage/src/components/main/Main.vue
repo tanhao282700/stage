@@ -50,17 +50,17 @@ export default {
 
     },
     getData () {
-       /*this.$http.fetchPost('/merchant/login', {account: '13558986137 ', password: md5('123456')}).then((res) => {
+       this.$http.fetchPost('/merchant/login', {account: '18380447483', password: md5('123456')}).then((res) => {
          axios.defaults.headers.common['token'] = res.data.data.token
          this.waitDoOrders(res.data.data.merchantId)
          this.getundoMessage(res.data.data.merchantId)
          this.$store.state.merchantId = res.data.data.merchantId
-       })*/
-      let userId = this.$route.query.userId
+       })
+      /*let userId = this.$route.query.userId
+      /!*userId = '1556954666365000'*!/
       if(userId) {
           this.$store.state.userId = userId
       }
-      /*userId = '1556954666365000'*/
       this.$http.fetchPost('/merchant/token/login', {userId: this.$store.state.userId, key: md5(this.$store.state.userId+':@!')}).then((res) => {
         if(res.data.code === 200) {
           axios.defaults.headers.common['token'] = res.data.data.token
@@ -74,7 +74,7 @@ export default {
             type: 'warn'
           })
         }
-      })
+      })*/
     },
     waitDoOrders (merchantId) {
       this.$http.fetchGet('/merchant/order/get/statistic', {merchantId: merchantId}).then((res) => {
@@ -88,8 +88,8 @@ export default {
     }
   },
   created () {
-    window.AndroidListener.onHideDialog()
-    console.log(this.$route.query.userId)
+    /*window.AndroidListener.onHideDialog()
+    console.log(this.$route.query.userId)*/
     /*this.$vux.loading.show({
       text: '加载中...'
     })*/

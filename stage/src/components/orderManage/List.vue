@@ -463,9 +463,9 @@ export default {
     background: #fff;
     font-size: 0.28rem;
     .hotel {
-      height: 3.6rem;
+      /*height: 3.6rem;*/
       .info {
-        height: 1.8rem;
+        /*height: 1.8rem;*/
         text-align: left;
         .name {
           span:first-child {

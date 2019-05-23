@@ -104,12 +104,29 @@
     <div v-transfer-dom>
       <previewer :list="previewList" ref="previewer" :options="options"></previewer>
     </div>
+    <div v-transfer-dom>
+      <x-dialog v-model="showToast" class="dialog-demo">
+        <div class="replyComments">
+          <div class="tit">
+            <span>回复评论</span>
+            <span @click="showToast=false" class="icon iconfont">&#xe61a;</span>
+          </div>
+          <group>
+            <x-textarea placeholder="请输入内容" v-model="commentsValue"></x-textarea>
+          </group>
+          <div class="bottom">
+            <span @click="showToast=false">取消</span>
+            <span @click="replyComment">确定</span>
+          </div>
+        </div>
+      </x-dialog>
+    </div>
   </div>
 </template>
 
 <script>
 import BScroll from 'better-scroll'
-import { Rater, Previewer, TransferDom, Tab, TabItem, Swiper, SwiperItem } from 'vux'
+import { Rater, Previewer, TransferDom, XTextarea, Group, XDialog, Tab, TabItem, Swiper, SwiperItem } from 'vux'
 // let count = 1
 export default {
   name: 'goodsDetail',
@@ -123,7 +140,10 @@ export default {
     SwiperItem,
     Rater,
     Previewer,
-    TransferDom
+    TransferDom,
+    XTextarea,
+    Group,
+    XDialog
   },
   data () {
     return {
