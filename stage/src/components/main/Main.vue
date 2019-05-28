@@ -10,7 +10,7 @@
           <img slot="icon-active" src="../../assets/images/happen_click.png">
           <span slot="label">概况</span>
         </tabbar-item>
-        <tabbar-item :selected="newsSelected" :badge="String(undoMessage) || 0" link="/news">
+        <tabbar-item :selected="newsSelected" :badge="String(undoMessage)==0?'':String(undoMessage)" link="/news">
           <img slot="icon" src="../../assets/images/news_noclick.png">
           <img slot="icon-active" src="../../assets/images/news_click.png">
           <span slot="label">消息</span>
@@ -50,14 +50,14 @@ export default {
 
     },
     getData () {
-       this.$http.fetchPost('/merchant/login', {account: '18380447483', password: md5('123456')}).then((res) => {
+       /*this.$http.fetchPost('/merchant/login', {account: '18380447483', password: md5('123456')}).then((res) => {
          axios.defaults.headers.common['token'] = res.data.data.token
          this.waitDoOrders(res.data.data.merchantId)
          this.getundoMessage(res.data.data.merchantId)
          this.$store.state.merchantId = res.data.data.merchantId
-       })
-      /*let userId = this.$route.query.userId
-      /!*userId = '1556954666365000'*!/
+       })*/
+      let userId = this.$route.query.userId
+      /*userId = '1556954666365000'*/
       if(userId) {
           this.$store.state.userId = userId
       }
@@ -74,7 +74,7 @@ export default {
             type: 'warn'
           })
         }
-      })*/
+      })
     },
     waitDoOrders (merchantId) {
       this.$http.fetchGet('/merchant/order/get/statistic', {merchantId: merchantId}).then((res) => {
@@ -88,8 +88,8 @@ export default {
     }
   },
   created () {
-    /*window.AndroidListener.onHideDialog()
-    console.log(this.$route.query.userId)*/
+    window.AndroidListener.onHideDialog()
+    console.log(this.$route.query.userId)
     /*this.$vux.loading.show({
       text: '加载中...'
     })*/

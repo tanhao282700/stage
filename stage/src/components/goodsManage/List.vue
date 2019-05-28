@@ -35,11 +35,21 @@
               <div class="info">
                 <div>
                   <span v-text="item.title"></span>
-                  <!--<span>销量18</span>-->
+                  <span v-text="'销量'+item.sales"></span>
                   <span v-text="'最后编辑于 '+item.updateTime"></span>
                 </div>
                 <span v-text="'￥'+item.memberPrice" class="price"></span>
               </div>
+              <div class="buttons">
+                <span @click="edit(item)">编辑</span>
+                <span @click="getOff(item,2)" v-if="params.status == 1">下架</span>
+                <span @click="getOff(item,1)" v-if="params.status == 2">上架</span>
+                <!--<span>查看评论</span>-->
+                <span @click="deleteList(item)">删除</span>
+              </div>
+              <span v-if="item.dataStatus == 1" class="currentStatus red">待审核</span>
+              <span v-if="item.dataStatus == 2" class="currentStatus green">审核通过</span>
+              <span v-if="item.dataStatus == 3" class="currentStatus red">审核拒绝</span>
             </li>
             <div v-if="!isMoreData" class="no_data">
               <span></span>
@@ -88,6 +98,74 @@ export default {
     }
   },
   methods: {
+    edit (item) {
+      this.$router.push({
+        name: 'goodsAdd',
+        query: {
+          id: item.id
+        }
+      })
+      event.stopPropagation()
+    },
+    getOff(item,status) {
+      this.$vux.loading.show({
+        text: '加载中...'
+      })
+      let txt = ''
+      if(status == 2) {
+        txt = '下架成功'
+      }
+      if( status == 1) {
+        txt = '上架成功'
+      }
+      this.$http.fetchGet('/merchant/good/update/status', {goodId: item.id, operate: status}).then((res) => {
+        this.$vux.loading.hide()
+        if(res.data.code == 200) {
+          this.$vux.toast.show({
+            text: txt,
+            position: 'middle'
+          })
+          this.refreshData()
+        } else {
+          this.$vux.toast.show({
+            text: res.data.message,
+            position: 'middle',
+            type: 'warn'
+          })
+        }
+      })
+      event.stopPropagation()
+    },
+    deleteList(item) {
+      this.$vux.confirm.show({
+        title : '此操作将永久删除，是否继续？',
+        onCancel : () => {
+
+        },
+        onConfirm : () => {
+          this.$vux.loading.show({
+            text: '加载中...'
+          })
+          this.$http.fetchPost('/merchant/good/delete/goods?goodsId='+item.id).then((res)=>{
+            this.$vux.loading.hide()
+            if(res.data.code == 200) {
+              this.$vux.toast.show({
+                text: '删除成功',
+                position: 'middle'
+              })
+              this.refreshData()
+            } else {
+              this.$vux.toast.show({
+                text: res.data.message,
+                position: 'middle',
+                type: 'warn'
+              })
+            }
+          })
+        }
+      })
+      event.stopPropagation()
+    },
     addGoods () {
       this.$router.push({
         name: 'goodsAdd'
@@ -294,6 +372,18 @@ export default {
   }
 
   .item {
+    .currentStatus {
+      position: absolute;
+      right: 0.1rem;
+      top: 0.68rem;
+      font-size: 0.24rem;
+    }
+    .green {
+      color: #2bbb59;
+    }
+    .red {
+      color: #ff122f;
+    }
     height: 2.32rem;
     background: #fff;
     position: relative;
@@ -336,7 +426,7 @@ export default {
         align-items: flex-start;
         width: 100%;
         overflow: hidden;
-        span:first-child {
+        &>span:first-child {
           text-align: left;
           width: 100%;
           overflow: hidden;
@@ -345,7 +435,7 @@ export default {
           font-size: 0.28rem;
           font-weight: bold;
         }
-        span:nth-child(2), span:nth-child(3) {
+        &>span:nth-child(2), span:nth-child(3) {
           font-size: 0.24rem;
           color: #9b9b9b;
           line-height: 0.5rem;
@@ -355,6 +445,21 @@ export default {
         font-size: 0.36rem;
         color: #f24b45;
         font-weight: bold;
+      }
+    }
+    .buttons {
+      position: absolute;
+      right: 0;
+      bottom: 0.1rem;
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      span {
+        font-size: 0.24rem;
+        padding: 0.05rem 0.1rem;
+        border: 1px solid #bdbdbd;
+        border-radius: 0.1rem;
+        margin-right: 0.1rem;
       }
     }
     .edit {

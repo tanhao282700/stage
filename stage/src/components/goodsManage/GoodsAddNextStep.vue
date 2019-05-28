@@ -31,9 +31,11 @@
           </div>
         </div>
       </div>
-      <div @click="addLines" class="addBtn">
-        <span class="icon iconfont">&#xe600;</span>
-        <span>继续添加</span>
+      <div class="addBtn">
+        <span @click="addLines(1)" class="icon iconfont">&#xe600;</span>
+        <span @click="addLines(1)" style="margin-right: 0.3rem;">添加图片</span>
+        <span @click="addLines(2)" class="icon iconfont">&#xe600;</span>
+        <span @click="addLines(2)">添加文字</span>
       </div>
     </div>
     <div class="bottom">
@@ -80,15 +82,18 @@ export default {
         this.dataList[index].url = res.data.data.path
       })
     },
-    addLines () {
-      this.dataList.push({
-        text: '',
-        type: 0
-      })
-      this.dataList.push({
-        url: '',
-        type: 1
-      })
+    addLines (type) {
+        if(type == 1) {
+          this.dataList.push({
+            url: '',
+            type: 1
+          })
+        } else {
+          this.dataList.push({
+            text: '',
+            type: 0
+          })
+        }
     },
     deleteInfo (index) {
       this.dataList.splice(index, 1)

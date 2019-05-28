@@ -17,7 +17,7 @@
                         <span>元/晚</span>
                     </div>
                     <group class="line_input vux-1px-b">
-                        <x-input placeholder="周一~周四及因串休导致需要正常上班的日期" v-model="baseInfo.workPrice"></x-input>
+                        <x-input type="number" placeholder="周一~周四及因串休导致需要正常上班的日期" v-model="baseInfo.workPrice"></x-input>
                     </group>
                 </div>
             </div>
@@ -28,7 +28,7 @@
                         <span>元/晚</span>
                     </div>
                     <group class="line_input vux-1px-b">
-                        <x-input placeholder="周五、周六及法定节假日、情人节圣诞节等" v-model="baseInfo.holidayPrice"></x-input>
+                        <x-input type="number" placeholder="周五、周六及法定节假日、情人节圣诞节等" v-model="baseInfo.holidayPrice"></x-input>
                     </group>
                 </div>
             </div>
@@ -86,7 +86,7 @@
                         <span @click="isShow2 = true">修改</span>
                     </div>
                     <div class="tips">周五、周六及法定节假日客人可在几点前预定房源？</div>
-                    <div class="tdzc vux-1px-b" v-text="baseInfo.nowReserveTime"></div>
+                    <div class="tdzc vux-1px-b" v-if="baseInfo.nowReserveTime" v-text="baseInfo.nowReserveTime"></div>
             </div>
             <div class="td">
                     <div class="tit">
@@ -94,7 +94,7 @@
                         <span @click="isShow3 = true">修改</span>
                     </div>
                     <div class="tips">客人最早几点可以入住？</div>
-                    <div class="tdzc vux-1px-b" v-text="baseInfo.checkInTimeFront+'后'"></div>
+                    <div class="tdzc vux-1px-b" v-if="baseInfo.checkInTimeFront" v-text="baseInfo.checkInTimeFront+'后'"></div>
             </div>
             <div class="td" style="margin-bottom: 0.8rem;padding-bottom: 0.4rem;">
                     <div class="tit">
@@ -102,7 +102,7 @@
                         <span @click="isShow4=true">修改</span>
                     </div>
                     <div class="tips">客人最晚几点可以退房？</div>
-                    <div class="tdzc" v-text="baseInfo.checkOutTime+'前'"></div>
+                    <div class="tdzc" v-if="baseInfo.checkOutTime" v-text="baseInfo.checkOutTime+'前'"></div>
             </div>
         </div>
         <div @click="getNextStep" class="bottom">下一步</div>
@@ -208,6 +208,7 @@ export default {
       this.$vux.loading.show({
         text: '加载中...'
       })
+      this.baseInfo.specialDaysPrice = []
       this.$http.fetchPost('/merchant/room/add/reserveInfo',this.baseInfo).then((res)=>{
         this.$vux.loading.hide()
         this.$router.replace({
@@ -272,10 +273,14 @@ export default {
             this.baseInfo = res.data.data
             this.baseInfo.id = this.$route.query.params.id
             this.baseInfo.ubscribeComments.map((item)=>{
+                if(item.isSelected == 1) {
+                    this.baseInfo.ubscribeCommentsId = item.id
+                }
                 item.label = item.text
             })
             this.baseInfo.workPrice == 0 ? this.baseInfo.workPrice = '' : this.baseInfo.workPrice
             this.baseInfo.holidayPrice == 0 ? this.baseInfo.holidayPrice = '' : this.baseInfo.holidayPrice
+            this.baseInfo.housePersonNumber == 0 ? this.baseInfo.housePersonNumber = 1 : this.baseInfo.housePersonNumber
           })
       },
     getBack () {
@@ -287,9 +292,58 @@ export default {
       })
     },
     getNextStep () {
+        if(!this.baseInfo.workPrice) {
+          this.$vux.toast.show({
+            text: '请输入工作日价格',
+            position: 'middle',
+            type: 'warn'
+          })
+          return
+        }
+      if(!this.baseInfo.holidayPrice) {
+        this.$vux.toast.show({
+          text: '请输入节假日价格',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(!this.baseInfo.ubscribeCommentsId) {
+        this.$vux.toast.show({
+          text: '请选择退订政策',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(!this.baseInfo.nowReserveTime) {
+        this.$vux.toast.show({
+          text: '请选择当天预定时间',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(!this.baseInfo.checkInTimeFront) {
+        this.$vux.toast.show({
+          text: '请选择入住时间',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(!this.baseInfo.checkOutTime) {
+        this.$vux.toast.show({
+          text: '请选择退房时间',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
       this.$vux.loading.show({
         text: '加载中...'
       })
+      this.baseInfo.specialDaysPrice = []
       this.$http.fetchPost('/merchant/room/add/reserveInfo',this.baseInfo).then((res)=>{
         this.$vux.loading.hide()
         this.$router.replace({

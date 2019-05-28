@@ -20,8 +20,9 @@ Vue.config.productionTip = false
 const FastClick = require('fastclick')
 FastClick.attach(document.body)
 
-import  { LoadingPlugin } from 'vux'
+import  { LoadingPlugin, ConfirmPlugin } from 'vux'
 Vue.use(LoadingPlugin)
+Vue.use(ConfirmPlugin)
 
 VueAMap.initAMapApiLoader({
   key: '7817e03cdc916a4817be3a6da24fddcf',

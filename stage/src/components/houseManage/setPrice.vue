@@ -26,7 +26,7 @@
         </div>
         <div class="priceArea">
           <span v-text="chooseData.day"></span>
-          <x-input placeholder="输入价格" v-model="chooseData.price"></x-input>
+          <x-input type="number" placeholder="输入价格" v-model="chooseData.price"></x-input>
         </div>
         <div class="priceBottom">
           <span @click="show=false">取消</span>
@@ -88,6 +88,14 @@
         })
       },
       changePrice() {
+          if(!this.chooseData.price){
+            this.$vux.toast.show({
+              text: '请输入价格',
+              position: 'middle',
+              type: 'warn'
+            })
+            return
+          }
           let flag = true
         this.chooseDataList.map((item)=>{
             if(item.day === this.chooseData.day){
@@ -113,7 +121,7 @@
           this.timePrice.map((item)=>{
               if(item.day === currentValue){
                   this.chooseData.day = item.day
-                this.chooseData.price = ''
+                this.chooseData.price = item.price
                 return
               }
           })
@@ -215,10 +223,10 @@
   /*.setPrice .inline-calendar td div {
     display: none;
   }*/
-  .setPrice .inline-calendar td.current > span.vux-calendar-each-date {
+  /*.setPrice .inline-calendar td.current > span.vux-calendar-each-date {
     background-color: white!important;
     color: black!important;
-  }
+  }*/
   .setPrice .inline-calendar td div {
     display: block;
     font-size: 0.24rem;

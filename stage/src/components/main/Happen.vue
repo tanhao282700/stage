@@ -33,7 +33,7 @@
     <div @click="goOderManage" class="waitDo">
       <span>待确认订单</span>
       <div class="waitDo_icon">
-        <badge v-text="orderData.waitConfirmOrderNum || 0"></badge>
+        <badge v-if="orderData.waitConfirmOrderNum" v-text="orderData.waitConfirmOrderNum || 0"></badge>
         <x-icon type="ios-arrow-right" size="50"></x-icon>
       </div>
     </div>

@@ -40,12 +40,12 @@
       </div>
       <div class="defaultLine">
         <group>
-          <x-input title="商品成本价(元)" placeholder="请输入商品成本价" v-model="params.price"></x-input>
+          <x-input type="number" title="商品成本价(元)" placeholder="请输入商品成本价" v-model="params.price"></x-input>
         </group>
       </div>
       <div class="defaultLine">
         <group>
-          <x-input title="商品库存" placeholder="请输入商品库存" v-model="params.stock"></x-input>
+          <x-input type="number" title="商品库存" placeholder="请输入商品库存" v-model="params.stock"></x-input>
         </group>
       </div>
       <div class="defaultLine">

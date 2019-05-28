@@ -45,6 +45,7 @@
           </div>
           <div class="timer">
               <div class="equipmentTitle">当前预定时间表</div>
+            <div class="shad"></div>
             <inline-calendar
               ref="calendar"
               class="inline-calendar-demo"
@@ -773,6 +774,14 @@ export default {
       /* height: 7.12rem; */
       background: #fff;
       margin-top: 0.2rem;
+      position:relative;
+      .shad {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 4.3rem;
+        z-index: 9;
+      }
     }
     .description {
       background: #fff;

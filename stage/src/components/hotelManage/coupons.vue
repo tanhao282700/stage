@@ -8,17 +8,24 @@
     </div>
 
     <div class="cons">
+      <div class="cons_box">
       <div class="custom orderedHouse" v-for="(item, index) in list" :key="index">
         <div class="img">
-          <img src="../../assets/images/money.png" alt="">
+          <!--<img src="../../assets/images/money.png" alt="">-->
+          <div class="prices">
+            <span>¥</span>
+            <span v-text="item.amount"></span>
+          </div>
+          <div class="tips" v-text="'满'+item.lowerLimitAmount+'元可用'"></div>
         </div>
         <div class="info">
           <div class="cous_type">
-            <span>{{item.flagType == 0 ?'商家券':'平台券'}}</span>
+            <span>{{item.type  == 0 ?'满减卷':'折扣卷'}}</span>
           </div>
           <p>{{item.name}}</p>
           <span class="time">{{item.startTime}} - {{item.endTime}}</span>
         </div>
+      </div>
       </div>
     </div>
 
@@ -85,11 +92,36 @@
       .img {
         height: 1.8rem;
         width: 2.08rem;
-        background: #ddd;
-        img {
+        background: #f14b44;
+        border-radius: 0.1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+        .prices {
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+          span:first-child {
+            color: white;
+            font-size: 0.3rem;
+            margin-top: 0.2rem;
+            margin-right: 0.1rem;
+          }
+          span:last-child {
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+          }
+        }
+        .tips {
+          color: white;
+          font-size: 0.28rem;
+        }
+        /*img {
           width: 100%;
           height: 100%;
-        }
+        }*/
       }
       .info {
         flex: 1;

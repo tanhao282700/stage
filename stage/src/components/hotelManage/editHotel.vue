@@ -175,13 +175,13 @@ export default {
       let params = this.params
       console.log(params)
       this.$http.fetchPost('/merchant/post/update/merchantInfo', params).then((res) => {
-          debugger
         this.$vux.loading.hide()
         if (res.data.code === 200) {
           this.$vux.toast.show({
-            text: '操作成功',
+            text: '保存成功',
             position: 'middle'
           })
+          this.$router.go(-1)
         } else {
           this.$vux.toast.show({
             text: res.data.message,

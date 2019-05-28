@@ -74,6 +74,15 @@
             facilitiesInfo.push(item)
           }
         })
+        let room = []
+        this.baseInfo.roomTypeInfo.map((item)=>{
+            if(item.isSelected == 1) {
+              this.baseInfo.roomTypeId = item.id
+              room = [item]
+              return
+            }
+        })
+        this.baseInfo.roomTypeInfo = room
         this.baseInfo.facilitiesInfo = facilitiesInfo
         this.$http.fetchPost('/merchant/room/add/baseInfo', this.baseInfo).then((res)=>{
           this.$vux.loading.hide()
@@ -120,10 +129,10 @@
       }
       .equips {
         position: relative;
-        /*padding: 0.2rem 0.48rem;*/
+        padding: 0.2rem 0.2rem;
         border: 1px solid #d7d7d7;
         border-radius: 0.1rem;
-        height: 0.74rem;
+        /*height: 0.74rem;*/
         width: 1.6rem;
         display: flex;
         align-items: center;

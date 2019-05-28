@@ -37,7 +37,7 @@
         <div class="textarea1">
           <div class="addrIcon houseAddAttrArea">
             <group>
-              <x-textarea placeholder="请填写价格" v-model="params.price"></x-textarea>
+              <x-input type="number" placeholder="请填写价格" v-model="params.price"></x-input>
             </group>
           </div>
         </div>
@@ -48,13 +48,14 @@
 
 <script>
 import VueCoreImageUpload from 'vue-core-image-upload'
-import { XTextarea, Group } from 'vux'
+import { XTextarea, Group, XInput } from 'vux'
 export default {
   name: 'addSpecial',
   components: {
     VueCoreImageUpload,
     XTextarea,
-    Group
+    Group,
+    XInput
   },
   data () {
     return {
@@ -110,7 +111,19 @@ export default {
           'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
         }
       }).then((res) => {
-        this.params.image_path = res.data.data.path
+          if (res.data.code == 200) {
+            this.params.image_path = res.data.data.path
+            this.$vux.toast.show({
+              text: '上传成功',
+              position: 'middle'
+            })
+          } else {
+            this.$vux.toast.show({
+              text: res.data.message,
+              position: 'middle',
+              type: 'warn'
+            })
+          }
     })
     },
     getBaseInfo(){
@@ -199,7 +212,7 @@ export default {
       background: #fff;
     }
     .addrIcon {
-      height: 0.6rem;
+      height: 0.8rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -249,7 +262,13 @@ export default {
     width: 100%;
     height: 100%;
     font-size: 0.24rem;
-    line-height: 0.6rem;
+    line-height: 0.8rem;
+  }
+  .houseAddAttrArea .weui-cell .weui-cell__bd .weui-input {
+    width: 100%;
+    height: 100%;
+    font-size: 0.24rem;
+    line-height: 0.8rem;
   }
   .houseAdd .vux-x-icon {
     fill: #19ad19;

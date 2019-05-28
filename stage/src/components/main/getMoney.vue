@@ -17,7 +17,7 @@
       <span @click="getAll">全部提现</span>
     </div>
     <div class="tit2">提现到</div>
-    <div class="types vux-1px-b" v-for="(item,index) in baseInfo.bindAccountList">
+    <div class="types vux-1px-b" v-if="item.accountType!=2" v-for="(item,index) in baseInfo.bindAccountList">
       <div class="left">
         <span class="ic zpay" :class="{'zpay':item.accountType==1,'we':item.accountType==0,'card':item.accountType==2}" ></span>
         <div class="infos">

@@ -4,9 +4,19 @@
       <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
       <span>驿站管理</span>
     </div>
+    <div class="infoTitle">审核状态</div>
+    <div class="coupon">
+      <span>审核状态</span>
+      <div>
+        <span v-if="baseInfo.postDetail.dataStatus == 0">初始状态</span>
+        <span v-if="baseInfo.postDetail.dataStatus == 1">待审核</span>
+        <span v-if="baseInfo.postDetail.dataStatus == 2">审核通过</span>
+        <span v-if="baseInfo.postDetail.dataStatus == 3">审核拒绝</span>
+      </div>
+    </div>
     <div class="infoTitle">驿站信息</div>
     <div class="hotelInfo" @click="editHotel">
-      <img src="../../assets/images/test.png" alt="">
+      <img :src="baseInfo.postDetail.postHeadImage" alt="">
       <div class="description" >
         <span v-text="baseInfo.postDetail.postName"></span>
         <span v-text="baseInfo.postDetail.postDescription"></span>
@@ -218,6 +228,14 @@ export default {
       })
     },
     editHotel () {
+        if (this.baseInfo.postDetail.dataStatus == 1) {
+          this.$vux.toast.show({
+            text: '信息审核中',
+            position: 'middle',
+            type: 'warn'
+          })
+            return
+        }
       this.$router.push({
         name: 'editHotel'
       })

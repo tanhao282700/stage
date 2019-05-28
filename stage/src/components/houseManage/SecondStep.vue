@@ -83,6 +83,22 @@ export default {
       })
     },
     getNextStep () {
+        if(!this.baseInfo.title){
+          this.$vux.toast.show({
+            text: '请输入房源标题',
+            position: 'middle',
+            type: 'warn'
+          })
+          return
+        }
+      if(!this.baseInfo.text){
+        this.$vux.toast.show({
+          text: '请输入房源特点',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
       this.$vux.loading.show({
         text: '加载中...'
       })

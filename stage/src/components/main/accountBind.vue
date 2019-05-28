@@ -13,7 +13,7 @@
           </div>
         </div>-->
       <div class="setting_item"
-          v-for="(item,index) in bindAccountList" :key="index">
+          v-for="(item,index) in bindAccountList" v-if="item.accountType != 2" :key="index">
         <span>{{item.name}}</span>
         <div class="info">
           <span>{{item.account}}</span>

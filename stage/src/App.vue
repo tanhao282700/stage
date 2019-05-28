@@ -83,7 +83,7 @@ export default {
     span:first-child {
       width: 0.48rem;
       height: 0.44rem;
-      background: url(./assets/images/camera.png) no-repeat center center/100% 100%;
+      background: url(../static/camera.png) no-repeat center center/100% 100%;
     }
     span:last-child {
       color: #bdbdbd;
