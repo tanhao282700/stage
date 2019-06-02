@@ -37,7 +37,7 @@
         <div class="textarea1">
           <div class="addrIcon houseAddAttrArea">
             <group>
-              <x-input type="number" placeholder="请填写价格" v-model="params.price"></x-input>
+              <x-input @on-blur="check(params.price,'price')" :show-clear=false type="number" placeholder="请填写价格" v-model="params.price"></x-input>
             </group>
           </div>
         </div>
@@ -72,6 +72,11 @@ export default {
     this.getBaseInfo()
   },
   methods: {
+    check (val,type) {
+      if(!val || val < 0) {
+        this.params[type] = 0
+      }
+    },
     saveData(){
         if(!this.params.title){
           this.$vux.toast.show({

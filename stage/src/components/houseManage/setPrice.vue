@@ -26,7 +26,7 @@
         </div>
         <div class="priceArea">
           <span v-text="chooseData.day"></span>
-          <x-input type="number" placeholder="输入价格" v-model="chooseData.price"></x-input>
+          <x-input type="number" @on-blur="check(chooseData.price,'price')" placeholder="输入价格" v-model="chooseData.price"></x-input>
         </div>
         <div class="priceBottom">
           <span @click="show=false">取消</span>
@@ -66,6 +66,11 @@
       this.getData()
     },
     methods: {
+      check (val,type) {
+        if(!val || val < 0) {
+          this.chooseData[type] = 0
+        }
+      },
       saveData() {
           console.log(this.chooseDataList)
         this.$http.fetchGet('/merchant/room/get/reserveInfo',{roomId: this.$route.query.params.id}).then((res)=>{
@@ -135,6 +140,11 @@
         }
           this.$http.fetchGet('/merchant/room/get/dayprice',{roomId: this.$route.query.params.id,month:year+'-'+month}).then((res)=>{
               this.timePrice = res.data.data
+            this.timePrice.map((item)=>{
+                  if(!item.price) {
+                      item.price = ''
+                  }
+            })
           })
       },
       changeMonth(data, index){
@@ -155,7 +165,11 @@
       buildSlotFn(pa1,pa2,pa3){
         for(let i = 0;i<this.timePrice.length;i++){
           if(this.timePrice[i].day===pa3.formatedDate) {
-            return '¥'+this.timePrice[i].price
+              if(this.timePrice[i].price) {
+                return '¥'+this.timePrice[i].price
+              } else {
+                  return ''
+              }
           }
         }
       },

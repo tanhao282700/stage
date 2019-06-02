@@ -22,7 +22,7 @@
               @imagechanged="imagechanged"
               :isXhr="false"
               :inputAccept="'image/*'"
-              :max-file-size="5242880"
+              :max-file-size="3145728"
               :url="uploadUrl">
               <!--<img width="150" src="../../assets/images/test.png" />-->
               <div class="pic_btn">
@@ -35,19 +35,19 @@
       </div>
       <div class="defaultLine" style="margin-top: 0.2rem;">
         <group>
-          <x-input title="商品标题" placeholder="请输入商品标题" v-model="params.title"></x-input>
+          <x-input :show-clear=false title="商品标题" placeholder="请输入商品标题" v-model="params.title"></x-input>
         </group>
       </div>
-      <div class="defaultLine">
+      <!--<div class="defaultLine">
         <group>
           <x-input type="number" title="商品成本价(元)" placeholder="请输入商品成本价" v-model="params.price"></x-input>
         </group>
-      </div>
-      <div class="defaultLine">
+      </div>-->
+      <!--<div class="defaultLine">
         <group>
           <x-input type="number" title="商品库存" placeholder="请输入商品库存" v-model="params.stock"></x-input>
         </group>
-      </div>
+      </div>-->
       <div class="defaultLine">
         <group>
           <selector :value-map="['id','name']" ref="defaultValueRef" placeholder="请选择商品类型" title="商品类型" direction="rtl" :options="goodsTypeList" v-model="goodsType"></selector>
@@ -55,7 +55,7 @@
       </div>
       <div class="defaultTitle">
         <span>商品规格</span>
-        <span class="addIcon" v-if="specsDataList.length < specsList.length" @click="addSpecial">添加规格项目</span>
+        <!--<span class="addIcon" v-if="specsDataList.length < specsList.length" @click="addSpecial"></span>-->
       </div>
       <div class="specialLine" v-for="(item,index) in specsDataList">
         <div class="selectLine">
@@ -70,7 +70,7 @@
         </div>
         <div class="defaultLine ggz" v-for="(child,childIndex) in item.value">
           <group>
-            <x-input title="规格值" placeholder="请输入规格值" v-model="child.attrValue"></x-input>
+            <x-input :show-clear=false title="规格值" placeholder="请输入规格值" v-model="child.attrValue"></x-input>
           </group>
           <span @click="deleteChildValue(index,childIndex)" v-if="item.value.length > 1" class="myIcon icon iconfont">&#xe61e;</span>
         </div>
@@ -83,6 +83,13 @@
             <span class="icon iconfont">&#xe62a;</span>
             <span>删除</span>
           </div>
+        </div>
+      </div>
+      <div style="height: 0.2rem;background: #fff;"></div>
+      <div class="addLine" v-if="specsDataList.length < specsList.length" @click="addSpecial">
+        <div>
+          <span class="icon iconfont">&#xe600;</span>
+          <span>添加规格项目</span>
         </div>
       </div>
       <div class="switchLine">
@@ -126,8 +133,6 @@ export default {
         title: '', // 标题
         typeId: '', // 类型id
         refundFlagValue: true, // 是否支持退款
-        price: '', // 成本价
-        stock: '' // 库存
       },
       goodsType: '', // 商品类型
       specsList: [],
@@ -166,22 +171,22 @@ export default {
         })
         return
       }
-      if (!this.params.price) {
+      /*if (!this.params.price) {
         this.$vux.toast.show({
           text: '请输入商品成本价',
           position: 'middle',
           type: 'warn'
         })
         return
-      }
-      if (!this.params.stock) {
+      }*/
+      /*if (!this.params.stock) {
         this.$vux.toast.show({
           text: '请输入商品库存',
           position: 'middle',
           type: 'warn'
         })
         return
-      }
+      }*/
       if (!this.goodsType) {
         this.$vux.toast.show({
           text: '请选择商品类型',
@@ -243,28 +248,30 @@ export default {
         text: '加载中...'
       })
       this.$http.fetchPost('/merchant/good/add/goods/baseInfo', this.params).then((res) => {
-        this.$http.fetchGet('/merchant/good/get/goods/sku', {goodsId: res.data.data.id}).then((request) => {
+        this.$vux.loading.hide()
+        if (res.data.code === 200) {
+          this.$router.push({
+            path: 'goodSecondStep',
+            query: {
+              id: res.data.data.id
+            }
+          })
+        } else {
+          this.$vux.toast.show({
+            text: req.data.message,
+            position: 'middle',
+            type: 'warn'
+          })
+        }
+        /*this.$http.fetchGet('/merchant/good/get/goods/sku', {goodsId: res.data.data.id}).then((request) => {
           this.$vux.loading.hide()
             let param = request.data.data
           param.goodsSkuInfo[0].memberPrice = this.params.price
           param.goodsSkuInfo[0].stock = this.params.stock
           this.$http.fetchPost('/merchant/good/add/goods/sku', param).then((req) => {
-            if (req.data.code === 200) {
-              this.$router.push({
-                name: 'goodsAddNextStep',
-                query: {
-                  id: req.data.data.id
-                }
-              })
-            } else {
-              this.$vux.toast.show({
-                text: req.data.message,
-                position: 'middle',
-                type: 'warn'
-              })
-            }
+
           })
-        })
+        })*/
       })
     },
     getPriceInfo (id) {
@@ -332,9 +339,7 @@ export default {
           res.data.data.goodsAttrInfo.map((item) => {
             let childList = []
             item.attrValueInfo.map((child) => {
-              childList.push({
-                attrValue: child.attrValue
-              })
+              childList.push(child)
             })
             console.log(item.attrId)
             this.specsDataList.push({
@@ -391,9 +396,9 @@ export default {
     this.params.id = this.$route.query.id
     this.params.merchantId = this.$store.state.merchantId
     this.getBaseInfo()
-    if (this.$route.query.id) {
+    /*if (this.$route.query.id) {
       this.getPriceInfo()
-    }
+    }*/
   }
 }
 </script>

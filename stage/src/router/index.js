@@ -106,6 +106,11 @@ export default new Router({
       component: resolve => { import('@/components/goodsManage/List').then(module => resolve(module)) }
     },
     {
+      path: '/goodSecondStep',
+      name: 'goodSendStep',
+      component: resolve => { import('@/components/goodsManage/goodSendStep').then(module => resolve(module)) }
+    },
+    {
       path: '/goodsDetail',
       name: 'goodsDetail',
       component: resolve => { import('@/components/goodsManage/GoodsDetail').then(module => resolve(module)) }

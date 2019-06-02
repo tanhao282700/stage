@@ -8,7 +8,7 @@
     <div class="inpu">
       <div class="inpu_con vux-1px-b">
         <group>
-          <x-input title="¥" placeholder="请输入提现金额" v-model="value"></x-input>
+          <x-input :show-clear=false title="¥" placeholder="请输入提现金额" v-model="value"></x-input>
         </group>
       </div>
     </div>
@@ -76,7 +76,7 @@
           })
           return
         }
-        if(!this.type){
+        if(!String(this.type)){
           this.$vux.toast.show({
             text: '请输入选择提现方式',
             position: 'middle',

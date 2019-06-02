@@ -2,16 +2,16 @@
 <div class="editHotel">
     <div class="iosHeader vux-1px-b">
       <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
-      <span>编辑驿站信息</span>
+      <span>编辑驿栈信息</span>
     </div>
     <div class="clearfix modal_main">
       <div class="setting_item avater">
-        <span>驿站头像</span>
+        <span>驿栈头像</span>
         <div class="info">
           <span><img :src="params.postHeadImage" alt=""></span>
           <x-icon type="ios-arrow-right" size="40"></x-icon>
         </div>
-
+        <div v-if="params.dataStatus == 1" class="shadow"></div>
         <vue-core-image-upload
           :class="['btn', 'btn-primary']"
           :crop="false"
@@ -19,37 +19,48 @@
           @imagechanged="imagechanged_avater"
           :isXhr="false"
           :inputAccept="'image/*'"
-          :max-file-size="5242880"
+          :max-file-size="3145728"
           :url="uploadUrl">
         </vue-core-image-upload>
       </div>
 
       <div class="setting_item">
         <group class="w_100">
-          <x-input title="驿站名称" placeholder="请输入驿站名称" v-model="params.postName"></x-input>
+          <x-input title="驿栈名称" :disabled="params.dataStatus == 1" placeholder="请输入驿站名称" v-model="params.postName"></x-input>
         </group>
       </div>
 
+      <!--<div class="coupon vux-1px-b">
+        <span>审核状态</span>
+        <div>
+          <span v-if="params.dataStatus == 0">初始状态</span>
+          <span v-if="params.dataStatus == 1">待审核</span>
+          <span v-if="params.dataStatus == 2">审核通过</span>
+          <span v-if="params.dataStatus == 3">审核拒绝</span>
+        </div>
+      </div>-->
+
       <div class="setting_item setting_item_big">
-        <div class="w_100"><span>驿站地址</span></div>
-        <div class="address">
+        <div class="w_100"><span>驿栈地址</span></div>
+        <div class="address" @click="goMap">
           <group class="w_100 address_group">
-            <x-input title="" placeholder="请输入驿站地址" v-model="params.postLocation"></x-input>
+            <x-input disabled placeholder="请输入驿站地址" v-model="params.postLocation"></x-input>
           </group>
-            <i class="iconfont icon-dingweiweizhi" @click="goMap"></i>
+            <i class="iconfont icon-dingweiweizhi"></i>
         </div>
       </div>
 
       <div class="setting_item setting_item_big" style="height:3.6rem;">
-        <div class="w_100"><span>驿站简介</span></div>
+        <div class="w_100"><span>驿栈简介</span></div>
         <div class="address">
           <group class="w_100">
-            <x-textarea :max="200" name="description" v-model="params.postDescription" placeholder="请输入驿站简介"></x-textarea>
+            <x-textarea :disabled="params.dataStatus == 1" :max="200" name="description" v-model="params.postDescription" placeholder="请输入驿站简介"></x-textarea>
           </group>
         </div>
       </div>
 
-      <div class="setting_item setting_item_big" style="height:2.6rem;">
+      <div class="setting_item setting_item_big" style="position: relative;height:2.6rem;">
+        <div v-if="params.dataStatus == 1" class="shadow"></div>
         <div class="w_100"><span>视频/图片</span></div>
         <div class="address">
           <div class="upload">
@@ -69,7 +80,7 @@
                   @imagechanged="imagechanged"
                   :isXhr="false"
                   :inputAccept="'image/*'"
-                  :max-file-size="5242880"
+                  :max-file-size="3145728"
                   :url="uploadUrl">
                   <!--<img width="150" src="../../assets/images/test.png" />-->
                   <div class="pic_btn">
@@ -89,9 +100,6 @@
     </div>
 </div>
 </template>
-<style lang="less" scoped>
-@import "../../assets/css/main.less";
-</style>
 <script>
 import VueCoreImageUpload from 'vue-core-image-upload'
 import { XSwitch, Group, XButton, XInput, XTextarea, Previewer, TransferDom } from 'vux'
@@ -169,6 +177,14 @@ export default {
     },
 
     postData () {
+      if(this.params.dataStatus == 1) {
+        this.$vux.toast.show({
+          text: '正在审核中，请审核后再尝试修改',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
       this.$vux.loading.show({
         text: '加载中...'
       })
@@ -235,6 +251,14 @@ export default {
       this.$refs.previewer.show(index)
     },
     goMap () {
+        if(this.params.dataStatus == 1) {
+          this.$vux.toast.show({
+            text: '正在审核中，请审核后再尝试修改',
+            position: 'middle',
+            type: 'warn'
+          })
+          return
+        }
       this.$router.replace({
         name: 'amap',
         query: {
@@ -245,11 +269,39 @@ export default {
   }
 }
 </script>
+<style lang="less" scoped>
+  @import "../../assets/css/main.less";
+  .coupon {
+    display: flex;
+    padding: 0 0.2rem;
+    justify-content: space-between;
+    height: 0.92rem;
+    align-items: center;
+    font-size: 0.28rem;
+    color: #353535;
+  svg {
+    width: 0.48rem;
+    height: 0.48rem;
+  }
+  div {
+    display: flex;
+    align-items: center;
+  }
+  }
+</style>
 <style>
 
 .avater{
     position: relative;
   }
+.shadow {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 99;
+}
  .avater .g-core-image-upload-btn{
     position: absolute;
     top: 0px;

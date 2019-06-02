@@ -115,7 +115,7 @@ export default {
             text: txt,
             position: 'middle'
           })
-          this.$router.go(-2)
+          this.$router.go(-3)
         } else {
           this.$vux.toast.show({
             text: res.data.message,

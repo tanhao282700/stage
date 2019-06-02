@@ -14,7 +14,7 @@
       <div class="textarea1">
         <div class="textarea1_con vux-1px-b">
             <group>
-                <x-textarea placeholder="一个好的标题应该尽可能简洁的介绍房源特点，能帮您带来更多的客人" :max=60 :show-counter=true v-model="baseInfo.title"></x-textarea>
+                <x-textarea placeholder="一个好的标题应该尽可能简洁的介绍房源特点，能帮您带来更多的客人" :max=50 :show-counter=true v-model="baseInfo.title"></x-textarea>
               </group>
         </div>
       </div>
@@ -30,8 +30,8 @@
       <div class="requestLine" v-for="(item,index) in baseInfo.requirements">
           <span v-text="item.text"></span>
           <div class=radios>
-              <span @click="sele(index,2)" :class="{'red':item.checkedStatus == 2}" class="headericon icon iconfont">&#xe61e;</span>
               <span @click="sele(index,1)" :class="{'green':item.checkedStatus == 1}" class="headericon icon iconfont">&#xe60e;</span>
+            <span @click="sele(index,2)" :class="{'red':item.checkedStatus == 2}" class="headericon icon iconfont">&#xe61e;</span>
           </div>
       </div>
       <div class="defaultTitle">其它注意事项</div>
@@ -42,8 +42,8 @@
               </group>
         </div>
       </div>
+      <div @click="getNextStep" class="bottom">下一步</div>
     </div>
-    <div @click="getNextStep" class="bottom">下一步</div>
   </div>
 </template>
 

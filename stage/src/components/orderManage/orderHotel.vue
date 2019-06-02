@@ -153,7 +153,7 @@
     </div>
 
     <div class="bottom" v-if="detail.orderStatus == 7">
-      <span @click="postData(0)">取消订单</span>
+      <!--<span @click="postData(0)">取消订单</span>-->
       <span @click="postData(2)">确认入住</span>
     </div>
     <div class="bottom" v-if="detail.orderStatus == 2">

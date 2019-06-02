@@ -24,12 +24,12 @@
             <span>{{item.bizType  == 0 ?'驿栈优惠券':'商品优惠券'}}</span>
           </div>
           <p>{{'已领'+item.getQuantity+'剩余'+item.remainingQuantity+'已使用'+item.usedQuantity}}</p>
-          <p>{{item.name}}</p>
+          <p style="margin-top: 0;">{{item.name}}</p>
           <span class="time">{{item.startTime}} - {{item.endTime}}</span>
         </div>
         <div class="isUsed" style="">
           <group>
-            <x-switch title="启用状态" v-model="item.status == 0"></x-switch>
+            <x-switch title="启用状态" @on-change="changeList(item,index)" v-model="item.isUsed"></x-switch>
           </group>
         </div>
       </div>
@@ -57,6 +57,25 @@ export default {
     this.getData()
   },
   methods: {
+    changeList (data,index) {
+        let operate = 0
+      if(data.status == 0) {
+        operate = 3
+      } else {
+        operate = 0
+      }
+      this.$http.fetchGet('/merchant/post/update/coupon/status',{couponId:data.couponId,operate:operate}).then((res)=>{
+          if(res.data.code == 200) {
+            this.list[index].status = operate
+          } else {
+            this.$vux.toast.show({
+              text: res.data.message,
+              position: 'middle',
+              type: 'warn'
+            })
+          }
+      })
+    },
     addCoupons () {
       this.$router.push({
         name: 'addCoupons'
@@ -73,6 +92,13 @@ export default {
       }
       this.$http.fetchGet('/merchant/post/get/couponlist', params).then((res) => {
         this.list = res.data.data.coupons
+      this.list.map((item)=>{
+            if(item.status == 0) {
+                item.isUsed = true
+      } else {
+                item.isUsed = false
+      }
+      })
       })
     }
   }
@@ -187,10 +213,10 @@ export default {
   .goodsAdd .switchLine .weui-cell__ft {
     flex: 1;
   }
-  .Coupons .switchLine .weui-cell__bd label {
+  .Coupons .isUsed .weui-cell__bd label {
     font-size: 0.24rem;
   }
-  .goodsAdd .switchLine .weui-switch {
+  .goodsAdd .isUsed .weui-switch {
     transform:scale(1.5,1.5);
   }
   .Coupons .isUsed .weui-cells:before {

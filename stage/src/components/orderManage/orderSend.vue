@@ -13,12 +13,17 @@
     </div>
     <div class="setting_item">
       <group class="w_100">
-        <x-input style="margin-top:0px;" title="物流单号" placeholder="请输入物流单号" v-model="params.trackingNo"></x-input>
+        <x-input :show-clear=false style="margin-top:0px;" title="物流单号" placeholder="请输入物流单号" v-model="params.trackingNo"></x-input>
       </group>
     </div>
     <div class="setting_item">
       <group class="w_100">
-        <x-input style="margin-top:0px;" title="寄件人电话" placeholder="请输入寄件人电话" v-model="params.senderPhone"></x-input>
+        <x-input :show-clear=false style="margin-top:0px;" title="收件人电话" placeholder="请输入收件人电话" v-model="params.receiverPhone"></x-input>
+      </group>
+    </div>
+    <div class="setting_item">
+      <group class="w_100">
+        <x-input :show-clear=false style="margin-top:0px;" title="寄件人电话" placeholder="请输入寄件人电话" v-model="params.senderPhone"></x-input>
       </group>
     </div>
     <div class="iphone">
@@ -68,7 +73,7 @@ export default {
     }
   },
   created () {
-      this.params.receiverPhone = this.$route.query.receiverPhone
+      /*this.params.receiverPhone = this.$route.query.receiverPhone*/
     this.params.orderId = this.$route.query.id
     this.getData()
   },
@@ -107,17 +112,25 @@ export default {
         })
         return
       }
-      if(!this.params.senderPhone){
+      if(!this.params.trackingNo){
         this.$vux.toast.show({
-          text: '请输入寄件人电话',
+          text: '请输入物流单号',
           position: 'middle',
           type: 'warn'
         })
         return
       }
-      if(!this.params.trackingNo){
+      if(!this.params.receiverPhone){
         this.$vux.toast.show({
-          text: '请输入物流单号',
+          text: '请输入收件人电话',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(!this.params.senderPhone){
+        this.$vux.toast.show({
+          text: '请输入寄件人电话',
           position: 'middle',
           type: 'warn'
         })

@@ -25,8 +25,8 @@
           </div>
         </div>
         <div class="right">
-          <span v-text="orderData.yesterdayOrderNum || 0"></span>
           <span v-text="orderData.todayOrderNum || 0"></span>
+          <span v-text="orderData.yesterdayOrderNum || 0"></span>
         </div>
       </div>
     </div>
@@ -42,13 +42,13 @@
       <span>工具</span>
     </div>
     <div class="tools">
+      <div class="item" @click="goManagePage('hotelManage')">
+        <img src="../../assets/images/hotelset.png" alt="">
+        <span>驿栈管理</span>
+      </div>
       <div class="item" @click="goManagePage('houseList')" >
         <img src="../../assets/images/houseset.png" alt="">
         <span>房态管理</span>
-      </div>
-      <div class="item" @click="goManagePage('hotelManage')">
-        <img src="../../assets/images/hotelset.png" alt="">
-        <span>驿站管理</span>
       </div>
       <div @click="goManagePage('goodsManage')" class="item">
         <img src="../../assets/images/shopset.png" alt="">

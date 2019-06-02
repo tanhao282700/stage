@@ -62,7 +62,7 @@
           </div>
           <!-- 内容列表 -->
           <ul class="content" ref="content">
-            <li v-for="item in data" class="item vux-1px-b">
+            <li v-for="(item,index) in data" class="item vux-1px-b">
               <div class="hotel" @click="goDetails({path: 'orderHotel', id: item.orderId})" v-if="tabIndex == 1">
                 <div class="head vux-1px-b">
                   <span v-text="'订单编号：'+item.orderId "></span>
@@ -94,7 +94,7 @@
                   </div>
                 </div>
                 <div class="botton">
-                  <span v-if="item.status == 0">取消订单</span>
+                  <span @click="cancelOrder(item,index)" v-if="item.status == 0  || item.status == 1">取消订单</span>
                   <!--<span @click="changePrice(item.orderId)">修改价格</span>-->
                 </div>
               </div>
@@ -179,6 +179,24 @@ export default {
     }
   },
   methods: {
+    cancelOrder (item,index) {
+      this.$http.fetchPost('/merchant/order/update/room',{operate:0,orderId:item.orderId}).then((res)=>{
+          if(res.data.code == 200) {
+            this.data[index].status = 5
+            this.$vux.toast.show({
+              text: '操作成功',
+              position: 'middle'
+            })
+          } else {
+            this.$vux.toast.show({
+              text: res.data.message,
+              position: 'middle',
+              type: 'warn'
+            })
+          }
+      })
+      event.stopPropagation()
+    },
     changePrice (id) {
       this.$router.push({
         name: 'changePrice',

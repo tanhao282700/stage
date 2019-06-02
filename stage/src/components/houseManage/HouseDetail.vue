@@ -21,6 +21,14 @@
             <span v-text="baseData.title"></span>
             <span v-text="'¥'+baseData.workPrice"></span>
           </div>
+          <div v-if="status == 3" class="statusInfo vux-1px-t">
+            <span>当前状态</span>
+            <span style="color: #ff122f;">审核拒绝</span>
+          </div>
+          <div v-if="status == 3" class="statusInfo vux-1px-t">
+            <span>拒绝理由</span>
+            <span>带娃带娃打完阿伟大</span>
+          </div>
           <div class="houseBaseInfo">
             <div class="houseBaseInfo_box">
               <div class="items">
@@ -82,8 +90,8 @@
           </div>
         </div>
         <div class="bottom">
-          <span @click="checkStatus(2)" v-if="tabIndex == 1">下架</span>
-          <span @click="checkStatus(1)" v-if="tabIndex == 2">上架</span>
+          <span @click="checkStatus(2)" v-if="tabIndex == 1 && canSetDown">下架</span>
+          <span @click="checkStatus(1)" v-if="tabIndex == 2 && canSetUp">上架</span>
           <span @click="getEdit">修改</span>
         </div>
       </div>
@@ -207,6 +215,9 @@ export default {
   },
   data () {
     return {
+        status: '',
+      canSetDown: true,
+      canSetUp: true,
       currentCommentId: '',
       commentsValue: '',
       showToast: false,
@@ -411,6 +422,8 @@ export default {
           })
           if (status == 2) {
             this.$router.go(-1)
+          } else {
+              this.canSetUp = false
           }
         } else {
           this.$vux.toast.show({
@@ -544,7 +557,10 @@ export default {
     this.$vux.loading.show({
       text: '加载中...'
     })
+    this.status = this.$route.query.status
     this.params.roomId = this.$route.query.id
+    this.$route.query.status == 1 ? this.canSetUp = false : this.canSetUp = true
+    this.$route.query.status == 2 ? this.canSetDown = true : this.canSetDown = false
     this.tabIndex = this.$route.query.tabIndex
     this.getBaseInfo()
     this.getOrderMonth()
@@ -561,6 +577,24 @@ export default {
   background: rgb(247, 247, 247);
   display: flex;
   flex-direction: column;
+}
+.statusInfo {
+  /*height: 0.76rem;*/
+  background: #fff;
+  padding: 0.2rem 0.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  span{
+    font-size: 0.24rem;
+    text-align: left;
+  }
+  span:first-child {
+    /*margin-right: 0.2rem;*/
+    width: 2rem;
+  }
+  span:last-child {
+  }
 }
 .content {
   flex: 1;

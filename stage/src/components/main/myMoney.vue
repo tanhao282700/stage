@@ -10,7 +10,7 @@
       <div class="money_con money_con2" v-text="moneyInfo.balance"></div>
       <div class="money_con money_con3" v-text="'提现中：'+moneyInfo.withDrawCash"></div>
       <div class="tixian">
-        <span>充值</span>
+        <!--<span>充值</span>-->
         <span @click="getMoney">提现</span>
       </div>
     </div>

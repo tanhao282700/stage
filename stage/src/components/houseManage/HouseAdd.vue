@@ -44,7 +44,7 @@
                     </div>
                 </div>
             </div>
-          <div class="addLine">
+          <div class="addLine vux-1px-b">
             <div class="childLine">
               <div class="nums">
                 <x-icon @click="reduce(1)" type="ios-minus" size="60"></x-icon>
@@ -78,7 +78,23 @@
               <div class="types">卫</div>
             </div>
           </div>
-            <div class="defaultTitle">整套面积（平米）</div>
+            <!--<div class="defaultTitle">整套面积（平米）</div>-->
+          <div class="defaultLine vux-1px-b">
+            <div class="deraultLine_con">
+              <span>房源库存</span>
+              <div class="info">
+                <x-input @on-blur="check(baseInfo.stockQuantity,'stockQuantity')" :show-clear=false type="number" placeholder="请输入房源库存" v-model="baseInfo.stockQuantity"></x-input>
+              </div>
+            </div>
+          </div>
+          <div class="defaultLine vux-1px-b">
+            <div class="deraultLine_con">
+              <span>整套面积（㎡）</span>
+              <div class="info">
+                <x-input @on-blur="check(baseInfo.completeArea,'completeArea')" :show-clear=false type="number" placeholder="请输入整套面积" v-model="baseInfo.completeArea"></x-input>
+              </div>
+            </div>
+          </div>
             <div class="defaultLine vux-1px-b">
                 <div @click="getEquipment" class="deraultLine_con">
                     <span>房间设施</span>
@@ -97,6 +113,14 @@
                     </div>
                 </div>
             </div>
+          <div class="defaultLine vux-1px-b">
+            <div class="deraultLine_con">
+              <span>床位数量</span>
+              <div class="info">
+                <x-input @on-blur="check(baseInfo.bedNum,'bedNum')" :show-clear=false type="number" placeholder="请输入床位数量" v-model="baseInfo.bedNum"></x-input>
+              </div>
+            </div>
+          </div>
             <div class="selectLine vux-1px-b">
                 <div class="selectLineCon">
                     <span>卫生间</span>
@@ -137,9 +161,9 @@
                 <span class="icon iconfont">&#xe600;</span>
                 <span>添加</span>
             </div>
+          <div @click="goNextStep" class="bottom">下一步</div>
         </div>
-        <div @click="goNextStep" class="bottom">下一步</div>
-        <actionsheet class="myActionsheet"
+      <actionsheet class="myActionsheet"
                      v-model="isShow1"
                      :menus="menuList1"
                      :close-on-clicking-mask="false"
@@ -159,16 +183,18 @@
 </template>
 
 <script>
-import { XTextarea, Group, Actionsheet } from 'vux'
+import { XTextarea, Group, Actionsheet, XInput } from 'vux'
 export default {
   name: 'houseAdd',
   components: {
     XTextarea,
     Group,
-    Actionsheet
+    Actionsheet,
+    XInput
   },
   data () {
     return {
+        aa:'',
       value: '',
       baseInfo: {},
       isShow1: false,
@@ -184,6 +210,11 @@ export default {
     this.getBaseInfo()
   },
   methods: {
+    check (val,type) {
+      if(!val || val < 0) {
+        this.baseInfo[type] = 0
+      }
+    },
       deleteSpecial(index){
           this.baseInfo.customProjectInfo.splice(index,1)
       },
@@ -653,4 +684,9 @@ export default {
     .houseAdd .vux-x-icon {
       fill: #19ad19;
     }
+  .houseAdd .info .weui-input {
+    height: 0.76rem;
+    font-size: 0.28rem;
+    text-align: right;
+  }
 </style>

@@ -41,9 +41,9 @@
                 <span v-text="'￥'+item.memberPrice" class="price"></span>
               </div>
               <div class="buttons">
-                <span @click="edit(item)">编辑</span>
+                <span v-if="item.dataStatus != 1" @click="edit(item)">编辑</span>
                 <span @click="getOff(item,2)" v-if="params.status == 1">下架</span>
-                <span @click="getOff(item,1)" v-if="params.status == 2">上架</span>
+                <span @click="getOff(item,1)" v-if="params.status == 2 && item.dataStatus != 1">上架</span>
                 <!--<span>查看评论</span>-->
                 <span @click="deleteList(item)">删除</span>
               </div>

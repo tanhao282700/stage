@@ -16,7 +16,7 @@
             <li @click="getDetails(item)" v-for="item in data" class="item vux-1px-b">
               <img src="../../assets/images/orderpage.png" alt="">
               <div class="infos">
-                <span v-text="item.title"></span>
+                <span :class="{'alireadyRead':item.readStatus==1}" v-text="item.title+'('+(+item.readStatus==0?'未读':'已读')+')'"></span>
                 <span v-text="item.info"></span>
               </div>
               <div class="times">
@@ -351,6 +351,9 @@ export default {
     color: #fff;
     font-size: 12px;
     background: rgba(7, 17, 27, 0.5);
+  }
+  .alireadyRead {
+    color: #2bbb59;
   }
 </style>
 <style>

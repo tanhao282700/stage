@@ -50,7 +50,7 @@ export default {
 
     },
     getData () {
-       /*this.$http.fetchPost('/merchant/login', {account: '18380447483', password: md5('123456')}).then((res) => {
+       /*this.$http.fetchPost('/merchant/login', {account: '15882422592', password: md5('111')}).then((res) => {
          axios.defaults.headers.common['token'] = res.data.data.token
          this.waitDoOrders(res.data.data.merchantId)
          this.getundoMessage(res.data.data.merchantId)

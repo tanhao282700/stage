@@ -25,7 +25,7 @@
           </div>
           <!-- 内容列表 -->
           <ul class="content" ref="content">
-            <li v-for="item in data" @click="goDetails(item.id)" class="item vux-1px-b">
+            <li v-for="item in data" @click="goDetails(item.id,item.dataStatus)" class="item vux-1px-b">
               <div class="pics">
                 <img :src="item.imagePath" alt="" />
                 <span class="grade" v-text="item.commentPoint + '分'"></span>
@@ -36,9 +36,9 @@
                 <span v-text="'最后编辑于 ' + item.updateTime"></span>
                 <span v-text="'￥' + item.price"></span>
                 <div class="buttons">
-                  <span @click="edit(item)" v-if="tabIndex != 2">编辑</span>
+                  <span v-if="!(tabIndex == 2 && item.dataStatus == 1)" @click="edit(item)">编辑</span>
                   <span @click="getOff(item,2)" v-if="tabIndex == 1">下架</span>
-                  <span @click="getOff(item,1)" v-if="tabIndex == 2">上架</span>
+                  <span @click="getOff(item,1)" v-if="tabIndex == 2 && item.dataStatus != 1">上架</span>
                   <!--<span>查看评论</span>-->
                   <span @click="deleteList(item)">删除</span>
                 </div>
@@ -169,12 +169,13 @@ export default {
     addHouse () {
       this.$router.push('houseAdd')
     },
-    goDetails (id) {
+    goDetails (id,status) {
       this.$router.push({
         name: 'houseDetail',
         query: {
           id: id,
-          tabIndex: this.tabIndex
+          tabIndex: this.tabIndex,
+          status: status
         }
       })
     },

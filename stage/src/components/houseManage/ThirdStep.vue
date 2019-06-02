@@ -17,18 +17,18 @@
                         <span>元/晚</span>
                     </div>
                     <group class="line_input vux-1px-b">
-                        <x-input type="number" placeholder="周一~周四及因串休导致需要正常上班的日期" v-model="baseInfo.workPrice"></x-input>
+                        <x-input @on-blur="check(baseInfo.workPrice,'workPrice')" :show-clear=false type="number" placeholder="周日~周四及因串休导致需要正常上班的日期" v-model="baseInfo.workPrice"></x-input>
                     </group>
                 </div>
             </div>
             <div class="inputLine">
                 <div class="inputLine_con">
                     <div class="line_title">
-                        <span>节假日价格</span>
+                        <span>周末价格</span>
                         <span>元/晚</span>
                     </div>
                     <group class="line_input vux-1px-b">
-                        <x-input type="number" placeholder="周五、周六及法定节假日、情人节圣诞节等" v-model="baseInfo.holidayPrice"></x-input>
+                        <x-input @on-blur="check(baseInfo.holidayPrice,'holidayPrice')" :show-clear=false type="number" placeholder="周五、周六" v-model="baseInfo.holidayPrice"></x-input>
                     </group>
                 </div>
             </div>
@@ -104,8 +104,8 @@
                     <div class="tips">客人最晚几点可以退房？</div>
                     <div class="tdzc" v-if="baseInfo.checkOutTime" v-text="baseInfo.checkOutTime+'前'"></div>
             </div>
+          <div @click="getNextStep" class="bottom">下一步</div>
         </div>
-        <div @click="getNextStep" class="bottom">下一步</div>
       <actionsheet class="myActionsheet"
                    v-model="isShow1"
                    :menus="baseInfo.ubscribeComments"
@@ -204,6 +204,11 @@ export default {
     this.getBaseData()
   },
   methods: {
+    check (val,type) {
+      if(!val || val < 0) {
+        this.baseInfo[type] = 0
+      }
+    },
     setPrice(){
       this.$vux.loading.show({
         text: '加载中...'

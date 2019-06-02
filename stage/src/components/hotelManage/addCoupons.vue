@@ -24,22 +24,22 @@
     </div>
     <div class="defaultLine">
       <group>
-        <x-input title="优惠券名称" placeholder="请输入优惠券名称" v-model="params.name"></x-input>
+        <x-input title="优惠券名称" :show-clear=false placeholder="请输入优惠券名称" v-model="params.name"></x-input>
       </group>
     </div>
       <div class="defaultLine">
         <group>
-          <x-input type="number" title="优惠金额" placeholder="请输入优惠金额" v-model="params.amount"></x-input>
+          <x-input type="number" @on-blur="check(params.amount,'amount')"  :show-clear=false title="优惠金额" placeholder="请输入优惠金额" v-model="params.amount"></x-input>
         </group>
       </div>
       <div class="defaultLine">
         <group>
-          <x-input type="number" title="优惠门槛" placeholder="请输入优惠门槛" v-model="params.lowerLimitAmount"></x-input>
+          <x-input type="number" @on-blur="check(params.lowerLimitAmount,'lowerLimitAmount')" :show-clear=false title="优惠门槛" placeholder="请输入优惠门槛" v-model="params.lowerLimitAmount"></x-input>
         </group>
       </div>
       <div class="defaultLine">
         <group>
-          <x-input type="number" title="发行张数" placeholder="请输入发行张数" v-model="params.buildQuantity"></x-input>
+          <x-input type="number" @on-blur="check(params.buildQuantity,'buildQuantity')" :show-clear=false title="发行张数" placeholder="请输入发行张数" v-model="params.buildQuantity"></x-input>
         </group>
       </div>
 
@@ -86,6 +86,11 @@
       }
     },
     methods: {
+      check (val,type) {
+          if(!val || val < 0) {
+              this.params[type] = 0
+          }
+      },
       changeType1(status) {
           this.params.type = status;
       },
@@ -139,6 +144,14 @@
         if(!this.params.lowerLimitAmount) {
           this.$vux.toast.show({
             text: '请输入优惠门槛',
+            position: 'middle',
+            type: 'warn'
+          })
+          return
+        }
+        if(this.params.amount > this.params.lowerLimitAmount || this.params.amount == this.params.lowerLimitAmount){
+          this.$vux.toast.show({
+            text: '优惠门槛不能小于优惠金额',
             position: 'middle',
             type: 'warn'
           })

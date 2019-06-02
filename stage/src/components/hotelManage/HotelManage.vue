@@ -2,7 +2,7 @@
   <div class="hotelManage">
     <div class="iosHeader">
       <x-icon @click="getBack" class="left" type="ios-arrow-left" size="60"></x-icon>
-      <span>驿站管理</span>
+      <span>驿栈管理</span>
     </div>
     <div class="infoTitle">审核状态</div>
     <div class="coupon">
@@ -14,7 +14,7 @@
         <span v-if="baseInfo.postDetail.dataStatus == 3">审核拒绝</span>
       </div>
     </div>
-    <div class="infoTitle">驿站信息</div>
+    <div class="infoTitle">驿栈信息</div>
     <div class="hotelInfo" @click="editHotel">
       <img :src="baseInfo.postDetail.postHeadImage" alt="">
       <div class="description" >
@@ -32,7 +32,7 @@
       </div>
     </div>
     <div class="infoTitle thirdTitle">
-      <span v-text="'驿站评价('+baseInfo.commentInfo.commentNumber+'条)'"></span>
+      <span v-text="'驿栈评价('+baseInfo.commentInfo.commentNumber+'条)'"></span>
       <span v-show="baseInfo.commentInfo.point" v-text="baseInfo.commentInfo.point+'分'"></span>
     </div>
     <div class="assess" ref="list_con">
@@ -136,7 +136,8 @@ export default {
           commentNumber: 0,
           point: 0,
           comments: 0
-        }
+        },
+        couponNum: ''
       },
       params: {
         merchantId: '',
@@ -228,14 +229,14 @@ export default {
       })
     },
     editHotel () {
-        if (this.baseInfo.postDetail.dataStatus == 1) {
+        /*if (this.baseInfo.postDetail.dataStatus == 1) {
           this.$vux.toast.show({
             text: '信息审核中',
             position: 'middle',
             type: 'warn'
           })
             return
-        }
+        }*/
       this.$router.push({
         name: 'editHotel'
       })
