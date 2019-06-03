@@ -21,9 +21,16 @@
         <div class="info">
           <div class="cous_type">
             <span>{{item.type  == 0 ?'满减卷':'折扣卷'}}</span>
+            <span>{{item.bizType  == 0 ?'驿栈优惠券':'商品优惠券'}}</span>
           </div>
+          <p>{{'已领'+item.getQuantity+'剩余'+item.remainingQuantity+'已使用'+item.usedQuantity}}</p>
           <p>{{item.name}}</p>
           <span class="time">{{item.startTime}} - {{item.endTime}}</span>
+        </div>
+        <div class="isUsed" style="">
+          <group>
+            <x-switch title="启用状态" v-model="item.status == 0"></x-switch>
+          </group>
         </div>
       </div>
       </div>
@@ -33,39 +40,43 @@
 </template>
 
 <script>
-  export default {
-    name: 'coupons',
-    components: {
+import { Group, XSwitch } from 'vux'
+export default {
+  name: 'coupons',
+  components: {
+    Group,
+    XSwitch
+  },
+  data () {
+    return {
+      aa: true,
+      list: []
+    }
+  },
+  created () {
+    this.getData()
+  },
+  methods: {
+    addCoupons () {
+      this.$router.push({
+        name: 'addCoupons'
+      })
     },
-    data () {
-      return {
-        list: []
+    getBack () {
+      this.$router.go(-1)
+    },
+    getData () {
+      let params = {
+        page: 1,
+        pageSize: 100,
+        merchantId: this.$store.state.merchantId
       }
-    },
-    created(){
-      this.getData()
-    },
-    methods: {
-      addCoupons () {
-        this.$router.push({
-          name: 'addCoupons'
-        })
-      },
-      getBack () {
-        this.$router.go(-1)
-      },
-      getData(){
-        let params = {
-          page: 1,
-          pageSize: 100,
-          merchantId: this.$store.state.merchantId
-        }
-        this.$http.fetchGet('/merchant/post/get/couponlist', params).then((res) => {
-          this.list = res.data.data.coupons
-        })
-      }
+      this.$http.fetchGet('/merchant/post/get/couponlist', params).then((res) => {
+        this.list = res.data.data.coupons
+      })
     }
   }
+}
 </script>
 
 <style lang="less" rel="stylesheet/less" scoped>
@@ -83,7 +94,8 @@
     display: flex;
     flex-direction: column;
     .orderedHouse {
-      height: 1.8rem;
+      /* height: 1.8rem; */
+      height: 2.3rem;
       display: flex;
       align-items: center;
       padding: 0 0.2rem;
@@ -125,7 +137,8 @@
       }
       .info {
         flex: 1;
-        height: 1.6rem;
+        /* height: 1.6rem; */
+        height: 2.1rem;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -150,6 +163,9 @@
           text-align: left;
           margin: 0.1rem 0;
         }
+        p:last-child {
+          margin-tOP: 0;
+        }
         .time {
           font-size: 0.2rem;
           color: rgb(108,108,108);
@@ -163,8 +179,24 @@
     }
   }
 
-
 </style>
 <style>
-
+.goodsAdd .switchLine .weui-cell__bd {
+    flex: none!important;
+  }
+  .goodsAdd .switchLine .weui-cell__ft {
+    flex: 1;
+  }
+  .Coupons .switchLine .weui-cell__bd label {
+    font-size: 0.24rem;
+  }
+  .goodsAdd .switchLine .weui-switch {
+    transform:scale(1.5,1.5);
+  }
+  .Coupons .isUsed .weui-cells:before {
+    border-top: none!important;
+  }
+  .Coupons .isUsed .weui-cells:after {
+    border-bottom: none!important;
+  }
 </style>
