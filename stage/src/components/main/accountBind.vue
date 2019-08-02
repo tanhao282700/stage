@@ -95,7 +95,18 @@ export default {
           }
         })
       }
-      window.AndroidListener.onOpenWxListener()
+      let ua = navigator.userAgent.toLowerCase();
+      //Android终端
+      let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+      //Ios终端
+      let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+      if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+        //Ios
+        window.webkit.messageHandlers.onOpenWxListener.postMessage(null)
+      } else if (/(Android)/i.test(navigator.userAgent)) {
+        //Android终端
+        window.AndroidListener.onOpenWxListener()
+      }
     },
     getBack () {
       this.$router.go(-1)

@@ -27,7 +27,7 @@
           </div>
           <div v-if="status == 3" class="statusInfo vux-1px-t">
             <span>拒绝理由</span>
-            <span>带娃带娃打完阿伟大</span>
+            <span style="color: #ff122f;" v-text="dataRemark"></span>
           </div>
           <div class="houseBaseInfo">
             <div class="houseBaseInfo_box">
@@ -88,11 +88,11 @@
             <span></span>
             <span v-text="baseData.unsubscribeComment"></span>
           </div>
-        </div>
-        <div class="bottom">
-          <span @click="checkStatus(2)" v-if="tabIndex == 1 && canSetDown">下架</span>
-          <span @click="checkStatus(1)" v-if="tabIndex == 2 && canSetUp">上架</span>
-          <span @click="getEdit">修改</span>
+          <div class="bottom">
+            <span @click="checkStatus(2)" v-if="tabIndex == 1 && canSetDown">下架</span>
+            <span @click="checkStatus(1)" v-if="tabIndex == 2 && canSetUp">上架</span>
+            <span v-if="canSetUp" @click="getEdit">修改</span>
+          </div>
         </div>
       </div>
       <div v-show="index == 1" class="con">
@@ -215,6 +215,7 @@ export default {
   },
   data () {
     return {
+      dataRemark: '',
         status: '',
       canSetDown: true,
       canSetUp: true,
@@ -557,6 +558,7 @@ export default {
     this.$vux.loading.show({
       text: '加载中...'
     })
+    this.dataRemark = this.$route.query.dataRemark
     this.status = this.$route.query.status
     this.params.roomId = this.$route.query.id
     this.$route.query.status == 1 ? this.canSetUp = false : this.canSetUp = true

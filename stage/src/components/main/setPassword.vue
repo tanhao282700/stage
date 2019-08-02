@@ -10,7 +10,7 @@
         <span>当前密码</span>
         <div class="password">
           <group class="w_100 password_group">
-            <x-input title="" :type='isShow1 ? "text": "password"' placeholder="请输入当前密码" v-model="params.oldPassword"></x-input>
+            <x-input title="" :type='isShow1 ? "text": "password"' placeholder="请输入当前密码" v-model="params.oldPassword1"></x-input>
           </group>
           <i class="iconfont icon-xianshi" v-if="isShow1" @click="isShow1=!isShow1"></i>
           <i class="iconfont icon-yincang" v-else @click="isShow1=!isShow1"></i>
@@ -20,7 +20,7 @@
         <span>新密码</span>
         <div class="password">
           <group class="w_100 password_group">
-            <x-input title="" :type='isShow2 ? "text": "password"' placeholder="请输入新密码" v-model="params.newPassword"></x-input>
+            <x-input title="" :type='isShow2 ? "text": "password"' placeholder="请输入新密码" v-model="params.newPassword1"></x-input>
           </group>
           <i class="iconfont icon-xianshi" v-if="isShow2" @click="isShow2=!isShow2"></i>
           <i class="iconfont icon-yincang" v-else @click="isShow2=!isShow2"></i>
@@ -59,6 +59,8 @@ export default {
       isShow1: false,
       isShow2: false,
       params: {
+        oldPassword1: '',
+        newPassword1: '',
         oldPassword: '',
         newPassword: ''
       }
@@ -77,8 +79,8 @@ export default {
         text: '加载中...'
       })
       let params = this.params
-      params.newPassword = md5(this.params.newPassword)
-      params.oldPassword = md5(this.params.oldPassword)
+      params.newPassword = md5(this.params.newPassword1)
+      params.oldPassword = md5(this.params.oldPassword1)
       params['merchantId'] = this.$store.state.merchantId
       this.$http.fetchPost('/merchant/update/login/password', params).then((res) => {
         this.$vux.loading.hide()

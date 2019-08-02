@@ -15,23 +15,15 @@
       </div>
       <div class="titlePic">
         <div class="titlePic_con vux-1px-b">
-          <div class="lineTitle avater">
+          <div @click="imagechanged(0)" class="lineTitle avater">
             <span>封面</span>
             <span>+</span>
-            <vue-core-image-upload
-              :class="['btn', 'btn-primary']"
-              :crop="false"
-              :isXhr="false"
-              @imagechanged="imagechanged0"
-              :inputAccept="'image/*'"
-              :max-file-size="3145728"
-              :url="uploadUrl">
-            </vue-core-image-upload>
           </div>
           <!--<div class="tips">封面有且只能上传1张照片，建议使用或卧室横图</div>-->
           <div class="imgs" v-if="baseInfo.imagesInfo[0].imageItems.length>0">
             <div class="pics" v-for="(item,index) in baseInfo.imagesInfo[0].imageItems">
-              <img v-if="item.type == 0" class="previewer-demo-img" :src="item.url" alt="">
+              <img v-if="item.type==0" class="previewer-demo-img" :src="item.url" alt="">
+              <img v-if="item.type==1" class="previewer-demo-img" :src="item.videoCoverImage" alt="">
               <span @click="deletePic(0,index)" class="deleteBtn icon iconfont">&#xe61e;</span>
             </div>
           </div>
@@ -39,22 +31,14 @@
       </div>
       <div class="titlePic">
         <div class="titlePic_con vux-1px-b">
-          <div class="lineTitle avater">
+          <div @click="imagechanged(1)" class="lineTitle avater">
             <span>卧室</span>
             <span>+</span>
-            <vue-core-image-upload
-              :class="['btn', 'btn-primary']"
-              :crop="false"
-              :isXhr="false"
-              @imagechanged="imagechanged1"
-              :inputAccept="'image/*'"
-              :max-file-size="3145728"
-              :url="uploadUrl">
-            </vue-core-image-upload>
           </div>
           <div class="imgs" v-if="baseInfo.imagesInfo[1].imageItems.length>0">
             <div class="pics" v-for="(item,index) in baseInfo.imagesInfo[1].imageItems">
-              <img v-if="item.type == 0" class="previewer-demo-img" :src="item.url" alt="">
+              <img v-if="item.type==0" class="previewer-demo-img" :src="item.url" alt="">
+              <img v-if="item.type==1" class="previewer-demo-img" :src="item.videoCoverImage" alt="">
               <span @click="deletePic(1,index)" class="deleteBtn icon iconfont">&#xe61e;</span>
             </div>
           </div>
@@ -62,22 +46,14 @@
       </div>
       <div class="titlePic">
         <div class="titlePic_con vux-1px-b">
-          <div class="lineTitle avater">
+          <div @click="imagechanged(2)" class="lineTitle avater">
             <span>客厅</span>
             <span>+</span>
-            <vue-core-image-upload
-              :class="['btn', 'btn-primary']"
-              :crop="false"
-              :isXhr="false"
-              @imagechanged="imagechanged2"
-              :inputAccept="'image/*'"
-              :max-file-size="3145728"
-              :url="uploadUrl">
-            </vue-core-image-upload>
           </div>
           <div class="imgs" v-if="baseInfo.imagesInfo[2].imageItems.length>0">
             <div class="pics" v-for="(item,index) in baseInfo.imagesInfo[2].imageItems">
-              <img v-if="item.type == 0" class="previewer-demo-img" :src="item.url" alt="">
+              <img v-if="item.type==0" class="previewer-demo-img" :src="item.url" alt="">
+              <img v-if="item.type==1" class="previewer-demo-img" :src="item.videoCoverImage" alt="">
               <span @click="deletePic(2,index)" class="deleteBtn icon iconfont">&#xe61e;</span>
             </div>
           </div>
@@ -85,22 +61,14 @@
       </div>
       <div class="titlePic">
         <div class="titlePic_con vux-1px-b">
-          <div class="lineTitle avater">
+          <div @click="imagechanged(3)" class="lineTitle avater">
             <span>厨房</span>
             <span>+</span>
-            <vue-core-image-upload
-              :class="['btn', 'btn-primary']"
-              :crop="false"
-              :isXhr="false"
-              @imagechanged="imagechanged3"
-              :inputAccept="'image/*'"
-              :max-file-size="3145728"
-              :url="uploadUrl">
-            </vue-core-image-upload>
           </div>
           <div class="imgs" v-if="baseInfo.imagesInfo[3].imageItems.length>0">
             <div class="pics" v-for="(item,index) in baseInfo.imagesInfo[3].imageItems">
-              <img v-if="item.type == 0" class="previewer-demo-img" :src="item.url" alt="">
+              <img v-if="item.type==0" class="previewer-demo-img" :src="item.url" alt="">
+              <img v-if="item.type==1" class="previewer-demo-img" :src="item.videoCoverImage" alt="">
               <span @click="deletePic(3,index)" class="deleteBtn icon iconfont">&#xe61e;</span>
             </div>
           </div>
@@ -108,22 +76,14 @@
       </div>
       <div class="titlePic">
         <div class="titlePic_con vux-1px-b">
-          <div class="lineTitle avater">
+          <div @click="imagechanged(4)" class="lineTitle avater">
             <span>卫浴</span>
             <span>+</span>
-            <vue-core-image-upload
-              :class="['btn', 'btn-primary']"
-              :crop="false"
-              :isXhr="false"
-              @imagechanged="imagechanged4"
-              :inputAccept="'image/*'"
-              :max-file-size="3145728"
-              :url="uploadUrl">
-            </vue-core-image-upload>
           </div>
           <div class="imgs" v-if="baseInfo.imagesInfo[4].imageItems.length>0">
             <div class="pics" v-for="(item,index) in baseInfo.imagesInfo[4].imageItems">
-              <img v-if="item.type == 0" class="previewer-demo-img" :src="item.url" alt="">
+              <img v-if="item.type==0" class="previewer-demo-img" :src="item.url" alt="">
+              <img v-if="item.type==1" class="previewer-demo-img" :src="item.videoCoverImage" alt="">
               <span @click="deletePic(4,index)" class="deleteBtn icon iconfont">&#xe61e;</span>
             </div>
           </div>
@@ -131,22 +91,14 @@
       </div>
       <div class="titlePic">
         <div class="titlePic_con vux-1px-b">
-          <div class="lineTitle avater">
+          <div @click="imagechanged(5)" class="lineTitle avater">
             <span>其他</span>
             <span>+</span>
-            <vue-core-image-upload
-              :class="['btn', 'btn-primary']"
-              :crop="false"
-              :isXhr="false"
-              @imagechanged="imagechanged5"
-              :inputAccept="'image/*'"
-              :max-file-size="3145728"
-              :url="uploadUrl">
-            </vue-core-image-upload>
           </div>
           <div class="imgs" v-if="baseInfo.imagesInfo[5].imageItems.length>0">
             <div class="pics" v-for="(item,index) in baseInfo.imagesInfo[5].imageItems">
-              <img v-if="item.type == 0" class="previewer-demo-img" :src="item.url" alt="">
+              <img v-if="item.type==0" class="previewer-demo-img" :src="item.url" alt="">
+              <img v-if="item.type==1" class="previewer-demo-img" :src="item.videoCoverImage" alt="">
               <span @click="deletePic(5,index)" class="deleteBtn icon iconfont">&#xe61e;</span>
             </div>
           </div>
@@ -198,32 +150,37 @@
         this.$vux.loading.show({
           text: '加载中...'
         })
-          let tips = ''
+        let tips = ''
         if(status == 0) {
           tips = '房源信息保存成功'
         } else {
           tips = '房源发布成功'
         }
-          this.baseInfo.operate = status
+        this.baseInfo.operate = status
         this.$http.fetchPost("/merchant/room/add/imageInfo",this.baseInfo).then((res)=>{
           this.$vux.loading.hide()
-              if(res.data.code == 200) {
-                this.$vux.toast.show({
-                  text: tips,
-                  position: 'middle'
-                })
-                this.$router.go(-1)
-              } else{
-                this.$vux.toast.show({
-                  text: res.data.message,
-                  position: 'middle',
-                  type: 'warn'
-                })
-              }
+          if(res.data.code == 200) {
+            this.$vux.toast.show({
+              text: tips,
+              position: 'middle'
+            })
+            if(status == 0) {
+              this.$store.state.tabIndex = 3
+            } else {
+              this.$store.state.tabIndex = 2
+            }
+            this.$router.go(-1)
+          } else{
+            this.$vux.toast.show({
+              text: res.data.message,
+              position: 'middle',
+              type: 'warn'
+            })
+          }
         })
       },
       deletePic(parentIndex,index){
-          this.baseInfo.imagesInfo[parentIndex].imageItems.splice(index,1)
+        this.baseInfo.imagesInfo[parentIndex].imageItems.splice(index,1)
       },
       getBaseData() {
         this.$http.fetchGet('/merchant/room/get/imageInfo', {roomId: this.$route.query.params.id}).then((res)=> {
@@ -238,89 +195,61 @@
           }
         })
       },
-      imagechanged0 (data) {
-        let param = new FormData() // 创建form对象
-        param.append('files', data)// 通过append向form对象添加数据
-        this.$http.fetchPost('/merchant/common/image/upload', param, {
-          headers: {
-            'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
+      imagechanged (index) {
+        //            1、1：成功 0：失败 successType
+//            2、提示信息 info
+//            3、图片地址 imagePath
+//            4、1：视频 0：图片 selectType
+
+        let that = this
+        window.optionPictures = function(data){
+          if(data.successType == 1) {
+            let params = {}
+            if(data.selectType == 0) {
+              params = {
+                type: data.selectType,
+                url: data.imagePath
+              }
+            } else {
+              params = {
+                type: data.selectType,
+                url: data.imagePath,
+                videoCoverImage: data.videoCoverImage
+              }
+            }
+            that.baseInfo.imagesInfo[index].imageItems.push(params)
+          } else {
+            that.$vux.toast.show({
+              text: data.info,
+              position: 'middle',
+              type: 'warn'
+            })
           }
-        }).then((res) => {
-          this.baseInfo.imagesInfo[0].imageItems.push({
-              type: 0,
-            url: res.data.data.path
-          })
-        })
-      },
-      imagechanged1 (data) {
-        let param = new FormData() // 创建form对象
-        param.append('files', data)// 通过append向form对象添加数据
-        this.$http.fetchPost('/merchant/common/image/upload', param, {
-          headers: {
-            'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
+          let ua = navigator.userAgent.toLowerCase();
+          //Android终端
+          let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+          //Ios终端
+          let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+          if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+            //Ios
+            window.webkit.messageHandlers.onHideDialog.postMessage(null)
+          } else if (/(Android)/i.test(navigator.userAgent)) {
+            //Android终端
+            window.AndroidListener.onHideDialog()
           }
-        }).then((res) => {
-          this.baseInfo.imagesInfo[1].imageItems.push({
-            type: 0,
-            url: res.data.data.path
-          })
-        })
-      },
-      imagechanged2 (data) {
-        let param = new FormData() // 创建form对象
-        param.append('files', data)// 通过append向form对象添加数据
-        this.$http.fetchPost('/merchant/common/image/upload', param, {
-          headers: {
-            'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
-          }
-        }).then((res) => {
-          this.baseInfo.imagesInfo[2].imageItems.push({
-            type: 0,
-            url: res.data.data.path
-          })
-        })
-      },
-      imagechanged3 (data) {
-        let param = new FormData() // 创建form对象
-        param.append('files', data)// 通过append向form对象添加数据
-        this.$http.fetchPost('/merchant/common/image/upload', param, {
-          headers: {
-            'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
-          }
-        }).then((res) => {
-          this.baseInfo.imagesInfo[3].imageItems.push({
-            type: 0,
-            url: res.data.data.path
-          })
-        })
-      },
-      imagechanged4 (data) {
-        let param = new FormData() // 创建form对象
-        param.append('files', data)// 通过append向form对象添加数据
-        this.$http.fetchPost('/merchant/common/image/upload', param, {
-          headers: {
-            'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
-          }
-        }).then((res) => {
-          this.baseInfo.imagesInfo[4].imageItems.push({
-            type: 0,
-            url: res.data.data.path
-          })
-        })
-      },
-      imagechanged5 (data) {
-        let param = new FormData() // 创建form对象
-        param.append('files', data)// 通过append向form对象添加数据
-        this.$http.fetchPost('/merchant/common/image/upload', param, {
-          headers: {
-            'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
-          }
-        }).then((res) => {
-          this.baseInfo.imagesInfo[5].imageItems.push({
-            type: 0,
-            url: res.data.data.path
-          })
-        })
+        }
+        let ua = navigator.userAgent.toLowerCase();
+        //Android终端
+        let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+        //Ios终端
+        let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+        if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+          //Ios
+          window.webkit.messageHandlers.selectPicture.postMessage(null)
+        } else if (/(Android)/i.test(navigator.userAgent)) {
+          //Android终端
+          window.AndroidListener.selectPicture()
+        }
       }
     }
   }
@@ -427,6 +356,10 @@
             img {
               width: 1.6rem;
               border-radius: 0.1rem;
+            }
+            video {
+              width: 1.6rem;
+              height: 2.3rem;
             }
             &:nth-child(1),&:nth-child(5) {
               margin-left: 0;

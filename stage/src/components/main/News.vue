@@ -128,6 +128,7 @@ export default {
     },
     getData () {
       this.$http.fetchGet('/merchant/center/get/message/list', this.params).then((res) => {
+        if(res.data.code === 200) {
         this.data = res.data.data.messageList
         if (this.data.length === this.params.pageSize) {
           this.isMoreData = true
@@ -135,14 +136,22 @@ export default {
           this.isMoreData = false
           this.$nextTick(() => {
             if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
-              this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
-            }
-          })
+            this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
+          }
+        })
         }
         setTimeout(() => {
           this.$vux.loading.hide()
-        }, 500)
+      }, 500)
         this.initScroll()
+      } else {
+        this.$vux.loading.hide()
+        this.$vux.toast.show({
+          text: res.data.message,
+          position: 'middle',
+          type: 'warn'
+        })
+      }
       })
     },
     initScroll () {

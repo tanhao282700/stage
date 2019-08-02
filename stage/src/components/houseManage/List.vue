@@ -25,7 +25,7 @@
           </div>
           <!-- 内容列表 -->
           <ul class="content" ref="content">
-            <li v-for="item in data" @click="goDetails(item.id,item.dataStatus)" class="item vux-1px-b">
+            <li v-for="item in data" @click="goDetails(item.id,item.dataStatus,item.dataRemark)" class="item vux-1px-b">
               <div class="pics">
                 <img :src="item.imagePath" alt="" />
                 <span class="grade" v-text="item.commentPoint + '分'"></span>
@@ -82,6 +82,7 @@ export default {
       data: [],
       pulldownMsg: '下拉刷新',
       pullupMsg: '加载更多',
+      isfirstInit: true,
       alertHook: 'none',
       isSale: 0,
       stopSale: 0,
@@ -97,6 +98,7 @@ export default {
   },
   methods: {
     edit(item) {
+      this.$store.state.tabIndex = this.tabIndex
       this.$router.push({
         name: 'houseAdd',
         query: {
@@ -167,15 +169,18 @@ export default {
       event.stopPropagation()
     },
     addHouse () {
+      this.$store.state.tabIndex = this.tabIndex
       this.$router.push('houseAdd')
     },
-    goDetails (id,status) {
+    goDetails (id,status,dataRemark) {
+      this.$store.state.tabIndex = this.tabIndex
       this.$router.push({
         name: 'houseDetail',
         query: {
           id: id,
           tabIndex: this.tabIndex,
-          status: status
+          status: status,
+          dataRemark: dataRemark
         }
       })
     },
@@ -310,6 +315,11 @@ export default {
       text: '加载中...'
     })
     this.params.merchantId = this.$store.state.merchantId
+    if(this.$store.state.tabIndex) {
+      this.tabIndex = this.$store.state.tabIndex
+      this.params.status = this.$store.state.tabIndex
+      this.$store.state.tabIndex = ''
+    }
     this.getData()
   }
 }

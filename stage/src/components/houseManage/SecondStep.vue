@@ -22,7 +22,7 @@
       <div class="textarea1" style="padding-bottom: 0.2rem;">
           <div class="textarea1_con vux-1px-b">
               <group>
-                  <x-textarea placeholder="您的房源有什么特点，如位置（离地铁站近、景点近？）、设施（有大投影？能做饭？）以及其它特点" autosize :max=500 :show-counter=true v-model="baseInfo.text"></x-textarea>
+                  <x-textarea placeholder="您的房源有什么特点，如位置（离地铁站近、景点近？）、设施（有大投影？能做饭？）以及其它特点" autosize :max=1000 :show-counter=true v-model="baseInfo.text"></x-textarea>
                 </group>
           </div>
       </div>
@@ -38,7 +38,7 @@
       <div class="textarea1">
         <div class="textarea1_con vux-1px-b">
             <group>
-                <x-textarea autosize placeholder="其它需要客人遵守的规则" :max=100 :show-counter=true v-model="baseInfo.otherRequirement"></x-textarea>
+                <x-textarea autosize placeholder="其它需要客人遵守的规则" :max=1000 :show-counter=true v-model="baseInfo.otherRequirement"></x-textarea>
               </group>
         </div>
       </div>

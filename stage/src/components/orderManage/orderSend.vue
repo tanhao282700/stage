@@ -13,17 +13,17 @@
     </div>
     <div class="setting_item">
       <group class="w_100">
-        <x-input :show-clear=false style="margin-top:0px;" title="物流单号" placeholder="请输入物流单号" v-model="params.trackingNo"></x-input>
+        <x-input @on-blur="change1" :show-clear=false style="margin-top:0px;" title="物流单号" placeholder="请输入物流单号" v-model="params.trackingNo"></x-input>
       </group>
     </div>
     <div class="setting_item">
       <group class="w_100">
-        <x-input :show-clear=false style="margin-top:0px;" title="收件人电话" placeholder="请输入收件人电话" v-model="params.receiverPhone"></x-input>
+        <x-input @on-blur="change2" :show-clear=false style="margin-top:0px;" title="收件人电话" placeholder="请输入收件人电话" v-model="params.receiverPhone"></x-input>
       </group>
     </div>
     <div class="setting_item">
       <group class="w_100">
-        <x-input :show-clear=false style="margin-top:0px;" title="寄件人电话" placeholder="请输入寄件人电话" v-model="params.senderPhone"></x-input>
+        <x-input @on-blur="change3" :show-clear=false style="margin-top:0px;" title="寄件人电话" placeholder="请输入寄件人电话" v-model="params.senderPhone"></x-input>
       </group>
     </div>
     <div class="iphone">
@@ -82,6 +82,47 @@ export default {
     console.log(this.query)
   },
   methods: {
+    change1 () {
+      if(!(/^\+?[1-9][0-9]*$/.test(this.params.trackingNo))) {
+        /*this.$nextTick(()=>{
+          this.params.trackingNo = ''
+        })*/
+        this.$vux.toast.show({
+          text: '请输入正确的物流单号',
+          position: 'middle',
+          type: 'warn'
+        })
+      }
+    },
+    change2() {
+      let isPhone = /^1[3456789]\d{9}$/;//手机号码
+      let isMob= /^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/;// 座机格式
+      console.log(isPhone.test(this.params.receiverPhone))
+      if(!(isPhone.test(this.params.receiverPhone) || isMob.test(this.params.receiverPhone))) {
+        /*this.$nextTick(()=>{
+          this.params.receiverPhone = ''
+        })*/
+        this.$vux.toast.show({
+          text: '收件人电话输入有误',
+          position: 'middle',
+          type: 'warn'
+        })
+      }
+    },
+    change3 () {
+      let isPhone = /^1[3456789]\d{9}$/;//手机号码
+      let isMob= /^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/;// 座机格式
+      if(!(isPhone.test(this.params.senderPhone) || isMob.test(this.params.senderPhone))) {
+        /*this.$nextTick(()=>{
+          this.params.senderPhone = ''
+        })*/
+        this.$vux.toast.show({
+          text: '寄件人电话输入有误',
+          position: 'middle',
+          type: 'warn'
+        })
+      }
+    },
     getBack () {
       this.$router.replace({
         name: 'orderedGoods',
@@ -120,6 +161,8 @@ export default {
         })
         return
       }
+      let isPhone = /^1[3456789]\d{9}$/;//手机号码
+      let isMob= /^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/;// 座机格式
       if(!this.params.receiverPhone){
         this.$vux.toast.show({
           text: '请输入收件人电话',
@@ -128,9 +171,34 @@ export default {
         })
         return
       }
+      console.log(isPhone.test(this.params.receiverPhone))
+      if(!(isPhone.test(this.params.receiverPhone) || isMob.test(this.params.receiverPhone))) {
+        this.$vux.toast.show({
+          text: '收件人电话输入有误',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
       if(!this.params.senderPhone){
         this.$vux.toast.show({
           text: '请输入寄件人电话',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(!(isPhone.test(this.params.senderPhone) || isMob.test(this.params.senderPhone))) {
+        this.$vux.toast.show({
+          text: '寄件人电话输入有误',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if (this.params.senderPhone == this.params.receiverPhone) {
+        this.$vux.toast.show({
+          text: '收/寄货人电话不能相同',
           position: 'middle',
           type: 'warn'
         })

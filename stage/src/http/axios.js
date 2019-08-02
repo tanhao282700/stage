@@ -1,5 +1,6 @@
 
 import axios from 'axios'
+import Vue from 'vue'
 // import qs from 'qs'
 
 const debug = process.env.NODE_ENV != 'production'
@@ -7,7 +8,7 @@ let baseurl = ''
 if (debug) {
   baseurl = './api'
 } else {
-  baseurl = 'http://zayz.zbtdvip.com/api'
+  baseurl = 'http://xyz.zbtdvip.com/api'
 }
 
 // http://zayz.zbtdvip.com  测试环境
@@ -37,6 +38,12 @@ axios.interceptors.response.use((res) => {
   }
   return res
 }, (error) => {
+  Vue.$vux.loading.hide()
+  Vue.$vux.toast.show({
+    text: res.data.message,
+    position: 'middle',
+    type: 'warn'
+  })
   console.log('网络异常')
   return Promise.reject(error)
 })

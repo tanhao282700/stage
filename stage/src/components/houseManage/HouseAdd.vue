@@ -116,8 +116,13 @@
           <div class="defaultLine vux-1px-b">
             <div class="deraultLine_con">
               <span>床位数量</span>
-              <div class="info">
+              <!--<div class="info">
                 <x-input @on-blur="check(baseInfo.bedNum,'bedNum')" :show-clear=false type="number" placeholder="请输入床位数量" v-model="baseInfo.bedNum"></x-input>
+              </div>-->
+              <div class="nums">
+                <x-icon @click="reduceBed" type="ios-minus" size="60"></x-icon>
+                <span v-text="baseInfo.bedNum" class="persons"></span>
+                <x-icon @click="addBed" type="ios-plus" size="60"></x-icon>
               </div>
             </div>
           </div>
@@ -210,6 +215,15 @@ export default {
     this.getBaseInfo()
   },
   methods: {
+    reduceBed () {
+      if(this.baseInfo.bedNum < 2) {
+        return
+      }
+      this.baseInfo.bedNum--
+    },
+    addBed () {
+      this.baseInfo.bedNum++
+    },
     check (val,type) {
       if(!val || val < 0) {
         this.baseInfo[type] = 0
@@ -219,6 +233,22 @@ export default {
           this.baseInfo.customProjectInfo.splice(index,1)
       },
     getEquipment() {
+      if(this.baseInfo&&this.baseInfo.stockQuantity>99999){
+        this.$vux.toast.show({
+          text: '存库不能大于五位数',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(this.baseInfo.completeArea&&this.baseInfo.completeArea>99999){
+        this.$vux.toast.show({
+          text: '整套面积不能大于五位数',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
       this.$vux.loading.show({
         text: '加载中...'
       })
@@ -301,6 +331,22 @@ export default {
       this.isShow1 = false
     },
     addSpecial () {
+      if(this.baseInfo&&this.baseInfo.stockQuantity>99999){
+        this.$vux.toast.show({
+          text: '存库不能大于五位数',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(this.baseInfo.completeArea&&this.baseInfo.completeArea>99999){
+        this.$vux.toast.show({
+          text: '整套面积不能大于五位数',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
       this.$vux.loading.show({
         text: '加载中...'
       })
@@ -319,6 +365,94 @@ export default {
       })
     },
     goNextStep () {
+          if(!this.baseInfo.detailAddress || !this.baseInfo.houseNumber) {
+            this.$vux.toast.show({
+              text: '请输入房屋详细地址',
+              position: 'middle',
+              type: 'warn'
+            })
+            return
+          }
+          if(!this.baseInfo.houseNumber) {
+            this.$vux.toast.show({
+              text: '请输入房屋详细地址',
+              position: 'middle',
+              type: 'warn'
+            })
+            return
+          }
+          if(!(this.baseInfo.roomTypeInfo.length > 0 && this.baseInfo.roomTypeInfo[0].isSelected == 1)) {
+            this.$vux.toast.show({
+              text: '请选择驿站类型',
+              position: 'middle',
+              type: 'warn'
+            })
+            return
+          }
+      /*if(!(this.baseInfo.apartmentInfo[0].room_quantity > 0 && this.baseInfo.apartmentInfo[0].office_quantity > 0  && this.baseInfo.apartmentInfo[0].kitchen_quantity > 0)){
+        this.$vux.toast.show({
+          text: '请输入整套户型信息',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }*/
+      if(!this.baseInfo.stockQuantity) {
+        this.$vux.toast.show({
+          text: '请输入房源库存',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(this.baseInfo&&this.baseInfo.stockQuantity>99999){
+        this.$vux.toast.show({
+          text: '存库不能大于五位数',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(!this.baseInfo.completeArea) {
+        this.$vux.toast.show({
+          text: '请输入整套面积',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(this.baseInfo.completeArea&&this.baseInfo.completeArea>99999){
+        this.$vux.toast.show({
+          text: '整套面积不能大于五位数',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(!(this.baseInfo.bedNum > 0)){
+        this.$vux.toast.show({
+          text: '请输入床位数量',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(this.baseInfo.toiletStatus!=1 && this.baseInfo.toiletStatus!=2 && this.baseInfo.toiletStatus!=3){
+        this.$vux.toast.show({
+          text: '请完善卫生间信息',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(this.baseInfo.kitchenStatus!=1 && this.baseInfo.kitchenStatus!=2 && this.baseInfo.kitchenStatus!=3){
+        this.$vux.toast.show({
+          text: '请完善厨房信息',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
       this.$vux.loading.show({
         text: '加载中...'
       })
@@ -340,6 +474,22 @@ export default {
       this.$router.go(-1)
     },
     chooseAddress () {
+      if(this.baseInfo&&this.baseInfo.stockQuantity>99999){
+        this.$vux.toast.show({
+          text: '存库不能大于五位数',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
+      if(this.baseInfo.completeArea&&this.baseInfo.completeArea>99999){
+        this.$vux.toast.show({
+          text: '整套面积不能大于五位数',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
       this.$vux.loading.show({
         text: '加载中...'
       })
@@ -362,7 +512,7 @@ export default {
         if(this.$route.query.params) {
             id = this.$route.query.params.id || ''
         }
-        this.$http.fetchGet('/merchant/room/get/baseInfo',{roomId: id}).then((res)=>{
+        this.$http.fetchGet('/merchant/room/get/baseInfo',{roomId: id,merchantId:this.$store.state.merchantId}).then((res)=>{
           setTimeout(() => {
             this.$vux.loading.hide()
           }, 500)
@@ -532,6 +682,17 @@ export default {
         height: 0.72rem;
         background: #fff;
         padding: 0 0.2rem;
+      .nums {
+        display: flex;
+        align-items: center;
+        svg:first-child {
+          margin-right: 0.1rem;
+        }
+        svg:last-child {
+          margin-left: 0.1rem;
+          margin-right: 0.1rem;
+        }
+      }
         .deraultLine_con {
             width: 100%;
             height: 100%;

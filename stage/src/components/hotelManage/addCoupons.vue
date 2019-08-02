@@ -149,7 +149,7 @@
           })
           return
         }
-        if(this.params.amount > this.params.lowerLimitAmount || this.params.amount == this.params.lowerLimitAmount){
+        if(Number(this.params.amount) > Number(this.params.lowerLimitAmount) || Number(this.params.amount) == Number(this.params.lowerLimitAmount)){
           this.$vux.toast.show({
             text: '优惠门槛不能小于优惠金额',
             position: 'middle',

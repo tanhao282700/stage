@@ -50,14 +50,15 @@ export default {
 
     },
     getData () {
-       /*this.$http.fetchPost('/merchant/login', {account: '15882422592', password: md5('111')}).then((res) => {
+       /*this.$http.fetchPost('/merchant/login', {account: '17394930905', password: md5('123456')}).then((res) => {
          axios.defaults.headers.common['token'] = res.data.data.token
          this.waitDoOrders(res.data.data.merchantId)
          this.getundoMessage(res.data.data.merchantId)
          this.$store.state.merchantId = res.data.data.merchantId
-       })*/
+       })
+      return*/
       let userId = this.$route.query.userId
-      /*userId = '1556954666365000'*/
+      /*userId = '1562580713581006'*/
       if(userId) {
           this.$store.state.userId = userId
       }
@@ -67,6 +68,7 @@ export default {
           this.waitDoOrders(res.data.data.merchantId)
           this.getundoMessage(res.data.data.merchantId)
           this.$store.state.merchantId = res.data.data.merchantId
+          this.$store.state.phoneNumber = res.data.data.phoneNumber
         } else {
           this.$vux.toast.show({
             text: res.data.message,
@@ -88,12 +90,18 @@ export default {
     }
   },
   created () {
-    window.AndroidListener.onHideDialog()
-    console.log(this.$route.query.userId)
-    /*this.$vux.loading.show({
-      text: '加载中...'
-    })*/
-    console.log(this.$route.query)
+    let ua = navigator.userAgent.toLowerCase();
+    //Android终端
+    let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+    //Ios终端
+    let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+    if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+      //Ios
+      window.webkit.messageHandlers.onHideDialog.postMessage(null)
+    } else if (/(Android)/i.test(navigator.userAgent)) {
+      //Android终端
+      window.AndroidListener.onHideDialog()
+    }
     if (this.$route.path === '/happen') {
       this.happenSelected = true
     }

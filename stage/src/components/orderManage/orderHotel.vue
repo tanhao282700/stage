@@ -95,7 +95,7 @@
           </div>
         </div>
 
-        <div>
+        <div v-if="detail.leaveMessage">
           <div class="defaultTitle defaultText">
             <span>留言</span>
           </div>
@@ -104,17 +104,7 @@
           </div>
         </div>
 
-        <div v-if="detail.orderStatus == 2">
-          <div class="defaultTitle defaultText">
-            <span>退款理由</span>
-          </div>
-          <div class="words">
-            <group class="w_100">
-              <x-textarea :max="200" name="description" v-model="detail.refundReason" placeholder="请输入退款理由"></x-textarea>
-            </group>
-          </div>
-        </div>
-        <div v-if="detail.orderStatus == 4">
+        <div v-if="detail.refundReason">
           <div class="defaultTitle defaultText">
             <span>退款理由</span>
           </div>
@@ -122,9 +112,19 @@
             {{detail.refundReason}}
           </div>
         </div>
+        <div v-if="detail.orderStatus == 2">
+          <div class="defaultTitle defaultText">
+            <span>拒绝退款原因</span>
+          </div>
+          <div class="words">
+            <group class="w_100">
+              <x-textarea :max="200" name="description" v-model="reasons" placeholder="请输入拒绝退款原因"></x-textarea>
+            </group>
+          </div>
+        </div>
         <div v-if="detail.orderStatus == 3">
           <div class="defaultTitle defaultText">
-            <span>退款失败理由</span>
+            <span>拒绝退款原因</span>
           </div>
           <div class="words">
             {{detail.refundFailReason}}
@@ -152,12 +152,12 @@
       <span @click="postData(1)">确认订单</span>
     </div>
 
-    <div class="bottom" v-if="detail.orderStatus == 7">
+    <div class="bottom" v-if="detail.orderStatus == 7 || detail.orderStatus == 3">
       <!--<span @click="postData(0)">取消订单</span>-->
-      <span @click="postData(2)">确认入住</span>
+      <span @click="postData(2)">办理入住</span>
     </div>
     <div class="bottom" v-if="detail.orderStatus == 2">
-      <span @click="refused(0)">拒绝退款</span>
+      <span @click="refused(4)">拒绝退款</span>
       <span @click="postData(3)">同意退款</span>
     </div>
 
@@ -173,6 +173,7 @@ export default {
   },
   data () {
     return {
+      reasons: '',
       // 商品 0-待支付,1-待发货,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,8-待收货,9-已完成,99-所有状态
       // 驿站 0-待支付,1-待确认,2-申请退款,3-退款失败,4-退款成功,5-取消订单,6-待点评,7-待入住,8-入住中,9-已完成,99-所有状态
       detail: {
@@ -285,9 +286,9 @@ export default {
     },
     //    拒绝退款
     refused () {
-      if (!this.detail.refundReason) {
+      if (!this.reasons) {
         this.$vux.toast.show({
-          text: '拒绝理由为必填',
+          text: '请输入拒绝退款原因',
           position: 'middle',
           type: 'warn'
         })
@@ -296,11 +297,18 @@ export default {
       this.postData(4)
     },
     postData (flag) {
-      let params = {
-        amount: 0, // 订单金额【修改价格时必输】 ,
-        operate: flag, // 操作【0-取消订单,1-确认订单,2-办理入住,3-同意退款,4-拒绝退款,5-修改价格】 ,
-        orderId: this.$route.query.id, // 订单编号 ,
-        refuseReason: this.detail.refundReason // 拒绝理由【拒绝退款时必输】
+      let params = {}
+      if(flag == 4){
+        params = {
+          operate: flag, // 操作【0-取消订单,1-确认订单,2-办理入住,3-同意退款,4-拒绝退款,5-修改价格】 ,
+          orderId: this.detail.orderId, // 订单编号 ,
+          refuseReason: this.reasons // 拒绝理由【拒绝退款时必输】
+        }
+      } else{
+        params = {
+          operate: flag, // 操作【0-取消订单,1-确认订单,2-办理入住,3-同意退款,4-拒绝退款,5-修改价格】 ,
+          orderId: this.detail.orderId, // 订单编号 ,
+        }
       }
       this.$http.fetchPost('/merchant/order/update/room', params).then((res) => {
         if (res.data.code === 200) {

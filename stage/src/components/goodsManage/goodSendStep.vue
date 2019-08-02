@@ -46,8 +46,8 @@
           </group>
         </div>
       </div>
+      <div @click="getNextStep" class="bottom">下一步</div>
     </div>
-    <div @click="getNextStep" class="bottom">下一步</div>
   </div>
 </template>
 

@@ -14,20 +14,11 @@
         <div v-if="item.type === 1" class="picArea child">
           <span @click="deleteInfo(index)" class="myIcon icon iconfont">&#xe61e;</span>
           <div class="pic_con">
-            <vue-core-image-upload
-              :class="['btn', 'btn-primary']"
-              :crop="false"
-              @imagechanged="imagechanged(index)"
-              :isXhr="false"
-              input-of-file="file"
-              :max-file-size="5242880"
-              :url="uploadUrl">
-              <div class="pic_btn">
-                <span v-if="!item.url"></span>
-                <span v-if="!item.url">上传照片</span>
-                <img v-if="item.url" class="realPic" :src="item.url" alt="">
-              </div>
-            </vue-core-image-upload>
+            <div @click="imagechanged(index)" class="pic_btn">
+              <span v-if="!item.url"></span>
+              <span v-if="!item.url">上传照片</span>
+              <img v-if="item.url" class="realPic" :src="item.url" alt="">
+            </div>
           </div>
         </div>
       </div>
@@ -70,17 +61,55 @@ export default {
       this.$router.go(-1)
     },
     imagechanged (index) {
-      let data = event.target.files[0]
-      let param = new FormData() // 创建form对象
-      param.append('files', data)// 通过append向form对象添加数据
-      this.$http.fetchPost('/merchant/common/image/upload', param, {
-        headers: {
-          'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
+      //            1、1：成功 0：失败 successType
+//            2、提示信息 info
+//            3、图片地址 imagePath
+//            4、1：视频 0：图片 selectType
+      let that = this
+      window.optionPictures = function(data){
+        if (data.selectType == 1) {
+          this.$vux.toast.show({
+            text: '请上传图片',
+            position: 'middle',
+            type: 'warn'
+          })
+        } else {
+          if(data.successType == 1) {
+            that.images = data.imagePath
+            that.dataList[index].url = data.imagePath
+          } else {
+            that.$vux.toast.show({
+              text: data.info,
+              position: 'middle',
+              type: 'warn'
+            })
+          }
         }
-      }).then((res) => {
-        this.images = res.data.data.path
-        this.dataList[index].url = res.data.data.path
-      })
+        let ua = navigator.userAgent.toLowerCase();
+        //Android终端
+        let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+        //Ios终端
+        let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+        if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+          //Ios
+          window.webkit.messageHandlers.onHideDialog.postMessage(null)
+        } else if (/(Android)/i.test(navigator.userAgent)) {
+          //Android终端
+          window.AndroidListener.onHideDialog()
+        }
+      }
+      let ua = navigator.userAgent.toLowerCase();
+      //Android终端
+      let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+      //Ios终端
+      let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+      if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+        //Ios
+        window.webkit.messageHandlers.selectPicture.postMessage(null)
+      } else if (/(Android)/i.test(navigator.userAgent)) {
+        //Android终端
+        window.AndroidListener.selectPicture()
+      }
     },
     addLines (type) {
         if(type == 1) {
@@ -194,19 +223,25 @@ export default {
         .pic_con {
           width: 100%;
           height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           position: relative;
           .btn-primary {
             width: 100%;
             height: 100%;
-            .pic_btn {
+          }
+          .pic_btn {
+            width: 100%;
+            height: 100%;
+            border: none;
+            span:first-child {
+              background: url(../../../static/camera.png) no-repeat center center/100% 100%!important;
+            }
+            .realPic {
               width: 100%;
               height: 100%;
-              border: none;
-              .realPic {
-                width: 100%;
-                height: 100%;
-                border-radius: 0.1rem;
-              }
+              border-radius: 0.1rem;
             }
           }
         }

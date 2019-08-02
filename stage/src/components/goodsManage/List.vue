@@ -27,7 +27,7 @@
           </div>
           <!-- 内容列表 -->
           <ul class="content" ref="content">
-            <li @click="goDetail(item.id)" v-for="item in data" class="item vux-1px-b">
+            <li @click="goDetail(item.id,item.dataStatus,item.dataRemark)" v-for="item in data" class="item vux-1px-b">
               <div class="pics">
                 <img :src="item.imagePath" alt="">
                 <span v-text="item.commentPoint+'分'" class="grade"></span>
@@ -80,6 +80,7 @@ export default {
   },
   data () {
     return {
+      tabIndex: 1,
       params: {
         merchantId: '',
         status: 1, // 商品状态【1-已上架 2-未上架】
@@ -99,6 +100,8 @@ export default {
   },
   methods: {
     edit (item) {
+        console.log(this.tabIndex)
+      this.$store.state.tabIndex = this.tabIndex
       this.$router.push({
         name: 'goodsAdd',
         query: {
@@ -167,16 +170,20 @@ export default {
       event.stopPropagation()
     },
     addGoods () {
+      this.$store.state.tabIndex = this.tabIndex
       this.$router.push({
         name: 'goodsAdd'
       })
     },
-    goDetail (id) {
+    goDetail (id,dataStatus,dataRemark) {
+      this.$store.state.tabIndex = this.tabIndex
       this.$router.push({
         name: 'goodsDetail',
         query: {
           tabIndex: this.params.status,
-          id: id
+          id: id,
+          dataStatus: dataStatus,
+          dataRemark: dataRemark
         }
       })
     },
@@ -287,6 +294,7 @@ export default {
       })
     },
     changeTab (tabIndex) {
+        this.tabIndex = tabIndex
       this.$vux.loading.show({
         text: '加载中...'
       })
@@ -307,6 +315,11 @@ export default {
       text: '加载中...'
     })
     this.params.merchantId = this.$store.state.merchantId
+    if(this.$store.state.tabIndex) {
+      this.tabIndex = this.$store.state.tabIndex
+      this.params.status = this.$store.state.tabIndex
+      this.$store.state.tabIndex = ''
+    }
     this.getData()
   }
 }

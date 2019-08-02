@@ -9,7 +9,7 @@
           <div class="upload">
             <div class="imgs">
               <div class="pics upload_button">
-                <vue-core-image-upload
+                <!--<vue-core-image-upload
                   :class="['btn', 'btn-primary']"
                   :crop="false"
                   @imagechanged="imagechanged"
@@ -17,12 +17,13 @@
                   input-of-file="file"
                   :max-file-size="5242880"
                   :url="uploadUrl">
+
+                </vue-core-image-upload>-->
+                <div @click="imagechanged" class="pic_btn">
+                  <span v-if="!params.image_path"></span>
+                  <span v-if="!params.image_path">上传照片</span>
                   <img v-if="params.image_path" class="aa" :src="params.image_path" />
-                  <div v-if="!params.image_path" class="pic_btn">
-                    <span></span>
-                    <span>上传照片</span>
-                  </div>
-                </vue-core-image-upload>
+                </div>
               </div>
             </div>
           </div>
@@ -109,30 +110,57 @@ export default {
     })
     },
     imagechanged(data){
-      let param = new FormData() // 创建form对象
-      param.append('files', data)// 通过append向form对象添加数据
-      this.$http.fetchPost('/merchant/common/image/upload', param, {
-        headers: {
-          'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
-        }
-      }).then((res) => {
-          if (res.data.code == 200) {
-            this.params.image_path = res.data.data.path
-            this.$vux.toast.show({
-              text: '上传成功',
-              position: 'middle'
-            })
+      //            1、1：成功 0：失败 successType
+//            2、提示信息 info
+//            3、图片地址 imagePath
+//            4、1：视频 0：图片 selectType
+      let that = this
+      window.optionPictures = function(data){
+        if (data.selectType == 1) {
+          this.$vux.toast.show({
+            text: '请上传图片',
+            position: 'middle',
+            type: 'warn'
+          })
+        } else {
+          if(data.successType == 1) {
+            that.params.image_path = data.imagePath
           } else {
-            this.$vux.toast.show({
-              text: res.data.message,
+            that.$vux.toast.show({
+              text: data.info,
               position: 'middle',
               type: 'warn'
             })
           }
-    })
+        }
+        let ua = navigator.userAgent.toLowerCase();
+        //Android终端
+        let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+        //Ios终端
+        let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+        if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+          //Ios
+          window.webkit.messageHandlers.onHideDialog.postMessage(null)
+        } else if (/(Android)/i.test(navigator.userAgent)) {
+          //Android终端
+          window.AndroidListener.onHideDialog()
+        }
+      }
+      let ua = navigator.userAgent.toLowerCase();
+      //Android终端
+      let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+      //Ios终端
+      let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+      if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+        //Ios
+        window.webkit.messageHandlers.selectPicture.postMessage(null)
+      } else if (/(Android)/i.test(navigator.userAgent)) {
+        //Android终端
+        window.AndroidListener.selectPicture()
+      }
     },
     getBaseInfo(){
-      this.$http.fetchGet('/merchant/room/get/baseInfo',{roomId: this.$route.query.params.id}).then((res)=>{
+      this.$http.fetchGet('/merchant/room/get/baseInfo',{roomId: this.$route.query.params.id,merchantId: this.$store.state.merchantId}).then((res)=>{
         this.baseInfo = res.data.data
       this.baseInfo.roomTypeInfo.map((item)=>{
             if(item.isSelected){
@@ -205,8 +233,17 @@ export default {
               height: 100%;
             }
             .pic_btn {
-              margin-left: 2.7rem;
-              margin-top: 0.6rem;
+              width: 100%;
+              height: 100%;
+              border: none;
+              span:first-child {
+                background: url(../../../static/camera.png) no-repeat center center/100% 100%!important;
+              }
+              .realPic {
+                width: 100%;
+                height: 100%;
+                border-radius: 0.1rem;
+              }
             }
           }
         }
@@ -297,10 +334,10 @@ export default {
           width: 100%;
           height: 100%;
         }
-        .pic_btn {
+        /*.pic_btn {
           margin-left: 2.7rem;
           margin-top: 0.6rem;
-        }
+        }*/
       }
     }
   }

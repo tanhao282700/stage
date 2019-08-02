@@ -26,7 +26,7 @@
       </div>
     </div>
     <div class="rest" @click="setPayPassword">
-      <span>设置支付密码</span>
+      <span>设置提现密码</span>
       <div class="info">
         <x-icon type="ios-arrow-right" size="40"></x-icon>
       </div>
@@ -34,7 +34,7 @@
     <div class="rest">
       <span>联系客服</span>
       <div class="info">
-        <span>12456879</span>
+        <span>17343348329</span>
         <x-icon type="ios-arrow-right" size="40"></x-icon>
       </div>
     </div>
@@ -67,7 +67,18 @@ export default {
   },
   methods: {
     backTo () {
-      window.AndroidListener.onBackListener()
+      let ua = navigator.userAgent.toLowerCase();
+      //Android终端
+      let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+      //Ios终端
+      let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+      if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+        //Ios
+        window.webkit.messageHandlers.onBackListener.postMessage(null)
+      } else if (/(Android)/i.test(navigator.userAgent)) {
+        //Android终端
+        window.AndroidListener.onBackListener()
+      }
     },
     getBack () {
       this.$router.go(-1)

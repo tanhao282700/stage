@@ -94,7 +94,7 @@
                   </div>
                 </div>
                 <div class="botton">
-                  <span @click="cancelOrder(item,index)" v-if="item.status == 0  || item.status == 1">取消订单</span>
+                  <!--<span @click="cancelOrder(item,index)" v-if="item.status == 0  || item.status == 1">取消订单</span>-->
                   <!--<span @click="changePrice(item.orderId)">修改价格</span>-->
                 </div>
               </div>
@@ -121,7 +121,7 @@
                   </div>
                 </div>
                 <div class="botton">
-                  <span v-if="item.status == 0">取消订单</span>
+                  <!--<span v-if="item.status == 0 || tabIndex != 1">取消订单</span>-->
                   <!--<span>修改价格</span>-->
                 </div>
               </div>
@@ -207,7 +207,7 @@ export default {
       event.stopPropagation()
     },
     goDetails (data) {
-      console.log(data)
+      this.$store.state.tabIndex = this.tabIndex
       this.$router.push({
         name: data.path,
         query: {
@@ -250,23 +250,41 @@ export default {
           this.$vux.loading.hide()
         }, 500)
         this.hotelOrderNum = res.data.data.orderNum
-        this.data = res.data.data.orderList
-        if (this.data.length === this.params.pageSize) {
-          this.isMoreData = true
-        } else {
-          this.isMoreData = false
-          this.$nextTick(() => {
-            if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
-              this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
-            }
-          })
+        if(this.$store.state.tabIndex == 1 || !this.$store.state.tabIndex) {
+          this.data = res.data.data.orderList
+          if (this.data.length === this.params.pageSize) {
+            this.isMoreData = true
+          } else {
+            this.isMoreData = false
+            this.$nextTick(() => {
+              if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
+                this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
+              }
+            })
+          }
+          this.initScroll()
+          this.$store.state.tabIndex = ''
         }
-        this.initScroll()
       })
     },
     getInitGoodsData () {
       this.$http.fetchGet('/merchant/order/get/goods/list', this.params).then((res) => {
         this.goodsOrderNum = res.data.data.orderNum
+        if(this.$store.state.tabIndex == 2) {
+          this.data = res.data.data.orderList
+          if (this.data.length === this.params.pageSize) {
+            this.isMoreData = true
+          } else {
+            this.isMoreData = false
+            this.$nextTick(() => {
+              if (this.$refs.list_con.offsetHeight > this.$refs.content.offsetHeight) {
+                this.$refs.content.style.height = this.$refs.list_con.offsetHeight + 2 + 'px'
+              }
+            })
+          }
+          this.initScroll()
+          this.$store.state.tabIndex = ''
+        }
       })
     },
     initScroll () {

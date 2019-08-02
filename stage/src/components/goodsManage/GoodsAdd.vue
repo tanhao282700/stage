@@ -7,15 +7,16 @@
     <div class="goodsAdd_con">
       <div class="upload">
         <p>
-          商品图片<span>(最多上传六张，建议使用横图)</span>
+          商品图片<span></span>
         </p>
         <div class="imgs">
           <div class="pics" v-for="(item,index) in images">
-            <img @click="show(index)" class="previewer-demo-img uploadPics" :src="item" alt="">
+            <img @click="show(index)" v-if="item.type == 0" class="previewer-demo-img uploadPics" :src="item.url" alt="">
+            <img @click="show(index)" v-if="item.type == 1" class="previewer-demo-img uploadPics" :src="item.videoCoverImage" alt="">
             <span @click="deletePic(index)" class="deleteBtn icon iconfont">&#xe61e;</span>
           </div>
           <div class="pics upload_button">
-            <vue-core-image-upload
+            <!--<vue-core-image-upload
               :class="['btn', 'btn-primary']"
               :crop="false"
               @imageuploaded="imageuploaded"
@@ -23,9 +24,9 @@
               :isXhr="false"
               :inputAccept="'image/*'"
               :max-file-size="3145728"
-              :url="uploadUrl">
+              :url="uploadUrl">-->
               <!--<img width="150" src="../../assets/images/test.png" />-->
-              <div class="pic_btn">
+              <div @click="imagechanged" class="pic_btn">
                 <span></span>
                 <span>上传照片</span>
               </div>
@@ -97,8 +98,8 @@
           <x-switch title="支持退款" v-model="params.refundFlagValue"></x-switch>
         </group>
       </div>
+      <div @click="getNextStep" class="bottom">下一步</div>
     </div>
-    <div @click="getNextStep" class="bottom">下一步</div>
     <div v-transfer-dom>
       <previewer :list="previewList" ref="previewer" :options="options"></previewer>
     </div>
@@ -171,6 +172,14 @@ export default {
         })
         return
       }
+      if (this.params.title.length > 50) {
+        this.$vux.toast.show({
+          text: '商品标题不能超过50字',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
       /*if (!this.params.price) {
         this.$vux.toast.show({
           text: '请输入商品成本价',
@@ -196,6 +205,7 @@ export default {
         return
       }
       let flag = true
+      let flag2 = true
       this.specsDataList.map((item) => {
         if (!item.specsValue) {
           flag = false
@@ -204,6 +214,9 @@ export default {
         item.value.map((child) => {
           if (!child.attrValue) {
             flag = false
+          }
+          if (child.attrValue.length > 20) {
+              flag2 = false
           }
         })
       })
@@ -215,12 +228,17 @@ export default {
         })
         return
       }
+      if (!flag2) {
+        this.$vux.toast.show({
+          text: '商品规格值超出长度',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
       // 图片
       this.images.map((item) => {
-        this.params.imageList.push({
-          type: 0,
-          url: item
-        })
+        this.params.imageList.push(item)
       })
       // 是否支持退款
       this.params.refundFlag = this.params.refundFlagValue ? 0 : 1
@@ -327,7 +345,7 @@ export default {
         this.params.title = res.data.data.title
         res.data.data.refundFlag === 0 ? this.params.refundFlagValue = true : this.params.refundFlagValue = false
         res.data.data.imageList.map((item) => {
-          this.images.push(item.url)
+          this.images.push(item)
         })
         res.data.data.goodsClassInfo.map((item) => {
           if (item.isSelected === 1) {
@@ -371,19 +389,70 @@ export default {
       console.log(res)
     },
     imagechanged (data) {
-      let param = new FormData() // 创建form对象
-      param.append('files', data)// 通过append向form对象添加数据
-      this.$http.fetchPost('/merchant/common/image/upload', param, {
-        headers: {
-          'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
+      //            1、1：成功 0：失败 successType
+//            2、提示信息 info
+//            3、图片地址 imagePath
+//            4、1：视频 0：图片 selectType
+      let that = this
+      window.optionPictures = function(data){
+        if (data.selectType == 1) {
+          if(data.successType == 1) {
+            that.images.push({
+                url: data.imagePath,
+              //          资源类型【0-图片 1-视频】
+              type: 1,
+              videoCoverImage: data.videoCoverImage})
+            that.previewList.push({
+              src: data.imagePath,
+              msrc: data.imagePath
+            })
+          } else {
+            that.$vux.toast.show({
+              text: data.info,
+              position: 'middle',
+              type: 'warn'
+            })
+          }
+        } else {
+          if(data.successType == 1) {
+            that.images.push({url: data.imagePath, type: 0})
+            that.previewList.push({
+              src: data.imagePath,
+              msrc: data.imagePath
+            })
+          } else {
+            that.$vux.toast.show({
+              text: data.info,
+              position: 'middle',
+              type: 'warn'
+            })
+          }
         }
-      }).then((res) => {
-        this.images.push(res.data.data.path)
-        this.previewList.push({
-          src: res.data.data.path,
-          msrc: res.data.data.path
-        })
-      })
+        let ua = navigator.userAgent.toLowerCase();
+        //Android终端
+        let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+        //Ios终端
+        let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+        if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+          //Ios
+          window.webkit.messageHandlers.onHideDialog.postMessage(null)
+        } else if (/(Android)/i.test(navigator.userAgent)) {
+          //Android终端
+          window.AndroidListener.onHideDialog()
+        }
+      }
+      let ua = navigator.userAgent.toLowerCase();
+      //Android终端
+      let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+      //Ios终端
+      let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+      if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+        //Ios
+        window.webkit.messageHandlers.selectPicture.postMessage(null)
+      } else if (/(Android)/i.test(navigator.userAgent)) {
+        //Android终端
+        window.AndroidListener.selectPicture()
+      }
     },
     getBack () {
       this.$router.go(-1)
@@ -437,6 +506,9 @@ export default {
       }
     }
     .imgs {
+      display: flex;
+      align-items: flex-end;
+      flex-wrap: wrap;
       padding: 0.1rem 0;
       text-align: left;
       /*display: flex;

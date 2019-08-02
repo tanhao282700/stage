@@ -21,6 +21,14 @@
                   <span>原价:￥299</span>
                 </div>
               </div>
+              <div v-if="dataStatus == 3" class="statusInfo vux-1px-t">
+                <span>当前状态</span>
+                <span style="color: #ff122f;">审核拒绝</span>
+              </div>
+              <div v-if="dataStatus == 3" class="statusInfo">
+                <span>拒绝理由</span>
+                <span style="color: #ff122f;" v-text="dataRemark"></span>
+              </div>
               <div class="description">
                 <div class="title">详情描述</div>
                 <div class="item" v-for="item in baseInfo.detailsList">
@@ -29,7 +37,7 @@
                 </div>
               </div>
             </div>
-            <div class="bottom">
+            <div v-if="dataStatus != 1" class="bottom">
               <span @click="checkGoods(2)" v-if="status == 1">下架</span>
               <span @click="checkGoods(1)" v-if="status == 2">上架</span>
               <span @click="getEdit">修改</span>
@@ -147,6 +155,8 @@ export default {
   },
   data () {
     return {
+      dataStatus: '',
+      dataRemark: '',
       currentCommentId: '',
       commentsValue: '',
       showToast: false,
@@ -396,6 +406,8 @@ export default {
     this.$vux.loading.show({
       text: '加载中...'
     })
+    this.dataRemark = this.$route.query.dataRemark
+    this.dataStatus = this.$route.query.dataStatus
     this.params.goodId = this.$route.query.id
     this.status = this.$route.query.tabIndex
     this.getData()
@@ -412,6 +424,24 @@ export default {
     background: rgb(247,247,247);
     display: flex;
     flex-direction: column;
+  }
+  .statusInfo {
+    /*height: 0.76rem;*/
+    background: #fff;
+    padding: 0.2rem 0.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    span{
+      font-size: 0.24rem;
+      text-align: left;
+    }
+    span:first-child {
+      /*margin-right: 0.2rem;*/
+      width: 2rem;
+    }
+    span:last-child {
+    }
   }
   .content {
     flex: 1;

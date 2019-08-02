@@ -51,7 +51,7 @@
         })
       },
       getInfo() {
-        this.$http.fetchGet('/merchant/room/get/baseInfo',{roomId: this.$route.query.params.id}).then((res)=>{
+        this.$http.fetchGet('/merchant/room/get/baseInfo',{roomId: this.$route.query.params.id,merchantId: this.$store.state.merchantId}).then((res)=>{
           this.baseInfo = res.data.data
         })
       },

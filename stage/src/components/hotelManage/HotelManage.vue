@@ -14,6 +14,12 @@
         <span v-if="baseInfo.postDetail.dataStatus == 3">审核拒绝</span>
       </div>
     </div>
+    <div v-if="baseInfo.postDetail.dataStatus == 3" class="coupon">
+      <span style="width: 2rem;text-align: left;">拒绝原因</span>
+      <div>
+        <span style="color:#ff122f;" v-text="baseInfo.postDetail.postDescription"></span>
+      </div>
+    </div>
     <div class="infoTitle">驿栈信息</div>
     <div class="hotelInfo" @click="editHotel">
       <img :src="baseInfo.postDetail.postHeadImage" alt="">

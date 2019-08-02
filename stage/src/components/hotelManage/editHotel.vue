@@ -5,14 +5,14 @@
       <span>编辑驿栈信息</span>
     </div>
     <div class="clearfix modal_main">
-      <div class="setting_item avater">
+      <div @click="getAvator" class="setting_item avater">
         <span>驿栈头像</span>
         <div class="info">
           <span><img :src="params.postHeadImage" alt=""></span>
           <x-icon type="ios-arrow-right" size="40"></x-icon>
         </div>
         <div v-if="params.dataStatus == 1" class="shadow"></div>
-        <vue-core-image-upload
+        <!--<vue-core-image-upload
           :class="['btn', 'btn-primary']"
           :crop="false"
           @imageuploaded="imageuploaded"
@@ -21,7 +21,7 @@
           :inputAccept="'image/*'"
           :max-file-size="3145728"
           :url="uploadUrl">
-        </vue-core-image-upload>
+        </vue-core-image-upload>-->
       </div>
 
       <div class="setting_item">
@@ -60,7 +60,7 @@
       </div>
 
       <div class="setting_item setting_item_big" style="position: relative;height:2.6rem;">
-        <div v-if="params.dataStatus == 1" class="shadow"></div>
+        <!--<div v-if="params.dataStatus == 1" class="shadow"></div>-->
         <div class="w_100"><span>视频/图片</span></div>
         <div class="address">
           <div class="upload">
@@ -69,11 +69,12 @@
             </p> -->
             <div class="imgs">
               <div class="pics" v-for="(item,index) in params.imagesInfo">
-                <img @click="show(index)" class="previewer-demo-img uploadPics" :src="item.url" alt="">
+                <img v-if="item.type == 0" class="previewer-demo-img uploadPics" :src="item.url" alt="">
+                <img v-if="item.type == 1" class="previewer-demo-img uploadPics" :src="item.videoCoverImage" alt="">
                 <span @click="deletePic(index)" class="deleteBtn icon iconfont">&#xe61e;</span>
               </div>
               <div class="pics upload_button">
-                <vue-core-image-upload
+                <!--<vue-core-image-upload
                   :class="['btn', 'btn-primary']"
                   :crop="false"
                   @imageuploaded="imageuploaded"
@@ -82,12 +83,16 @@
                   :inputAccept="'image/*'"
                   :max-file-size="3145728"
                   :url="uploadUrl">
-                  <!--<img width="150" src="../../assets/images/test.png" />-->
+                  &lt;!&ndash;<img width="150" src="../../assets/images/test.png" />&ndash;&gt;
                   <div class="pic_btn">
                     <span></span>
                     <span>上传照片</span>
                   </div>
-                </vue-core-image-upload>
+                </vue-core-image-upload>-->
+                <div @click="imagechanged" class="pic_btn">
+                  <span></span>
+                  <span>上传照片</span>
+                </div>
               </div>
             </div>
           </div>
@@ -185,6 +190,14 @@ export default {
         })
         return
       }
+      if(!this.params.postName) {
+        this.$vux.toast.show({
+          text: '请输入驿站名称',
+          position: 'middle',
+          type: 'warn'
+        })
+        return
+      }
       this.$vux.loading.show({
         text: '加载中...'
       })
@@ -208,7 +221,7 @@ export default {
       })
     },
     //    头像
-    imagechanged_avater (data) {
+    /*imagechanged_avater (data) {
       let param = new FormData() // 创建form对象
       param.append('files', data)// 通过append向form对象添加数据
       this.$http.fetchPost('/merchant/common/image/upload', param, {
@@ -218,30 +231,111 @@ export default {
       }).then((res) => {
         this.params.postHeadImage = res.data.data.path
       })
-    },
-
-    imageuploaded (res) {
-      console.log(res)
-    },
-    imagechanged (data) {
-      let param = new FormData() // 创建form对象
-      param.append('files', data)// 通过append向form对象添加数据
-      this.$http.fetchPost('/merchant/common/image/upload', param, {
-        headers: {
-          'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryJBcoeGdBCguPERbU'
+    },*/
+    getAvator () {
+      //            1、1：成功 0：失败 successType
+//            2、提示信息 info
+//            3、图片地址 imagePath
+//            4、1：视频 0：图片 selectType
+      let that = this
+      window.optionPictures = function(data){
+        if (data.selectType == 1) {
+          that.$vux.toast.show({
+            text: '请上传图片',
+            position: 'middle',
+            type: 'warn'
+          })
+        } else {
+          if(data.successType == 1) {
+            that.params.postHeadImage = data.imagePath
+          } else {
+            that.$vux.toast.show({
+              text: data.info,
+              position: 'middle',
+              type: 'warn'
+            })
+          }
         }
-      }).then((res) => {
-        this.params.imagesInfo.push({
-          url: res.data.data.path,
-          //          资源类型【0-图片 1-视频】
-          type: 0,
-          videoCoverImage: ''
-        })
-        this.previewList.push({
-          src: res.data.data.path,
-          msrc: res.data.data.path
-        })
-      })
+        let ua = navigator.userAgent.toLowerCase();
+        //Android终端
+        let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+        //Ios终端
+        let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+        if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+          //Ios
+          window.webkit.messageHandlers.onHideDialog.postMessage(null)
+        } else if (/(Android)/i.test(navigator.userAgent)) {
+          //Android终端
+          window.AndroidListener.onHideDialog()
+        }
+      }
+      let ua = navigator.userAgent.toLowerCase();
+      //Android终端
+      let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+      //Ios终端
+      let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+      if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+       //Ios
+       window.webkit.messageHandlers.selectPicture.postMessage(null)
+       } else if (/(Android)/i.test(navigator.userAgent)) {
+       //Android终端
+       window.AndroidListener.selectPicture()
+       }
+    },
+    imagechanged () {
+      //            1、1：成功 0：失败 successType
+//            2、提示信息 info
+//            3、图片地址 imagePath
+//            4、1：视频 0：图片 selectType
+      let that = this
+      window.optionPictures = function(data){
+        if (data.successType == 1) {
+          if(data.selectType == 1) {
+            that.params.imagesInfo.push({
+              url: data.imagePath,
+              //          资源类型【0-图片 1-视频】
+              type: 1,
+              videoCoverImage: data.videoCoverImage
+            })
+          } else {
+            that.params.imagesInfo.push({
+              url: data.imagePath,
+              //          资源类型【0-图片 1-视频】
+              type: 0,
+            })
+          }
+        } else {
+            that.$vux.toast.show({
+              text: data.info,
+              position: 'middle',
+              type: 'warn'
+            })
+        }
+        let ua = navigator.userAgent.toLowerCase();
+        //Android终端
+        let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+        //Ios终端
+        let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+        if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+          //Ios
+          window.webkit.messageHandlers.onHideDialog.postMessage(null)
+        } else if (/(Android)/i.test(navigator.userAgent)) {
+          //Android终端
+          window.AndroidListener.onHideDialog()
+        }
+      }
+      let ua = navigator.userAgent.toLowerCase();
+      //Android终端
+      let isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+      //Ios终端
+      let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+      if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+        //Ios
+        window.webkit.messageHandlers.selectPicture.postMessage(null)
+      } else if (/(Android)/i.test(navigator.userAgent)) {
+        //Android终端
+        window.AndroidListener.selectPicture()
+      }
     },
     deletePic (index) {
       this.params.imagesInfo.splice(index, 1)
@@ -287,6 +381,11 @@ export default {
     display: flex;
     align-items: center;
   }
+  }
+  .editHotel .upload .imgs {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
   }
 </style>
 <style>
